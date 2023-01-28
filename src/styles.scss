@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+$white: #ffffff;
+
+/* change the colors */
+$primary: #2432d8;
+$secondary: #00b56a;
+$danger: #f81f00;
+$success: #00b56a;
+$warning: #e6d000;
+$info: #00bca5;
+
+$body-bg: #ffffff;
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+
+
+.cursor-pointer {
+    cursor: pointer;
+}

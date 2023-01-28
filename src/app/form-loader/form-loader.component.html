@@ -1,0 +1,27 @@
+<div class="d-flex mb-3">
+    <div class="flex-fill d-flex align-items-center me-2">
+        <label for="searchBox" class="form-label" class="me-2">Search</label>
+        <input type="text" class="form-control" name="searchBox">
+    </div>
+    <button class="btn btn-primary" (click)="openFormWizard()">New Form</button>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Form ID</th>
+            <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
+            <th scope="col" sortable="area" (sort)="onSort($event)">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let form of effect.formList | async">
+            <th scope="row">{{ form.id ? form.id : "" }}</th>
+            <td>
+                {{ form.name }}
+            </td>
+            <td>
+                {{ form.date }}
+            </td>
+        </tr>
+    </tbody>
+</table>

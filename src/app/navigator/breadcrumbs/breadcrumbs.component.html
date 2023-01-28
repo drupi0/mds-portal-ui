@@ -1,0 +1,7 @@
+<nav aria-label="breadcrumb" *ngIf="(effect.breadcrumbs | async) as breadcrumbs">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" *ngFor="let crumb of breadcrumbs">
+            <span class="badge text-bg-primary cursor-pointer" routerLink="{{ crumb.href }}">{{ crumb.title }}</span>
+        </li>
+    </ol>
+</nav>
