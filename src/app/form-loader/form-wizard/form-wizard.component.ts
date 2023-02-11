@@ -1,35 +1,30 @@
-import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { map, of } from 'rxjs';
-import { TemplateModel } from 'src/app/interfaces/template';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TemplateModel } from 'src/app/shared/interfaces/template';
+import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
 @Component({
   selector: 'mds-form-wizard',
   templateUrl: './form-wizard.component.html',
   styleUrls: ['./form-wizard.component.scss']
 })
-export class FormWizardComponent {
-  templateSelection = [{
+export class FormWizardComponent implements OnInit {
+  templateSelection: TemplateModel[] = [{
     name: "Complete Blood Count",
     id: "12345",
     values: {
-      column: ["ANALYTE", "RESULT", "SI UNIT", "REF RANGE", "RESULT", "CONV UNIT", "REF RANGE", "FLAG"],
-      rows: []
-    }
-  },
-  {
-    name: "Template 2",
-    id: "123245",
-    values: {
-      column: ["ANALYTE", "RESULT", "SI UNIT", "REF RANGE", "RESULT", "CONV UNIT", "REF RANGE", "FLAG"],
-      rows: []
-    }
-  },
-  {
-    name: "Template 3",
-    id: "123435",
-    values: {
-      column: ["ANALYTE", "RESULT", "SI UNIT", "REF RANGE", "RESULT", "CONV UNIT", "REF RANGE", "FLAG"],
+      column: [{
+        name: "ANALYTE",
+        type: "TEXT",
+        defaults: "HELLO"
+      },
+      {
+        name: "RESULT",
+        type: "DROPDOWN",
+        defaults: "Hello, 1234, 5678"
+      },
+    ],
       rows: []
     }
   }]
@@ -38,9 +33,19 @@ export class FormWizardComponent {
     name: "Complete Blood Count",
     id: "12345",
     values: {
-      column: ["ANALYTE", "RESULT", "SI UNIT", "REF RANGE", "RESULT", "CONV UNIT", "REF RANGE", "FLAG", "ANALYTE", "RESULT", "SI UNIT", "REF RANGE", "RESULT", "CONV UNIT", "REF RANGE", "FLAG"],
+      column: [{
+        name: "ANALYTE",
+        type: "TEXT",
+        defaults: "HELLO"
+      },
+      {
+        name: "RESULT",
+        type: "DROPDOWN",
+        defaults: "Hello, 1234, 5678"
+      },
+    ],
       rows: [
-        ["White Blood Cell", "10", "20", "30", "40", "50", "60", "70"]
+        ["HELLO", "Hello"]
       ]
     }
   }];
@@ -62,6 +67,10 @@ export class FormWizardComponent {
     verifiedBy: new FormControl(),
     pathologist: new FormControl()
   });
+
+  ngOnInit() {
+    this.newTemplate();
+  }
 
   editRootColumn(index: number) {
 
@@ -96,17 +105,24 @@ export class FormWizardComponent {
   }
 
   newTemplate() {
-    const newTemplate = {
-      name: "",
-      id: "",
-      values: {
-        column: ["Col1"],
-        rows: []
-      }
-    }
 
-    this.templateFields.push(newTemplate);
-    this.addRow(this.templateFields.length - 1);
+    const modalRef = this.modalService.open(TemplateModalComponent, {
+      size: 'xl',
+      backdrop: 'static'
+    });
+		modalRef.componentInstance.name = 'World';
+    
+    // const newTemplate = {
+    //   name: "",
+    //   id: "",
+    //   values: {
+    //     column: ["Col1"],
+    //     rows: []
+    //   }
+    // }
+
+    // this.templateFields.push(newTemplate);
+    // this.addRow(this.templateFields.length - 1);
   }
 
   addRow(templateIndex: number) {
@@ -131,4 +147,6 @@ export class FormWizardComponent {
   removeFromTemplateField(templateIndex: number) {
     this.templateFields.splice(templateIndex, 1);
   }
+
+  constructor(private modalService: NgbModal) {}
 }

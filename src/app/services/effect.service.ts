@@ -1,12 +1,12 @@
 import { filter, map, Observable, Subject, tap } from 'rxjs';
-import { FormModel } from 'src/app/interfaces/form';
+import { FormModel } from 'src/app/shared/interfaces/form';
 
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, ActivationStart, NavigationEnd, Router } from '@angular/router';
 
-import { Action, AppState, BreadcrumbItem, DefaultRoutes } from '../interfaces/state';
-import { TemplateModel } from '../interfaces/template';
+import { Action, AppState, BreadcrumbItem, DefaultRoutes } from '../shared/interfaces/state';
 import { StateService } from './state.service';
+import { TemplateModel } from '../shared/interfaces/template';
 
 @Injectable({
   providedIn: 'root'

@@ -1,12 +1,21 @@
-.edit-btn {
-    svg {
-        width: 15px;
-        height: 15px;
-    }
-}
-
 table {
     input {
         min-width: 150px;
     }
+}
+
+.field-container {
+    background-color: #fff;
+    border: none !important;
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+}
+
+.card {
+    border: none;
+}
+
+.empty-state {
+    min-height: 300px;
+    opacity: 0.2;
 }

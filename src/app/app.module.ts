@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbDropdownModule, NgbModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbDatepickerModule, NgbModal, NgbModalModule, NgbAlertModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
@@ -12,6 +12,8 @@ import { LoginComponent } from './login/login.component';
 import { BreadcrumbsComponent } from './navigator/breadcrumbs/breadcrumbs.component';
 import { NavigatorComponent } from './navigator/navigator.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
+import { TemplateModalComponent } from './form-loader/template-modal/template-modal.component';
+import { IconsComponent } from './shared/components/icons/icons.component';
 
 const appRoutes: Routes = [{
   path: "login",
@@ -67,7 +69,9 @@ const appRoutes: Routes = [{
     FormLoaderComponent,
     NavigatorComponent,
     BreadcrumbsComponent,
-    FormWizardComponent
+    FormWizardComponent,
+    TemplateModalComponent,
+    IconsComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +79,10 @@ const appRoutes: Routes = [{
     NgbDropdownModule,
     NgbDatepickerModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModalModule,
+    NgbAlertModule,
+    NgbPopoverModule
   ],
   providers: [],
   bootstrap: [AppComponent]

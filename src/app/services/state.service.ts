@@ -1,10 +1,8 @@
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { FormModel } from '../interfaces/form';
-import { Action, AppState } from '../interfaces/state';
-import { TemplateModel } from '../interfaces/template';
+import { Action, AppState } from '../shared/interfaces/state';
 
 @Injectable({
   providedIn: 'root'

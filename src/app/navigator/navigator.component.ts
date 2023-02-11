@@ -3,7 +3,7 @@ import { BehaviorSubject, filter } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { DefaultRoutes } from '../interfaces/state';
+import { DefaultRoutes } from '../shared/interfaces/state';
 import { EffectService } from '../services/effect.service';
 
 @Component({

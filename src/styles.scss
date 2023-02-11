@@ -21,7 +21,28 @@ $body-bg: #ffffff;
     cursor: pointer;
 }
 
+body {
+    background: rgb(220,242,255);
+    background: linear-gradient(0deg, rgba(220,242,255,1) 0%, rgba(255,255,255,1) 100%);
+}
+
 * {
     font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    // font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.circular-btn {
+    border-radius: 50px !important;
+    width: 30px;
+    height: 30px;
+    border: none;
+    padding: 0px !important;
+    svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    &:hover {
+        color: #fff !important;
+    }
 }

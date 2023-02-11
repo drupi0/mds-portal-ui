@@ -1,4 +1,4 @@
-<div class="container border rounded">
+<div class="field-container px-5 border rounded">
     <!-- <div class="page-title mt-3 mb-3">
         <h4>New Form</h4>
     </div> -->
@@ -19,8 +19,8 @@
 
         <div class="mb-3 col-3">
             <label for="patientsName" class="form-label">Date of Birth</label>
-            <input type="text" class="form-control" ngbDatepicker
-                #d="ngbDatepicker" readonly [autoClose]="true" formControlName="dateOfBirth">
+            <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" readonly [autoClose]="true"
+                formControlName="dateOfBirth">
         </div>
     </div>
     <div class="row" [formGroup]="defaultForm">
@@ -38,7 +38,7 @@
             <input type="text" class="form-control" formControlName="status">
         </div>
     </div>
-    <div class="row"  [formGroup]="defaultForm">
+    <div class="row" [formGroup]="defaultForm">
         <div class="mb-3 col-3">
             <label for="patientsName" class="form-label">Specimen</label>
             <input type="text" class="form-control" formControlName="specimen">
@@ -57,7 +57,7 @@
         </div>
     </div>
 </div>
-<div class="container border rounded mt-3">
+<div class="field-container px-5 border rounded mt-3">
     <div class="d-flex justify-content-end">
         <div class="mt-3 mb-3">
             <div ngbDropdown class="d-inline-block">
@@ -65,8 +65,9 @@
                     Load Template
                 </button>
                 <div ngbDropdownMenu>
-                    <button ngbDropdownItem *ngFor="let templateItem of templateSelection; let templateIndex = index" 
-                        (click)="addToTemplateField(templateIndex)">{{ templateItem.name.concat(" " + templateItem.id )}} </button>
+                    <button ngbDropdownItem *ngFor="let templateItem of templateSelection; let templateIndex = index"
+                        (click)="addToTemplateField(templateIndex)">{{ templateItem.name.concat(" " + templateItem.id
+                        )}} </button>
                 </div>
             </div>
             <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="newTemplate()">
@@ -75,23 +76,24 @@
         </div>
     </div>
     <!-- template containers -->
-    <div class="container pb-3">
-        <ng-container [ngTemplateOutlet]="fieldInput"
-            *ngFor="let template of templateFields; let templateIndex = index;"
-            [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+    <div class="card pb-3">
+        <ng-container *ngIf="templateFields.length !== 0 else emptyState;">
+            <ng-container [ngTemplateOutlet]="fieldInput"
+                *ngFor="let template of templateFields; let templateIndex = index;"
+                [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+        </ng-container>
     </div>
 </div>
 
-<div class="container border rounded mt-3" [formGroup]="defaultForm">
+<div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
     <div class="row mt-3">
         <div class="mb-3 col">
             <label for="patientsName" class="form-label">Comment</label>
-            <textarea type="text" class="form-control" formControlName="comment"
-                rows="5"></textarea>
+            <textarea type="text" class="form-control" formControlName="comment" rows="5"></textarea>
         </div>
     </div>
 </div>
-<div class="container border rounded mt-3" [formGroup]="defaultForm">
+<div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
     <div class="row mt-3">
         <div class="mb-3 col">
             <label for="patientsName" class="form-label">Performed by</label>
@@ -107,7 +109,7 @@
         </div>
     </div>
 </div>
-<div class="container mt-3 d-flex justify-content-end p-4">
+<div class="mt-3 d-flex justify-content-end p-4">
     <button class="btn btn-primary me-2" (click)="saveForm()">Save Form</button>
     <button class="btn btn-danger">Clear</button>
 </div>
@@ -115,15 +117,22 @@
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
     <div class="border rounded mb-2">
         <div class="py-3 px-3 border-bottom d-flex">
-            <div class="flex-fill d-flex">
-                <input type="text" class="fw-bold text-primary form-control" [(ngModel)]="reportTemplate.name" readonly>
+            <div class="flex-fill d-flex align-items-center">
+                <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
             </div>
-            <button type="button" class="btn btn-sm btn-primary ms-2"
-                (click)="saveTemplate(false, reportTemplateIndex, tableData)">
-                Save as Default
+            <button class="btn btn-outline-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
+                ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave">
+                <mds-icons icon="edit"></mds-icons>
             </button>
-            <button type="button" class="btn btn-sm btn-primary ms-2" (click)="removeFromTemplateField(reportTemplateIndex)">
-                Remove from List
+            <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
+                ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
+                triggers="mouseenter:mouseleave">
+                <mds-icons icon="save"></mds-icons>
+            </button>
+            <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
+                ngbPopover="Removes this template from the current form" [openDelay]="500"
+                triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
+                <mds-icons icon="trash"></mds-icons>
             </button>
         </div>
         <div class="overflow-auto">
@@ -131,27 +140,45 @@
                 <thead>
                     <tr>
                         <th>
-                            <div class="d-flex justify-content-start">
-                                <button class="btn btn-success btn-sm rounded me-2 text-nowrap">Edit</button>
-                            </div>
                         </th>
-                        <th scope="col" class="text-center"
+                        <th scope="col" class="fw-normal text-primary text-center"
                             *ngFor="let col of reportTemplate.values.column; let index = index"
-                            [ngClass]="{ 'col-3': index === 0 }">{{ col }}
+                            [ngClass]="{ 'col-3': index === 0 }">{{ col.name }}
                         </th>
                     </tr>
                 </thead>
                 <tbody #tableData>
                     <tr *ngFor="let row of reportTemplate.values.rows; let rowIndex = index;">
                         <td>
-                            <div class=" d-flex justify-content-start">
-                                <button class="btn btn-success btn-sm rounded me-2"
-                                    (click)="addRow(reportTemplateIndex)">+</button>
-                                <button class="btn btn-danger btn-sm rounded"
-                                    (click)="removeRow(reportTemplateIndex, rowIndex)">-</button>
+                            <div class="d-flex">
+                                <button class="btn btn-outline-success circular-btn"
+                                (click)="addRow(reportTemplateIndex)">
+                                <mds-icons icon="plus"></mds-icons>
+                            </button>
+                            <button class="btn btn-outline-danger circular-btn"
+                                (click)="removeRow(reportTemplateIndex, rowIndex)">
+                                <mds-icons icon="minus"></mds-icons>
+                            </button>
                             </div>
+                          
                         </td>
                         <td *ngFor="let values of row; let colIndex = index;">
+                            
+                            <!-- <ng-container [ngSwitch]="template.values.column[index].type">
+                                <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value">
+                                <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value">
+                                <div *ngSwitchCase="'DATETIME'" class="d-flex">
+                                    <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelect(index, $event)" readonly/>
+                                    <button class="btn btn-sm btn-primary ms-2" (click)="d.toggle()">
+                                        Select
+                                    </button>
+                                </div>
+                                <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Item 1, Item 2"
+                                ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"
+                                triggers="mouseenter:mouseleave"
+                                >
+                                <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
+                            </ng-container> -->
                             <input type="text" [value]="values" class="form-control" id="patientsName"
                                 aria-describedby="emailHelp">
                         </td>
@@ -159,13 +186,22 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
 </ng-template>
 
-<ng-template #editIcon>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2">
-        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-    </svg>
+<ng-template #emptyState>
+    <ngb-alert type="warning" [dismissible]="false">
+        <div class="d-flex flex-column justify-content-center align-items-center empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-alert-triangle">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span class="mt-2">Empty Report</span>
+        </div>
+    </ngb-alert>
 </ng-template>
