@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
@@ -71,7 +72,10 @@ const appRoutes: Routes = [{
   imports: [
     BrowserModule,
     NgbModule, RouterModule.forRoot(appRoutes),
-    NgbDropdownModule
+    NgbDropdownModule,
+    NgbDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
