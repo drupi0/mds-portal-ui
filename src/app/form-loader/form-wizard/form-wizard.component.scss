@@ -19,3 +19,54 @@ table {
     min-height: 300px;
     opacity: 0.2;
 }
+
+.overflow-x-auto {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.menu{
+    .d-flex {
+        width: 60px !important;
+    }
+    width: 10% !important;
+}
+
+.dp-input {
+    color: #212529;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    text-align: left;
+    padding: 0.375rem 0.75rem;
+    &::after {
+        content: none !important;
+    }
+    min-width: 20ch;
+}
+
+.dropdown-item {
+    min-width: 200px;
+}
+
+tbody {
+    td:not(.menu) {
+        text-align: center;
+        width: 20%;
+        input {
+            margin: 0 auto;
+            width: 200px !important;
+        }
+
+        .dp-toggle{
+            color: #212529;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            text-align: left;
+            padding: 0.375rem 0.75rem;
+            width: 200px;
+            &::after {
+                content: none !important;
+            }
+        }
+    }
+}

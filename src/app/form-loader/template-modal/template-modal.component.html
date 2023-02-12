@@ -1,13 +1,13 @@
 <div class="modal-header">
     <h4 class="modal-title fw-bold">{{ isNew ? 'Create New Template' : 'Edit Template' }}</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
 </div>
 <div class="modal-body">
     <div class="mb-3 col">
         <label class="form-label">Template Name</label>
         <input type="text" class="form-control" [(ngModel)]="template.name">
     </div>
-    <div class="d-flex align-items-center mb-2" *ngFor="let col of template.values.column; let index = index">
+    <div class="d-flex align-items-center mb-2" *ngFor="let col of template.group; let index = index">
         <div class="d-flex me-2">
             <button class="btn btn-outline-success circular-btn" (click)="addNewColumn()">
                 <mds-icons icon="plus"></mds-icons>
@@ -16,11 +16,11 @@
                 <mds-icons icon="minus"></mds-icons>
             </button>
         </div>
-        <input type="text" class="form-control me-2" placeholder="Name" [(ngModel)]="template.values.column[index].name">
+        <input type="text" class="form-control me-2" placeholder="Name" [(ngModel)]="template.group[index].name">
         <div ngbDropdown class="d-inline-block me-2 col-3">
-            <input [(ngModel)]="template.values.column[index].type" hidden>
+            <input [(ngModel)]="template.group[index].type" hidden>
             <button type="button" class="btn btn-outline-primary w-100" ngbDropdownToggle>
-                {{template.values.column[index].type || 'Select Type' }}
+                {{template.group[index].type || 'Select Type' }}
             </button>
             <div ngbDropdownMenu>
                 <ng-container *ngFor="let item of selectionList | keyvalue">
@@ -31,26 +31,46 @@
             </div>
         </div>
         <div class="col-4">
-            <ng-container [ngSwitch]="template.values.column[index].type">
-                <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value">
-                <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value">
+            <ng-container [ngSwitch]="template.group[index].type">
+                <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value"
+                    [(ngModel)]="template.group[index].defaults">
+                <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
+                    [(ngModel)]="template.group[index].defaults">
                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                    <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelect(index, $event)" readonly/>
-                    <button class="btn btn-sm btn-primary ms-2" (click)="d.toggle()">
-                        Select
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="d.toggle()">
+                        <div class="d-flex align-items-center">
+                            <mds-icons icon="calendar" [width]="15" [height]="15"></mds-icons>
+                            <span class="ms-2">Select</span>
+                        </div>
                     </button>
+                    <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker"
+                        (dateSelect)="onDateSelect(index, $event)" readonly />
                 </div>
                 <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Item 1, Item 2"
-                ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"
-                triggers="mouseenter:mouseleave"
-                >
+                    ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"
+                    triggers="mouseenter:mouseleave" [(ngModel)]="template.group[index].defaults">
                 <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
             </ng-container>
         </div>
-       
     </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="activeModal.close('Close click')">Close</button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saveDisabled">Save</button>
+<div class="modal-footer d-flex">
+    <div class="flex-fill">
+        <button type="button" class="btn btn-outline-danger" (click)="delete()" *ngIf="!isNew">
+            <div class="d-flex">
+                <mds-icons icon="trash" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Delete</span>
+            </div>
+
+        </button>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saveDisabled">
+            <div class="d-flex">
+                <mds-icons icon="save" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Save</span>
+            </div>
+        </button>
+    </div>
+
 </div>

@@ -20,38 +20,54 @@ export class TemplateModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) { }
 
   changeType(key: string, index: number) {
-    this.template.values.column[index].type = key;
+    this.template.group[index].type = key as FieldType;
   }
 
   onDateSelect(index: number, date: NgbDate) {
-    this.template.values.column[index].defaults = `${date.year}-${
+    this.template.group[index].defaults = `${date.year}-${
       date.month.toLocaleString('en-US', { minimumIntegerDigits: 2 })}-${
       date.day.toLocaleString('en-US', { minimumIntegerDigits: 2 })}`
   }
 
   addNewColumn() {
-    this.template.values.column.push({
-      name: `Col ${this.template.values.column.length + 1}`,
+    this.template.group.push({
+      name: `Column ${this.template.group.length + 1}`,
       type: FieldType.DEFAULT,
-      defaults: ""
+      defaults: "",
+      values: []
     });
   }
 
   removeColumn(index: number) {
-    if (this.template.values.column.length === 1) {
+    if (this.template.group.length === 1) {
       return;
     }
 
-    this.template.values.column.splice(index, 1);
+    this.template.group.splice(index, 1);
   }
 
   save() {
-    this.activeModal.close(this.template);
+    this.activeModal.close({
+      data: this.template,
+      isDeleted: false
+    });
+  }
+
+  dismiss() {
+    this.activeModal.dismiss();
+  }
+
+  delete() {
+    this.activeModal.close({
+      data: this.template,
+      isDeleted: true
+    });
   }
 
   get saveDisabled() {
-      return [this.template.name.trim().length === 0, this.template.values.column.length === 0, 
-        this.template.values.column.some(col => col.type === FieldType.DEFAULT)].some(check => check);
+      return [this.template.name.trim().length === 0, this.template.group.length === 0, 
+        this.template.group.some(col => col.type === FieldType.DEFAULT),
+        this.template.group.some(col => col.type === FieldType.DROPDOWN && !col.defaults)].some(check => check);
   }
 
 
@@ -63,14 +79,20 @@ export class TemplateModalComponent implements OnInit {
       this.template = {
         id: "",
         name: "",
-        values: {
-          column: [{
-            name: "Col 1",
+        group: [
+          {
+            name: "Column 1",
             type: FieldType.DEFAULT,
-            defaults: "test|123|4567"
-          }],
-          rows: []
-        }
+            defaults: "",
+            values: []
+          },
+          {
+            name: "Column 2",
+            type: FieldType.DEFAULT,
+            defaults: "",
+            values: []
+          },
+        ]
       }
     }
   }

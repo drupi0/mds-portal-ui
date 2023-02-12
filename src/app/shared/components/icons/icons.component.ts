@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ViewRef } from '@angular/core';
 
 @Component({
   selector: 'mds-icons',
@@ -7,4 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class IconsComponent {
   @Input() icon: string = ""
+  @Input() width: number = 24;
+  @Input() height: number = 24;
 }

@@ -12,4 +12,4 @@ export enum FieldType {
     NUMBER = "NUMBER",
     DATETIME = "DATETIME",
     DROPDOWN = "DROPDOWN"
-  }
+}

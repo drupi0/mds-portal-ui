@@ -16,6 +16,15 @@ $body-bg: #ffffff;
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 
+.btn-danger, .btn-success, .btn-secondary, .btn-outline-secondary, .btn-outline-danger {
+    &:hover {
+        color: #ffffff !important;
+    }
+}
+
+.btn-danger, .btn-success, .btn-secondary {
+    color: #ffffff !important;
+}
 
 .cursor-pointer {
     cursor: pointer;
@@ -23,7 +32,9 @@ $body-bg: #ffffff;
 
 body {
     background: rgb(220,242,255);
-    background: linear-gradient(0deg, rgba(220,242,255,1) 0%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(0deg, rgba(220,242,255,1) 0%, rgba(255,255,255,1) 100%) no-repeat center;
+    background-size: contain;
+    height: 100%;
 }
 
 * {

@@ -7,20 +7,31 @@
             <label for="patientsName" class="form-label">Patient's Name</label>
             <input type="text" class="form-control" formControlName="name">
         </div>
-        <div class="mb-3 col-2">
-            <label for="patientsName" class="form-label">Age</label>
-            <input type="number" class="form-control" formControlName="age">
+        <div class="mb-3 col-2 d-flex flex-column">
+            <label for="patientsName" class="form-label">Gender</label>
+            <div ngbDropdown class="d-inline-block">
+                <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
+                    {{ defaultForm.get('sex')?.value ||  'Select Gender'}}
+                </button>
+                <div ngbDropdownMenu>
+                    <button ngbDropdownItem (click)="defaultForm.get('sex')?.setValue('Male')">Male</button>
+                    <button ngbDropdownItem (click)="defaultForm.get('sex')?.setValue('Female')">Female</button>
+                </div>
+            </div>
+            <input type="text" class="form-control" formControlName="sex" hidden>
         </div>
-        <div class="mb-3 col-2">
-            <label for="patientsName" class="form-label">Sex</label>
-            <input type="text" class="form-control" formControlName="sex">
-        </div>
-
-
         <div class="mb-3 col-3">
             <label for="patientsName" class="form-label">Date of Birth</label>
-            <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" readonly [autoClose]="true"
-                formControlName="dateOfBirth">
+            <input type="text" class="form-control" readonly [autoClose]="true"
+                ngbDatepicker #dob="ngbDatepicker"
+                formControlName="dateOfBirth"
+                [minDate]="{year: 1900, month: 1, day: 1}" 
+                [maxDate]="todayDate"
+                (click)="dob.toggle()">
+        </div>
+        <div class="mb-3 col-2">
+            <label for="patientsName" class="form-label">Age</label>
+            <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
         </div>
     </div>
     <div class="row" [formGroup]="defaultForm">
@@ -49,18 +60,26 @@
         </div>
         <div class="mb-3 col-3">
             <label for="patientsName" class="form-label">Collection Date/Time</label>
-            <input type="text" class="form-control" formControlName="collectionDateTime">
+            <input type="text" class="form-control" formControlName="collectionDateTime"
+                ngbDatepicker #cd="ngbDatepicker"
+                [minDate]="{year: 1900, month: 1, day: 1}" 
+                [maxDate]="todayDate"
+                (click)="cd.toggle()">
         </div>
         <div class="mb-3 col-3">
             <label for="patientsName" class="form-label">Received Date/Time</label>
-            <input type="text" class="form-control" formControlName="receivedDateTime">
+            <input type="text" class="form-control" formControlName="receivedDateTime"
+                ngbDatepicker #rd="ngbDatepicker"
+                [minDate]="{year: 1900, month: 1, day: 1}" 
+                [maxDate]="todayDate"
+                (click)="rd.toggle()">
         </div>
     </div>
 </div>
 <div class="field-container px-5 border rounded mt-3">
     <div class="d-flex justify-content-end">
         <div class="mt-3 mb-3">
-            <div ngbDropdown class="d-inline-block">
+            <div ngbDropdown class="d-inline-block" *ngIf="templateSelection.length">
                 <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
                     Load Template
                 </button>
@@ -111,77 +130,83 @@
 </div>
 <div class="mt-3 d-flex justify-content-end p-4">
     <button class="btn btn-primary me-2" (click)="saveForm()">Save Form</button>
-    <button class="btn btn-danger">Clear</button>
+    <button class="btn btn-danger" (click)="clearForm()">Clear</button>
 </div>
 
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
-    <div class="border rounded mb-2">
-        <div class="py-3 px-3 border-bottom d-flex">
-            <div class="flex-fill d-flex align-items-center">
-                <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
-            </div>
-            <button class="btn btn-outline-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
-                ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave">
-                <mds-icons icon="edit"></mds-icons>
-            </button>
-            <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
-                ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
-                triggers="mouseenter:mouseleave">
-                <mds-icons icon="save"></mds-icons>
-            </button>
-            <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
-                ngbPopover="Removes this template from the current form" [openDelay]="500"
-                triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
-                <mds-icons icon="trash"></mds-icons>
-            </button>
+    <div class="py-3 px-3 d-flex">
+        <div class="flex-fill d-flex align-items-center">
+            <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
         </div>
-        <div class="overflow-auto">
-            <table class="table table-striped">
+        <button class="btn btn-outline-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave" (click)="editTemplate(reportTemplate.id)">
+            <mds-icons icon="edit"></mds-icons>
+        </button>
+        <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
+            triggers="mouseenter:mouseleave"
+            (click)="saveTemplate(reportTemplateIndex, tableData)">
+            <mds-icons icon="save"></mds-icons>
+        </button>
+        <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            ngbPopover="Removes this template from the current form" [openDelay]="500"
+            triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
+            <mds-icons icon="trash"></mds-icons>
+        </button>
+    </div>
+    <div class="border rounded mb-2 overflow-x-auto" style="overflow-y: hidden;">
+        <div>
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>
                         </th>
-                        <th scope="col" class="fw-normal text-primary text-center"
-                            *ngFor="let col of reportTemplate.values.column; let index = index"
-                            [ngClass]="{ 'col-3': index === 0 }">{{ col.name }}
-                        </th>
+                        <ng-container *ngFor="let group of reportTemplate.group; let index = index;">
+                            <th scope="col" class="flex-fill fw-normal text-primary text-center"
+                                [ngClass]="{ 'col-3': index === 0 }">{{ group.name }}
+                            </th>
+                        </ng-container>
+                        <th class="w-100"></th>
                     </tr>
                 </thead>
                 <tbody #tableData>
-                    <tr *ngFor="let row of reportTemplate.values.rows; let rowIndex = index;">
-                        <td>
+                    <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index">
+                        <td class="menu">
                             <div class="d-flex">
                                 <button class="btn btn-outline-success circular-btn"
-                                (click)="addRow(reportTemplateIndex)">
-                                <mds-icons icon="plus"></mds-icons>
-                            </button>
-                            <button class="btn btn-outline-danger circular-btn"
-                                (click)="removeRow(reportTemplateIndex, rowIndex)">
-                                <mds-icons icon="minus"></mds-icons>
-                            </button>
+                                    (click)="addRow(reportTemplateIndex)">
+                                    <mds-icons icon="plus"></mds-icons>
+                                </button>
+                                <button class="btn btn-outline-danger circular-btn"
+                                    (click)="removeRow(reportTemplateIndex, rowIndex)">
+                                    <mds-icons icon="minus"></mds-icons>
+                                </button>
                             </div>
-                          
                         </td>
-                        <td *ngFor="let values of row; let colIndex = index;">
-                            
-                            <!-- <ng-container [ngSwitch]="template.values.column[index].type">
-                                <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value">
-                                <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value">
+                        <td *ngFor="let group of reportTemplate.group; let colIndex = index">
+                            <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
+                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
+                                    placeholder="Input a Number">
+                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
+                                    placeholder="Input a Value">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                                    <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelect(index, $event)" readonly/>
-                                    <button class="btn btn-sm btn-primary ms-2" (click)="d.toggle()">
-                                        Select
-                                    </button>
+                                    <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker" placeholder="Select Date"
+                                        [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults" (click)="d.toggle()" />
                                 </div>
-                                <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Item 1, Item 2"
-                                ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"
-                                triggers="mouseenter:mouseleave"
-                                >
-                                <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
-                            </ng-container> -->
-                            <input type="text" [value]="values" class="form-control" id="patientsName"
-                                aria-describedby="emailHelp">
+                                <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
+                                    <input type="text" class="tbl-data" [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
+                                    <button type="button" class="btn btn-block btn-outline-primary dp-toggle text-truncate" ngbDropdownToggle>
+                                        {{ reportTemplate.group[colIndex].values[rowIndex] }}
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <button ngbDropdownItem (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, dropdownItems.trim())"
+                                            *ngFor="let dropdownItems of reportTemplate.group[colIndex].defaults.split(',');">{{
+                                            dropdownItems.trim() }}</button>
+                                    </div>
+                                </div>
+                            </ng-container>
                         </td>
+                        <td class="w-100"></td>
                     </tr>
                 </tbody>
             </table>
