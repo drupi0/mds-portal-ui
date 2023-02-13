@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EffectService } from './effect.service';
+import { BreadcrumbEffectService } from './breadcrumb.effect.service';
 
 describe('EffectService', () => {
-  let service: EffectService;
+  let service: BreadcrumbEffectService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EffectService);
+    service = TestBed.inject(BreadcrumbEffectService);
   });
 
   it('should be created', () => {

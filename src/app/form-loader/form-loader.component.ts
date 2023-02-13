@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.service';
 
-import { EffectService } from '../services/effect.service';
 
 @Component({
   selector: 'mds-form-loader',
@@ -8,7 +8,7 @@ import { EffectService } from '../services/effect.service';
   styleUrls: ['./form-loader.component.scss']
 })
 export class FormLoaderComponent {
-  constructor(public effect: EffectService) { }
+  constructor(public effect: BreadcrumbEffectService) { }
 
   onSort(event: any) {
 

@@ -1,6 +1,7 @@
-import { EffectService } from 'src/app/services/effect.service';
+
 
 import { Component } from '@angular/core';
+import { BreadcrumbEffectService } from 'src/app/services/effects/breadcrumb.effect.service';
 
 @Component({
   selector: 'mds-breadcrumbs',
@@ -8,5 +9,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./breadcrumbs.component.scss']
 })
 export class BreadcrumbsComponent {
-  constructor(public effect: EffectService) { }
+  constructor(public effect: BreadcrumbEffectService) { }
 }

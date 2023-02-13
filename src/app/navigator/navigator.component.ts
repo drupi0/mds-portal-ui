@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { DefaultRoutes } from '../shared/interfaces/state';
-import { EffectService } from '../services/effect.service';
+import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.service';
 
 @Component({
   selector: 'mds-navigator',
@@ -18,7 +18,7 @@ export class NavigatorComponent implements OnInit {
     this.effect.initBreadcrumbs();
   }
 
-  constructor(public router: Router, public effect: EffectService) {
+  constructor(public router: Router, public effect: BreadcrumbEffectService) {
 
   }
 }

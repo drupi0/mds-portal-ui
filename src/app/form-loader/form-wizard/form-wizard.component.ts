@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
-import { TemplateModel } from 'src/app/shared/interfaces/template';
+import { DoctorModel, PatientModel, PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
 @Component({
@@ -11,66 +12,6 @@ import { TemplateModalComponent } from '../template-modal/template-modal.compone
   styleUrls: ['./form-wizard.component.scss']
 })
 export class FormWizardComponent implements OnInit {
-  templateSelection: TemplateModel[] = [{
-    name: "Complete Blood Count",
-    id: "12345",
-    group: [{
-      name: "Analyte",
-      type: FieldType.TEXT,
-      defaults: "",
-      values: []
-    },
-    {
-      name: "Flag",
-      type: FieldType.DROPDOWN,
-      defaults: "Select Item,L,H",
-      values: []
-    },
-    {
-      name: "REF RANGE",
-      type: FieldType.NUMBER,
-      defaults: "0",
-      values: []
-    },
-    {
-      name: "DOB",
-      type: FieldType.DATETIME,
-      defaults: "2020-10-10",
-      values: []
-    }
-    ]
-  }]
-
-  templateFields: TemplateModel[] = [{
-    name: "Complete Blood Count",
-    id: "12345",
-    group: [{
-      name: "Analyte",
-      type: FieldType.TEXT,
-      defaults: "Col 1",
-      values: ["White Blood Cell", "Reb Blood Cell", "Hemoglobin"]
-    },
-    {
-      name: "Flag",
-      type: FieldType.DROPDOWN,
-      defaults: "Select Item, L , H",
-      values: ["L", "H", "L"]
-    },
-    {
-      name: "REF RANGE",
-      type: FieldType.NUMBER,
-      defaults: "10",
-      values: ["0", "10", "10"]
-    },
-    {
-      name: "DOB",
-      type: FieldType.DATETIME,
-      defaults: "2020-10-10",
-      values: ["", "", ""]
-    }
-    ],
-  }];
-
   defaultForm = new FormGroup({
     name: new FormControl(),
     age: new FormControl(),
@@ -89,39 +30,32 @@ export class FormWizardComponent implements OnInit {
     pathologist: new FormControl()
   });
 
+  templateOptions: TemplateModel[] = [];
+  templateList: TemplateModel[] = [];
+
+
   ngOnInit() {
+    this.effect.getTemplateOptions().subscribe(templates => {
+      this.templateOptions = templates;
+    });
+
+    const formId = "1234";
+    // const formId = null;
+
+    if(formId) {
+      this.effect.getFormTemplates(formId).subscribe(templates => {
+        this.templateList = templates;
+      });
+    }
+   
   }
 
-  editTemplate(templateId: string) {
-    const modalRef = this.modalService.open(TemplateModalComponent, {
-      size: 'xl',
-      backdrop: 'static'
-    });
-
-    let selectedTemplate =  this.templateSelection.find(template => template.id === templateId);
-    modalRef.componentInstance.template = selectedTemplate 
-
-    modalRef.closed.subscribe(({data, isDeleted}: { data: TemplateModel, isDeleted: boolean}) => {
-
-      console.log(isDeleted);
-
-      if(isDeleted) {
-        this.templateFields = this.templateFields.filter(template => template.id !== templateId);
-        this.templateSelection = this.templateSelection.filter(template => template.id !== templateId);
-
-        return;
-      }
-
-      selectedTemplate = data;
-      this.templateFields = this.templateFields.filter(template => template.id !== templateId);
-
-      this.addToTemplateField(this.templateSelection.length - 1);
-
-    });
+  editTemplate(template: TemplateModel) {
+    this.effect.updateTemplate(template);
   }
 
   saveTemplate(templateIndex: number, template: HTMLTableSectionElement) {
-    let formTemplate: TemplateModel = this.templateFields[templateIndex];
+    let formTemplate: TemplateModel = this.templateList[templateIndex];
 
     formTemplate.group.forEach(group => group.values = []);
 
@@ -132,30 +66,53 @@ export class FormWizardComponent implements OnInit {
       });
     });
 
-    const indexNo = this.templateSelection.findIndex(template => template.id === formTemplate.id);
+    const indexNo = this.templateOptions.findIndex(template => template.id === formTemplate.id);
 
     if(indexNo !== -1) {
-      this.templateSelection.splice(indexNo, 1);
-      this.templateSelection.push(formTemplate);
+      this.templateOptions.splice(indexNo, 1);
+      this.templateOptions.push(formTemplate);
     }
   }
 
   dropdownClick(templateIndex: number, colIndex: number, rowIndex: number, value: string) {
-    const newValues = [...this.templateFields[templateIndex].group[colIndex].values];
+    const newValues = [...this.templateList[templateIndex].group[colIndex].values];
 
     newValues.splice(rowIndex, 1, value);
 
-    this.templateFields[templateIndex].group[colIndex].values = newValues;
+    this.templateList[templateIndex].group[colIndex].values = newValues;
   }
 
   saveForm() {
-    console.log(this.defaultForm.getRawValue());
-    console.log(this.templateFields);
+    const formValue = this.defaultForm.getRawValue();
+    const patientModel: PatientModel = {
+      name: formValue.name,
+      dateOfBirth: formValue.dateOfBirth,
+      sex: formValue.sex,
+    };
+
+    const patientRecord: PatientRecordModel = {
+      date: new Date().toDateString(),
+      patient: patientModel,
+      pathologist: {} as DoctorModel,
+      performedBy: {} as DoctorModel,
+      verifiedBy: {} as DoctorModel,
+      specNo: formValue.specNo,
+      orderingDoctor: formValue.orderingDr,
+      status: formValue.status,
+      specimen: formValue.specimen,
+      ordered: formValue.ordered,
+      collectionDateTime: formValue.collectionDateTime,
+      receivedDateTime: formValue.receivedDateTime,
+      results: this.templateList,
+      comments: formValue.comment
+    }
+
+    this.effect.saveForm(patientRecord);
   }
 
   clearForm() {
     this.defaultForm.reset();
-    this.templateFields = [];
+    this.templateList = [];
   }
 
   printForm() {
@@ -169,24 +126,12 @@ export class FormWizardComponent implements OnInit {
     });
 
     modalRef.closed.subscribe(({data}: { data: TemplateModel}) => {
-      this.templateSelection.push(data);
-    });
-  }
-
-  addRow(templateIndex: number) {
-    this.templateFields[templateIndex].group.forEach((group) => {
-      switch (group.type) {
-        case FieldType.DROPDOWN:
-          group.values.push(group.defaults.split(",")[0]);
-          break;
-        default:
-          group.values.push(group.defaults);
-      }
+      this.templateOptions.push(data);
     });
   }
 
   removeRow(templateIndex: number, rowIndex: number) {
-    this.templateFields[templateIndex].group.forEach((group) => {
+    this.templateList[templateIndex].group.forEach((group) => {
       if (group.values.length === 1) {
         return;
       }
@@ -195,17 +140,16 @@ export class FormWizardComponent implements OnInit {
     });
   }
 
-  addToTemplateField(templateIndex: number) {
-    const newTemplate: TemplateModel = JSON.parse(JSON.stringify(this.templateSelection[templateIndex]));
-    this.templateFields.push(newTemplate);
+  addToTemplateField(template: TemplateModel) {
+    this.effect.addToTemplateField(template);
+  }
 
-    if(!newTemplate.group[0].values.length) {
-      this.addRow(this.templateFields.length - 1);
-    }
+  addRow(templateIndex: number) {
+    this.effect.addRowByIndex(templateIndex);
   }
 
   removeFromTemplateField(templateIndex: number) {
-    this.templateFields.splice(templateIndex, 1);
+    this.templateList.splice(templateIndex, 1);
   }
 
   get todayDate() {
@@ -218,11 +162,8 @@ export class FormWizardComponent implements OnInit {
     }
 
     const { year, month, day } = this.defaultForm.get('dateOfBirth')?.value;
-
     let age = this.todayDate.year - year
-
     const monthDiff = this.todayDate.month - month;
-
     if(monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < day)) {
       age--;
     }
@@ -230,5 +171,5 @@ export class FormWizardComponent implements OnInit {
     return `${age}`;
   }
 
-  constructor(private modalService: NgbModal, private calendar: NgbCalendar) { }
+  constructor(private modalService: NgbModal, private calendar: NgbCalendar, private effect: FormwizardEffectService) { }
 }
