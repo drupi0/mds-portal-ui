@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute } from '@angular/router';
+import { NgbCalendar, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { map } from 'rxjs';
 import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
-import { DoctorModel, PatientModel, PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
+import { StaffModel, PatientModel, PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
 @Component({
@@ -39,15 +41,17 @@ export class FormWizardComponent implements OnInit {
       this.templateOptions = templates;
     });
 
-    const formId = "1234";
-    // const formId = null;
+    this.route.params.subscribe(param => {
+      const { formId } = param;
 
-    if(formId) {
-      this.effect.getFormTemplates(formId).subscribe(templates => {
-        this.templateList = templates;
-      });
-    }
-   
+      if (formId) {
+        this.effect.getFormTemplates(formId).subscribe(templates => {
+          if(templates) {
+            this.templateList = templates;
+          }
+        });
+      }
+    });
   }
 
   editTemplate(template: TemplateModel) {
@@ -68,7 +72,7 @@ export class FormWizardComponent implements OnInit {
 
     const indexNo = this.templateOptions.findIndex(template => template.id === formTemplate.id);
 
-    if(indexNo !== -1) {
+    if (indexNo !== -1) {
       this.templateOptions.splice(indexNo, 1);
       this.templateOptions.push(formTemplate);
     }
@@ -93,9 +97,9 @@ export class FormWizardComponent implements OnInit {
     const patientRecord: PatientRecordModel = {
       date: new Date().toDateString(),
       patient: patientModel,
-      pathologist: {} as DoctorModel,
-      performedBy: {} as DoctorModel,
-      verifiedBy: {} as DoctorModel,
+      pathologist: {} as StaffModel,
+      performedBy: {} as StaffModel,
+      verifiedBy: {} as StaffModel,
       specNo: formValue.specNo,
       orderingDoctor: formValue.orderingDr,
       status: formValue.status,
@@ -125,7 +129,7 @@ export class FormWizardComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.closed.subscribe(({data}: { data: TemplateModel}) => {
+    modalRef.closed.subscribe(({ data }: { data: TemplateModel }) => {
       this.templateOptions.push(data);
     });
   }
@@ -152,24 +156,61 @@ export class FormWizardComponent implements OnInit {
     this.templateList.splice(templateIndex, 1);
   }
 
+  showStaffModal(control: FormControl) {
+    this.effect.showStaffModal().subscribe(data => {
+      if (data) {
+        control.setValue(data.name);
+      }
+    })
+  }
+
+  assignPatient(patient: PatientModel) {
+    this.defaultForm.controls.name.setValue(patient.name);
+
+    const birthDate = patient.dateOfBirth.split("-");
+
+    if (birthDate.length) {
+      const dateStruct: NgbDateStruct = {
+        year: parseInt(birthDate[0]),
+        month: parseInt(birthDate[1]),
+        day: parseInt(birthDate[2])
+      }
+
+      this.defaultForm.controls.dateOfBirth.setValue(dateStruct);
+      this.defaultForm.controls.age.setValue(this.calcAge);
+    }
+
+
+    this.defaultForm.controls.sex.setValue(patient.sex);
+  }
+
+  get patientList() {
+    return this.effect.patientList.pipe(map(patientList => {
+      const patientName = this.defaultForm.controls.name.value;
+
+      return !patientName ? [] :
+        patientList.filter(patient => patient.name.trim().toLowerCase().includes(patientName));
+    }))
+  }
+
   get todayDate() {
     return this.calendar.getToday();
   }
 
   get calcAge() {
-    if(!this.defaultForm.get('dateOfBirth')?.value) {
+    if (!this.defaultForm.get('dateOfBirth')?.value) {
       return "";
     }
 
     const { year, month, day } = this.defaultForm.get('dateOfBirth')?.value;
     let age = this.todayDate.year - year
     const monthDiff = this.todayDate.month - month;
-    if(monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < day)) {
+    if (monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < day)) {
       age--;
     }
 
     return `${age}`;
   }
 
-  constructor(private modalService: NgbModal, private calendar: NgbCalendar, private effect: FormwizardEffectService) { }
+  constructor(private route: ActivatedRoute, private modalService: NgbModal, private calendar: NgbCalendar, private effect: FormwizardEffectService) { }
 }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbDropdownModule, NgbModule, NgbDatepickerModule, NgbModal, NgbModalModule, NgbAlertModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbDatepickerModule, NgbModal, NgbModalModule, NgbAlertModule, NgbPopoverModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
@@ -14,24 +14,11 @@ import { NavigatorComponent } from './navigator/navigator.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
 import { TemplateModalComponent } from './form-loader/template-modal/template-modal.component';
 import { IconsComponent } from './shared/components/icons/icons.component';
+import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.component';
 
 const appRoutes: Routes = [{
   path: "login",
   component: LoginComponent
-},
-{
-  path: "home",
-  component: HomeComponent,
-  data: {
-    breadcrumb: "Home"
-  }
-},
-{
-  path: "template",
-  component: TemplateCreatorComponent,
-  data: {
-    breadcrumb: "Templates"
-  }
 },
 {
   path: "form",
@@ -43,20 +30,27 @@ const appRoutes: Routes = [{
       path: "",
       component: FormLoaderComponent,
       data: {
-        breadcrumb: "Form"
+        breadcrumb: "Patient's Records Home"
       }
     },
     {
       path: "new",
       component: FormWizardComponent,
       data: {
-        breadcrumb: "New Form"
+        breadcrumb: "New Patient Record"
+      }
+    },
+    {
+      path: ":formId",
+      component: FormWizardComponent,
+      data: {
+        breadcrumb: "Edit Patient Record"
       }
     }
   ]
 }, {
   path: "",
-  redirectTo: "home",
+  redirectTo: "form",
   pathMatch: "full"
 }]
 
@@ -71,7 +65,8 @@ const appRoutes: Routes = [{
     BreadcrumbsComponent,
     FormWizardComponent,
     TemplateModalComponent,
-    IconsComponent
+    IconsComponent,
+    StaffModalComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +77,8 @@ const appRoutes: Routes = [{
     ReactiveFormsModule,
     NgbModalModule,
     NgbAlertModule,
-    NgbPopoverModule
+    NgbPopoverModule,
+    NgbPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

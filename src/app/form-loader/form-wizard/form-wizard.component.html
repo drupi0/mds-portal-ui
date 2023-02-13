@@ -1,24 +1,31 @@
 <div class="field-container px-5 border rounded">
     <div class="row mt-3" [formGroup]="defaultForm">
-        <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Patient's Name</label>
-            <input type="text" class="form-control" formControlName="name">
+        <div class="mb-3 col d-flex flex-column">
+            <label class="form-label">Patient's Name</label>
+            <div ngbDropdown class="d-inline-block">
+                <input type="text" class="form-control" formControlName="name" ngbDropdownToggle>
+                <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
+                    <button ngbDropdownItem *ngFor="let patient of (patientList | async)" (click)="assignPatient(patient)">
+                        {{ patient.name }}
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="mb-3 col-2 d-flex flex-column">
-            <label for="patientsName" class="form-label">Gender</label>
+            <label class="form-label">Gender</label>
             <div ngbDropdown class="d-inline-block">
                 <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
-                    {{ defaultForm.get('sex')?.value ||  'Select Gender'}}
+                    {{ (defaultForm.controls.sex.value | titlecase) ||  'Select Gender'}}
                 </button>
                 <div ngbDropdownMenu>
-                    <button ngbDropdownItem (click)="defaultForm.get('sex')?.setValue('Male')">Male</button>
-                    <button ngbDropdownItem (click)="defaultForm.get('sex')?.setValue('Female')">Female</button>
+                    <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('male')">Male</button>
+                    <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('female')">Female</button>
                 </div>
             </div>
             <input type="text" class="form-control" formControlName="sex" hidden>
         </div>
         <div class="mb-3 col-3">
-            <label for="patientsName" class="form-label">Date of Birth</label>
+            <label class="form-label">Date of Birth</label>
             <input type="text" class="form-control" readonly [autoClose]="true"
                 ngbDatepicker #dob="ngbDatepicker"
                 formControlName="dateOfBirth"
@@ -27,36 +34,36 @@
                 (click)="dob.toggle()">
         </div>
         <div class="mb-3 col-2">
-            <label for="patientsName" class="form-label">Age</label>
+            <label class="form-label">Age</label>
             <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
         </div>
     </div>
     <div class="row" [formGroup]="defaultForm">
         <div class="mb-3 col-3">
-            <label for="patientsName" class="form-label">Spec #</label>
+            <label class="form-label">Spec #</label>
             <input type="text" class="form-control" formControlName="specNo">
         </div>
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Ordering Dr.</label>
+            <label class="form-label">Ordering Dr.</label>
             <input type="text" class="form-control" formControlName="orderingDr">
         </div>
 
         <div class="mb-3 col-2">
-            <label for="patientsName" class="form-label">Status</label>
+            <label class="form-label">Status</label>
             <input type="text" class="form-control" formControlName="status">
         </div>
     </div>
     <div class="row" [formGroup]="defaultForm">
         <div class="mb-3 col-3">
-            <label for="patientsName" class="form-label">Specimen</label>
+            <label class="form-label">Specimen</label>
             <input type="text" class="form-control" formControlName="specimen">
         </div>
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Ordered</label>
+            <label class="form-label">Ordered</label>
             <input type="text" class="form-control" formControlName="ordered">
         </div>
         <div class="mb-3 col-3">
-            <label for="patientsName" class="form-label">Collection Date/Time</label>
+            <label class="form-label">Collection Date/Time</label>
             <input type="text" class="form-control" formControlName="collectionDateTime"
                 ngbDatepicker #cd="ngbDatepicker"
                 [minDate]="{year: 1900, month: 1, day: 1}" 
@@ -64,7 +71,7 @@
                 (click)="cd.toggle()">
         </div>
         <div class="mb-3 col-3">
-            <label for="patientsName" class="form-label">Received Date/Time</label>
+            <label class="form-label">Received Date/Time</label>
             <input type="text" class="form-control" formControlName="receivedDateTime"
                 ngbDatepicker #rd="ngbDatepicker"
                 [minDate]="{year: 1900, month: 1, day: 1}" 
@@ -104,7 +111,7 @@
 <div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
     <div class="row mt-3">
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Comment</label>
+            <label class="form-label">Comment</label>
             <textarea type="text" class="form-control" formControlName="comment" rows="5"></textarea>
         </div>
     </div>
@@ -112,16 +119,16 @@
 <div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
     <div class="row mt-3">
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Performed by</label>
-            <input type="text" class="form-control" formControlName="performedBy">
+            <label class="form-label">Performed by</label>
+            <input type="text" class="form-control" formControlName="performedBy" (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
         </div>
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Verified by</label>
-            <input type="text" class="form-control" formControlName="verifiedBy">
+            <label class="form-label">Verified by</label>
+            <input type="text" class="form-control" formControlName="verifiedBy" (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
         </div>
         <div class="mb-3 col">
-            <label for="patientsName" class="form-label">Pathologist</label>
-            <input type="text" class="form-control" formControlName="pathologist">
+            <label class="form-label">Pathologist</label>
+            <input type="text" class="form-control" formControlName="pathologist" (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
         </div>
     </div>
 </div>

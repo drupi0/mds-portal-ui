@@ -1,27 +1,54 @@
-<div class="d-flex mb-3">
+<div class="d-flex mb-4">
     <div class="flex-fill d-flex align-items-center me-2">
         <label for="searchBox" class="form-label" class="me-2">Search</label>
-        <input type="text" class="form-control" name="searchBox">
+        <input type="text" class="form-control" name="searchBox" [(ngModel)]="searchString">
     </div>
-    <button class="btn btn-primary" (click)="openFormWizard()">New Form</button>
+    <button class="btn btn-primary" [routerLink]="['new']">New Form</button>
 </div>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Form ID</th>
-            <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
-            <th scope="col" sortable="area" (sort)="onSort($event)">Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let form of effect.formList | async">
-            <th scope="row">{{ form.id ? form.id : "" }}</th>
-            <td>
-                {{ form.name }}
-            </td>
-            <td>
+<div class="vh-100">
+    <div class="card p-3">
+        <div class="row p-3 border-bottom">
+            <div class="col-2 fw-bold">
+                Date
+            </div>
+            <div class="col-3 fw-bold">
+                Form ID
+            </div>
+            <div class="col-4 fw-bold">
+                Patient Name
+            </div>
+            <div class="col-2 fw-bold">
+               Status
+            </div>
+            <div class="col-1 fw-bold">
+            </div>
+        </div>
+        <div class="row border-bottom hover p-3" *ngFor="let form of (getFormList() | async)">
+            <div class="col-2">
                 {{ form.date }}
-            </td>
-        </tr>
-    </tbody>
-</table>
+            </div>
+            <div class="col-3">
+                <a [routerLink]="[form.id]">{{ form.id }}</a>
+            </div>
+            <div class="col-4">
+                {{ form.patient.name }}
+            </div>
+            <div class="col-2 fw-bold">
+                <span class="badge bg-secondary">In Progress</span>
+                <!-- <span class="badge bg-primary">Done</span> -->
+             </div>
+            <div class="col-1 fw-bold d-flex">
+                <button class="btn btn-danger circular-btn">
+                    <mds-icons icon="trash"></mds-icons>
+                </button>
+                <button class="btn btn-primary circular-btn ms-2" [routerLink]="[form.id]">
+                    <mds-icons icon="edit"></mds-icons>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 d-flex pt-3 justify-content-end align-items-end">
+        <ngb-pagination [(page)]="pagination.current" [pageSize]="pagination.pageSize" 
+        [collectionSize]="pagination.total"></ngb-pagination>
+    </div>
+</div>

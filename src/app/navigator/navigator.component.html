@@ -1,5 +1,5 @@
 <div class="d-flex w-100 align-items-center border-bottom pb-2">
-    <img src="assets/logo_no_text.png" [routerLink]="['home']" width="80" class="me-3">
+    <img src="assets/logo_no_text.png" [routerLink]="['']" width="80" class="me-3">
     <ul ngbNav [activeId]="effect.activeTab$ | async" class="nav-pills">
         <li [ngbNavItem]="link.href" *ngFor="let link of links">
             <a ngbNavLink [routerLink]="[link.href]" class="me-2">{{ link.title }}</a>

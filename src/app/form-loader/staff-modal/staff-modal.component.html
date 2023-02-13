@@ -1,0 +1,96 @@
+<div class="modal-header">
+    <h4 class="modal-title fw-bold">Laboratory Staff</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+    <div class="card p-4">
+        <div class="row">
+            <div class="col-6">
+                <label for="staffName">Name</label>
+                <input type="text" class="form-control" [(ngModel)]="newStaff.name">
+            </div>
+            <div class="col-4">
+                <label for="staffName">License No.</label>
+                <input type="text" class="form-control" [(ngModel)]="newStaff.licNo">
+            </div>
+            <div class="col-2 d-flex align-items-end">
+                <button class="btn btn-outline-primary me-2" (click)="saveStaff()">
+                    <div class="d-flex align-items-center">
+                        <mds-icons icon="plus" [width]="15" [height]="15"></mds-icons>
+                        <span class="ms-2">Add</span>
+                    </div>
+                </button>
+                <button class="btn btn-outline-danger" (click)="resetForm()">
+                    <div class="d-flex align-items-center">
+                        <mds-icons icon="reset" [width]="15" [height]="15"></mds-icons>
+                        <span class="ms-2">Reset</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card p-4 mt-2">
+        <div class="row">
+            <div class="col-11">
+                <input type="text" class="form-control" placeholder="Enter staff name or license number" [(ngModel)]="searchQuery">
+            </div>
+            <button class="btn btn-primary col-1">
+                <div class="d-flex align-items-center">
+                    <mds-icons icon="search" [width]="15" [height]="15"></mds-icons>
+                    <span class="ms-2">Search</span>
+                </div>
+            </button>
+        </div>
+        <div class="row pt-3">
+            <div class="row border-bottom mb-3 pb-3 mt-2">
+                <div class="col-6 fw-bold">
+                    Name
+                </div>
+                <div class="col-4 fw-bold">
+                    License No.
+                </div>
+                <div class="col-2">
+                </div>
+            </div>
+            <ng-container *ngIf="!(getStaffList() | async)?.length" [ngTemplateOutlet]="emptyState"></ng-container>
+            <div class="row align-items-center mb-2 py-3 hover" *ngFor="let staff of (getStaffList() | async)">
+                <div class="col-6">
+                    {{ staff.name }}
+                </div>
+                <div class="col-4">
+                    {{ staff.licNo }}
+                </div>
+                <div class="col-2 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary me-1" (click)="selectStaff(staff)">
+                        <div class="d-flex align-items-center">
+                            <mds-icons icon="check" [width]="15" [height]="15"></mds-icons>
+                            <span class="ms-2">Select</span>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteStaff(staff)">
+                        <div class="d-flex align-items-center">
+                            <mds-icons icon="trash" [width]="15" [height]="15"></mds-icons>
+                            <span class="ms-2">Delete</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #emptyState>
+    <ngb-alert type="info" [dismissible]="false">
+        <div class="d-flex flex-column justify-content-center align-items-center empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-alert-triangle">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span class="mt-2">Empty Staff List</span>
+        </div>
+    </ngb-alert>
+</ng-template>

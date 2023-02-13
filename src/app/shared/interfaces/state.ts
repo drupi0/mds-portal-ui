@@ -25,7 +25,5 @@ export interface AppState {
 }
 
 export const DefaultRoutes: BreadcrumbItem[] = [
-    { title: 'Home', href: '/home' },
     { title: 'Forms', href: '/form' },
-    { title: 'Templates', href: '/template' },
 ];

@@ -1,0 +1,17 @@
+a {
+    text-decoration: none;
+}
+
+.hover {
+    &:hover {
+        background-color: #ececec;
+    }
+
+    cursor: default;
+}
+
+.badge {
+    padding: 8px;
+    font-weight: 400;
+    font-size: small;
+}

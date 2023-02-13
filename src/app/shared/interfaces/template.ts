@@ -11,24 +11,25 @@ export interface TemplateModel {
     }[];
 }
 export interface PatientModel {
-    id?: number
+    id?: string
     name: string,
     dateOfBirth: string,
     sex: string,
 }
 
-export interface DoctorModel {
-    id: number,
+export interface StaffModel {
+    id?: string,
     name: string,
     licNo: string
 }
 
 export interface PatientRecordModel {
+    id?: string,
     date: string,
     patient: PatientModel,
-    pathologist: DoctorModel,
-    performedBy: DoctorModel,
-    verifiedBy: DoctorModel,
+    pathologist: StaffModel,
+    performedBy: StaffModel,
+    verifiedBy: StaffModel,
     specNo: string,
     orderingDoctor: string,
     status: string,
