@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter, map, of } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, take, tap } from 'rxjs';
 import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { StaffModel } from 'src/app/shared/interfaces/template';
 
@@ -9,7 +9,7 @@ import { StaffModel } from 'src/app/shared/interfaces/template';
   templateUrl: './staff-modal.component.html',
   styleUrls: ['./staff-modal.component.scss']
 })
-export class StaffModalComponent {
+export class StaffModalComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private effect: FormwizardEffectService) { }
 
@@ -19,24 +19,38 @@ export class StaffModalComponent {
     licNo: ""
   }
 
-  staff: StaffModel[] = [];
-  
-  getStaffList() {
-    return this.effect.getStaffList().pipe(map(staffObj => this.searchQuery.trim().length ? 
-            staffObj.filter(staffElement => staffElement.name.toLowerCase().includes(this.searchQuery) || staffElement.licNo.includes(this.searchQuery)) : staffObj));
+  staffList$: BehaviorSubject<StaffModel[]> = new BehaviorSubject([] as StaffModel[]);
+
+  ngOnInit(): void {
+    this.effect.getStaffList().subscribe((staff: StaffModel[]) => {
+      this.staffList$.next(staff);
+    });
   }
+
+  get staffList(): Observable<StaffModel[]> {
+    return this.staffList$.pipe(map((staffArray: StaffModel[]) => {
+      return this.searchQuery.trim().length ? staffArray.filter(item => 
+        item.name.toLocaleLowerCase().includes(this.searchQuery.trim().toLowerCase()) 
+        || item.licNo === this.searchQuery.trim().toLowerCase()) : staffArray;
+    }));
+  }
+
+  saveStaff() {
+    this.effect.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
+      this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
+      this.resetForm();
+    });
+  }
+
   
   selectStaff(staff: StaffModel) {
     this.activeModal.close(staff);
   }
 
   deleteStaff(staff: StaffModel) {
-    this.staff = this.staff.filter(staffItem => staffItem.licNo !== staff.licNo);
-  }
-
-  saveStaff() {
-    this.staff.push(this.newStaff);
-    this.resetForm();
+    this.effect.deleteStaff(staff).subscribe((deletedStaff) => {
+      this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== deletedStaff.id))
+    });
   }
 
   resetForm() {

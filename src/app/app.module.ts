@@ -4,6 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbDropdownModule, NgbModule, NgbDatepickerModule, NgbModal, NgbModalModule, NgbAlertModule, NgbPopoverModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
+import {
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi
+} from '@angular/common/http';
+
 import { AppComponent } from './app.component';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
 import { FormWizardComponent } from './form-loader/form-wizard/form-wizard.component';
@@ -80,7 +86,16 @@ const appRoutes: Routes = [{
     NgbPopoverModule,
     NgbPaginationModule
   ],
-  providers: [],
+  providers: [
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([
+        (req, next) => {
+          return next(req);
+        },
+      ])
+    )
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

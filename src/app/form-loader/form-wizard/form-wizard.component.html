@@ -220,7 +220,7 @@
 </ng-template>
 
 <ng-template #emptyState>
-    <ngb-alert type="warning" [dismissible]="false">
+    <div class="card emptyState">
         <div class="d-flex flex-column justify-content-center align-items-center empty-state">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -230,7 +230,7 @@
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
-            <span class="mt-2">Empty Report</span>
+            <span class="mt-2">Load template from the dropdown above</span>
         </div>
-    </ngb-alert>
+    </div>
 </ng-template>

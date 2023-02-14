@@ -57,3 +57,13 @@ body {
         color: #fff !important;
     }
 }
+
+.emptyState {
+    border: 1px solid #0a95ff !important;
+    background-color: rgba($color: #0a95ff, $alpha: 0.1);
+    opacity: 0.5;
+    padding: 100px !important;
+    span {
+        margin-top: 20px !important;
+    }
+}

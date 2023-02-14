@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { map } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { StaffModel, PatientModel, PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
@@ -46,7 +46,7 @@ export class FormWizardComponent implements OnInit {
 
       if (formId) {
         this.effect.getFormTemplates(formId).subscribe(templates => {
-          if(templates) {
+          if (templates) {
             this.templateList = templates;
           }
         });
@@ -129,8 +129,10 @@ export class FormWizardComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.closed.subscribe(({ data }: { data: TemplateModel }) => {
-      this.templateOptions.push(data);
+    modalRef.closed.pipe(switchMap(({ data }: { data: TemplateModel }) => {
+      return this.effect.saveTemplate(data);
+    })).subscribe((newTemplate: TemplateModel) => {
+      this.templateOptions.push(newTemplate);
     });
   }
 

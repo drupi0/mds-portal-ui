@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, filter, from, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, EMPTY, filter, from, map, Observable, of, switchMap, take } from 'rxjs';
 import { StaffModalComponent } from 'src/app/form-loader/staff-modal/staff-modal.component';
 import { TemplateModalComponent } from 'src/app/form-loader/template-modal/template-modal.component';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { StaffModel, PatientRecordModel, TemplateModel, PatientModel } from 'src/app/shared/interfaces/template';
+import { ApiService } from '../api.service';
 import { StateService } from '../state.service';
 
 @Injectable({
@@ -216,9 +217,6 @@ export class FormwizardEffectService {
     console.log(patientForm);
   }
 
-  getTemplateOptions(): Observable<TemplateModel[]> {
-    return this.templateSelection.asObservable();
-  }
 
   getFormTemplates(formId: string) {
     return this.getFormRecords().pipe(switchMap(records => {
@@ -232,10 +230,6 @@ export class FormwizardEffectService {
     }));
   }
 
-  saveTemplate(template: TemplateModel) {
-
-  }
-
   updateTemplate(template: TemplateModel) {
     const modalRef = this.modalService.open(TemplateModalComponent, {
       size: 'xl',
@@ -244,26 +238,31 @@ export class FormwizardEffectService {
 
     modalRef.componentInstance.template = JSON.parse(JSON.stringify(template));
 
-    modalRef.closed.subscribe(({ data, isDeleted }: { data: TemplateModel, isDeleted: boolean }) => {
-
-      if (isDeleted) {
-        const templateList = this.templateFields.getValue().filter(templateField => templateField.id !== template.id);
-        const templateOptions = this.templateSelection.getValue().filter(templateItem => templateItem.id !== template.id);
-
-        this.templateFields.next(templateList);
-        this.templateSelection.next(templateOptions);
-
-        return;
+    modalRef.closed.pipe(switchMap(({ data, isDeleted }: { data: TemplateModel, isDeleted: boolean }) => {
+      if(isDeleted) {
+        return this.api.deleteTemplate(data);
       }
 
-      const templateOptions = this.templateSelection.getValue().filter(templateItem => templateItem.id !== template.id);
-      templateOptions.unshift(data);
+      return EMPTY;
+
+    })).subscribe((data: TemplateModel) => {
+
+      const templateList = this.templateFields.getValue().filter(templateField => templateField.id !== data.id);
+      const templateOptions = this.templateSelection.getValue().filter(templateItem => templateItem.id !== data.id);
+
+      this.templateFields.next(templateList);
       this.templateSelection.next(templateOptions);
 
-      this.templateFields.next(this.templateFields.getValue().filter(templateField => templateField.id !== template.id));
+      // -- FOR UPDATE TEMPLATE --
+
+      // const templateOptions = this.templateSelection.getValue().filter(templateItem => templateItem.id !== template.id);
+      // templateOptions.unshift(data);
+      // this.templateSelection.next(templateOptions);
+
+      // this.templateFields.next(this.templateFields.getValue().filter(templateField => templateField.id !== template.id));
 
 
-      this.addToTemplateField(data);
+      // this.addToTemplateField(data);
     });
   }
 
@@ -304,9 +303,7 @@ export class FormwizardEffectService {
   }
 
 
-  getStaffList(): Observable<StaffModel[]> {
-    return this.staffList.asObservable();
-  }
+  
 
   getPatientList(): Observable<PatientModel[]> {
     return this.patientList.asObservable();
@@ -393,5 +390,30 @@ export class FormwizardEffectService {
     return of(formRecords);
   }
 
-  constructor(private store: StateService, private modalService: NgbModal, private calendar: NgbCalendar) { }
+  // --- Staff API ----
+
+  getStaffList(): Observable<StaffModel[]> {
+    return this.api.getStaff();
+    //  this.staffList.asObservable();
+  }
+
+  saveStaff(staff: StaffModel) {
+    return this.api.saveStaff(staff);
+  }
+
+  deleteStaff(staff: StaffModel) {
+    return this.api.deleteStaff(staff);
+  }
+
+  // -- Templates API ---
+
+  saveTemplate(template: TemplateModel) {
+    return this.api.saveTemplate(template);
+  }
+
+  getTemplateOptions(): Observable<TemplateModel[]> {
+    return this.api.getTemplates();
+  }
+
+  constructor(private store: StateService, private modalService: NgbModal, private calendar: NgbCalendar, private api: ApiService) { }
 }
