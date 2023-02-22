@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title fw-bold">{{ title }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+    {{ modalBody }}
+</div>
+<div class="modal-footer d-flex">
+    <div class="flex-fill">
+    </div>
+    <div>
+        <button type="button" class="btn btn-outline-secondary me-2" (click)="close(false)">
+            <div class="d-flex">
+                <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Cancel</span>
+            </div>
+
+        </button>
+        <button type="button" class="btn btn-primary" (click)="close(true)">
+            <div class="d-flex">
+                <mds-icons icon="check" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Yes</span>
+            </div>
+        </button>
+    </div>
+
+</div>

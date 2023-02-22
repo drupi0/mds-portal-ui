@@ -1,3 +1,4 @@
+import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "./form";
 
 export interface TemplateModel {
@@ -13,7 +14,7 @@ export interface TemplateModel {
 export interface PatientModel {
     id?: string
     name: string,
-    dateOfBirth: string,
+    dateOfBirth: NgbDateStruct,
     sex: string,
 }
 
@@ -35,8 +36,17 @@ export interface PatientRecordModel {
     status: string,
     specimen: string,
     ordered: string,
-    collectionDateTime: string,
-    receivedDateTime: string,
+    collectionDateTime: NgbDateStruct,
+    receivedDateTime: NgbDateStruct,
     comments: string
-    results: TemplateModel[]
+    data: string
+}
+
+export interface Pagination<T> {
+    pageNumber: number,
+    pageSize: number,
+    content?: T[],
+    numberOfElements?: number,
+    totalPages?: number,
+    empty?: boolean
 }

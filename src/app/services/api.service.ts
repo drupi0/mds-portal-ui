@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { env } from 'src/environment';
-import { StaffModel, TemplateModel } from '../shared/interfaces/template';
+import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +43,44 @@ export class ApiService {
     return this.httpClient.delete<TemplateModel>(`${this.BASE_URL}/template`, {
       ...this.HTTP_OPTIONS,
       body: template
+    });
+  }
+
+  updateTemplate(template: TemplateModel): Observable<TemplateModel> {
+    return this.httpClient.patch<TemplateModel>(`${this.BASE_URL}/template`, template);
+  }
+
+  saveRecord(record: {}): Observable<PatientRecordModel> {
+    return this.httpClient.post<PatientRecordModel>(`${this.BASE_URL}/record`, record);
+  }
+
+  getRecords(pagination: Pagination<any>) {
+    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record`, {
+      params: { ...pagination },
+      ...this.HTTP_OPTIONS
+    }).pipe(map((data) => {
+      return {
+        ...data,
+        content: data.content?.map(record => ({ ...record, data: JSON.parse(record.data)}))
+      }
+    }));
+  }
+
+  searchRecords(pagination: Pagination<any>, searchString: string) {
+    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record/search`, {
+      params: { ...pagination, query: searchString },
+      ...this.HTTP_OPTIONS
+    });
+  }
+
+  findRecord(formId: string): Observable<PatientRecordModel> {
+    return this.httpClient.get<PatientRecordModel>(`${this.BASE_URL}/record/${formId}`);
+  }
+
+  searchPatient(query: string) {
+    return this.httpClient.get<PatientModel[]>(`${this.BASE_URL}/patient`, {
+      params: { query },
+      ...this.HTTP_OPTIONS
     });
   }
 

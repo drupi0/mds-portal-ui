@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { TemplateModel } from 'src/app/shared/interfaces/template';
 
@@ -17,7 +18,7 @@ export class TemplateModalComponent implements OnInit {
 
   selectionList = FieldType;
 
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal) { }
 
   changeType(key: string, index: number) {
     this.template.group[index].type = key as FieldType;
@@ -34,7 +35,7 @@ export class TemplateModalComponent implements OnInit {
       name: `Column ${this.template.group.length + 1}`,
       type: FieldType.DEFAULT,
       defaults: "",
-      values: []
+      values: [""]
     });
   }
 
@@ -47,6 +48,8 @@ export class TemplateModalComponent implements OnInit {
   }
 
   save() {
+    console.log(this.template);
+
     this.activeModal.close({
       data: this.template,
       isDeleted: false
@@ -58,10 +61,23 @@ export class TemplateModalComponent implements OnInit {
   }
 
   delete() {
-    this.activeModal.close({
-      data: this.template,
-      isDeleted: true
+    const modalRef = this.modalService.open(YesNoModalComponent, {
+      size: 'md',
+      backdrop: 'static'
     });
+
+    modalRef.componentInstance.title = `Delete "${ this.template.name }"?`
+    modalRef.componentInstance.modalBody = `All current instance of this template will also be removed. Old forms will not be affected. 
+                                            Are you sure you want to delete "${ this.template.name}"?`
+
+    modalRef.closed.subscribe((response) => {
+        if(response) {
+          this.activeModal.close({
+            data: this.template,
+            isDeleted: true
+          });
+      }
+    })
   }
 
   get saveDisabled() {

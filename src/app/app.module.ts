@@ -22,6 +22,9 @@ import { TemplateModalComponent } from './form-loader/template-modal/template-mo
 import { IconsComponent } from './shared/components/icons/icons.component';
 import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.component';
 
+import { NgxNotificationModule } from 'ngx-notification';
+import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
+
 const appRoutes: Routes = [{
   path: "login",
   component: LoginComponent
@@ -72,7 +75,8 @@ const appRoutes: Routes = [{
     FormWizardComponent,
     TemplateModalComponent,
     IconsComponent,
-    StaffModalComponent
+    StaffModalComponent,
+    YesNoModalComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +88,8 @@ const appRoutes: Routes = [{
     NgbModalModule,
     NgbAlertModule,
     NgbPopoverModule,
-    NgbPaginationModule
+    NgbPaginationModule,
+    NgxNotificationModule
   ],
   providers: [
     provideHttpClient(

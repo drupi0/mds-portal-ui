@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxNotificationService } from 'ngx-notification';
 import { BehaviorSubject, filter, map, Observable, of, take, tap } from 'rxjs';
+import { ApiService } from 'src/app/services/api.service';
 import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
+import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { StaffModel } from 'src/app/shared/interfaces/template';
 
 @Component({
@@ -11,7 +14,8 @@ import { StaffModel } from 'src/app/shared/interfaces/template';
 })
 export class StaffModalComponent implements OnInit {
 
-  constructor(public activeModal: NgbActiveModal, private effect: FormwizardEffectService) { }
+  constructor(public activeModal: NgbActiveModal, private api: ApiService, private modalService: NgbModal,
+              private notifSvc: NgxNotificationService) { }
 
   searchQuery: string = "";
   newStaff: StaffModel = {
@@ -22,7 +26,7 @@ export class StaffModalComponent implements OnInit {
   staffList$: BehaviorSubject<StaffModel[]> = new BehaviorSubject([] as StaffModel[]);
 
   ngOnInit(): void {
-    this.effect.getStaffList().subscribe((staff: StaffModel[]) => {
+    this.api.getStaff().subscribe((staff: StaffModel[]) => {
       this.staffList$.next(staff);
     });
   }
@@ -36,9 +40,10 @@ export class StaffModalComponent implements OnInit {
   }
 
   saveStaff() {
-    this.effect.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
+    this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
       this.resetForm();
+      this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} with license no. ${addedStaff.licNo} to the staff list`, 'success', 'top-right');
     });
   }
 
@@ -48,9 +53,23 @@ export class StaffModalComponent implements OnInit {
   }
 
   deleteStaff(staff: StaffModel) {
-    this.effect.deleteStaff(staff).subscribe((deletedStaff) => {
-      this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== deletedStaff.id))
+    const modalRef = this.modalService.open(YesNoModalComponent, {
+      size: 'md',
+      backdrop: 'static'
     });
+
+    modalRef.componentInstance.title = `Delete "${ staff.name }"?`
+    modalRef.componentInstance.modalBody = `Delete ${staff.name} with license no. ${staff.licNo} from the list of staff?`
+
+    modalRef.closed.subscribe((response) => {
+      console.log(response);
+        if(response) {
+          this.api.deleteStaff(staff).subscribe(() => {
+            this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
+            this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'top-right');
+          });
+      }
+    })
   }
 
   resetForm() {

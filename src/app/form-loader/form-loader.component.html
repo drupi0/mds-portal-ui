@@ -1,7 +1,13 @@
 <div class="d-flex mb-4">
     <div class="flex-fill d-flex align-items-center me-2">
         <label for="searchBox" class="form-label" class="me-2">Search</label>
-        <input type="text" class="form-control" name="searchBox" [(ngModel)]="searchString">
+        <input #searchForm type="text" class="form-control" name="searchBox" (keyup.enter)="onSearch(searchForm.value)">
+        <button class="btn btn-primary ms-2" (click)="onSearch(searchForm.value)">
+            <div class="d-flex align-items-center">
+                <mds-icons icon="search" [width]="15" [height]="15"></mds-icons>
+                <span class="ms-1">Search</span>
+            </div>
+        </button>
     </div>
     <button class="btn btn-primary" [routerLink]="['new']">New Form</button>
 </div>
@@ -23,7 +29,7 @@
             <div class="col-1 fw-bold">
             </div>
         </div>
-        <div class="row border-bottom hover p-3" *ngFor="let form of (getFormList() | async)">
+        <div class="row border-bottom hover p-3" *ngFor="let form of (searchString.length ? patientRecordFromSearch : patientRecords)">
             <div class="col-2">
                 {{ form.date }}
             </div>
@@ -34,7 +40,7 @@
                 {{ form.patient.name }}
             </div>
             <div class="col-2 fw-bold">
-                <span class="badge bg-secondary">In Progress</span>
+                <span class="badge bg-secondary"> {{ form.status }}</span>
                 <!-- <span class="badge bg-primary">Done</span> -->
              </div>
             <div class="col-1 fw-bold d-flex">
@@ -46,9 +52,29 @@
                 </button>
             </div>
         </div>
+        <div class="row my-4 mx-3" *ngIf="searchString.length ? !patientRecordFromSearch.length : !patientRecords.length">
+            <ng-container [ngTemplateOutlet]="emptyState" [ngTemplateOutletContext]="{ searchString }"></ng-container>
+        </div>
     </div>
-    <div class="col-12 d-flex pt-3 justify-content-end align-items-end">
+    <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="patientRecords.length">
         <ngb-pagination [(page)]="pagination.current" [pageSize]="pagination.pageSize" 
         [collectionSize]="pagination.total"></ngb-pagination>
     </div>
 </div>
+
+<ng-template #emptyState let-searchString="searchString">
+    <div class="card emptyState">
+        <div class="d-flex flex-column justify-content-center align-items-center empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-alert-triangle">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span class="mt-2" *ngIf="!searchString.trim().length">Empty Patient Record</span>
+            <span class="mt-2" *ngIf="searchString.trim().length">No result found for "{{ searchString.trim() }}"</span>
+        </div>
+    </div>
+</ng-template>

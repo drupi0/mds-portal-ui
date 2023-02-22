@@ -26,12 +26,14 @@
         </div>
         <div class="mb-3 col-3">
             <label class="form-label">Date of Birth</label>
-            <input type="text" class="form-control" readonly [autoClose]="true"
+            <input type="text" class="form-control" [autoClose]="true"
                 ngbDatepicker #dob="ngbDatepicker"
-                formControlName="dateOfBirth"
                 [minDate]="{year: 1900, month: 1, day: 1}" 
                 [maxDate]="todayDate"
-                (click)="dob.toggle()">
+                (click)="dob.toggle()"
+                (dateSelect)="dateBlur($event, defaultForm.controls.dateOfBirth)"
+                (blur)="dateBlur($event, defaultForm.controls.dateOfBirth)"
+                placeholder="YYYY-MM-DD">
         </div>
         <div class="mb-3 col-2">
             <label class="form-label">Age</label>
@@ -48,9 +50,18 @@
             <input type="text" class="form-control" formControlName="orderingDr">
         </div>
 
-        <div class="mb-3 col-2">
+        <div class="mb-3 col-2 d-flex flex-column">
             <label class="form-label">Status</label>
-            <input type="text" class="form-control" formControlName="status">
+            <div ngbDropdown class="d-inline-block">
+                <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
+                    {{ (defaultForm.controls.status.value | titlecase) ||  'Select Status'}}
+                </button>
+                <div ngbDropdownMenu>
+                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('routine')">Routine</button>
+                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('stat')">Stat</button>
+                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('urgent')">Urgent</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row" [formGroup]="defaultForm">
@@ -82,15 +93,14 @@
 </div>
 <div class="field-container px-5 border rounded mt-3">
     <div class="d-flex justify-content-end">
-        <div class="mt-3 mb-3">
-            <div ngbDropdown class="d-inline-block" *ngIf="templateOptions.length">
+        <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
+            <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
                 <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
                     Load Template
                 </button>
                 <div ngbDropdownMenu>
-                    <button ngbDropdownItem *ngFor="let templateItem of templateOptions; let templateIndex = index"
-                        (click)="addToTemplateField(templateItem)">{{ templateItem.name.concat(" " + templateItem.id
-                        )}} </button>
+                    <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
+                        (click)="addToTemplateField(templateItem)">{{ templateItem.name.trim() }} </button>
                 </div>
             </div>
             <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="newTemplate()">
@@ -99,10 +109,10 @@
         </div>
     </div>
     <!-- template containers -->
-    <div class="card pb-3">
-        <ng-container *ngIf="templateList.length !== 0 else emptyState;">
+    <div class="card pb-3" *ngIf="(templateList | async) as tempList">
+        <ng-container *ngIf="tempList.length !== 0 else emptyState;">
             <ng-container [ngTemplateOutlet]="fieldInput"
-                *ngFor="let template of templateList; let templateIndex = index;"
+                *ngFor="let template of tempList; let templateIndex = index;"
                 [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
         </ng-container>
     </div>
@@ -120,15 +130,15 @@
     <div class="row mt-3">
         <div class="mb-3 col">
             <label class="form-label">Performed by</label>
-            <input type="text" class="form-control" formControlName="performedBy" (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
+            <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''" (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
         </div>
         <div class="mb-3 col">
             <label class="form-label">Verified by</label>
-            <input type="text" class="form-control" formControlName="verifiedBy" (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
+            <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''" (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
         </div>
         <div class="mb-3 col">
             <label class="form-label">Pathologist</label>
-            <input type="text" class="form-control" formControlName="pathologist" (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
+            <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''" (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
         </div>
     </div>
 </div>
@@ -149,7 +159,7 @@
         <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
             ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
             triggers="mouseenter:mouseleave"
-            (click)="saveTemplate(reportTemplateIndex, tableData)">
+            (click)="saveTemplate(reportTemplate, tableData)">
             <mds-icons icon="save"></mds-icons>
         </button>
         <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
@@ -178,11 +188,11 @@
                         <td class="menu">
                             <div class="d-flex">
                                 <button class="btn btn-outline-success circular-btn"
-                                    (click)="addRow(reportTemplateIndex)">
+                                    (click)="addRow(reportTemplate)">
                                     <mds-icons icon="plus"></mds-icons>
                                 </button>
                                 <button class="btn btn-outline-danger circular-btn"
-                                    (click)="removeRow(reportTemplateIndex, rowIndex)">
+                                    (click)="removeRow(reportTemplate, rowIndex)">
                                     <mds-icons icon="minus"></mds-icons>
                                 </button>
                             </div>

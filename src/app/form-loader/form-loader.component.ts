@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.service';
 import { FormwizardEffectService } from '../services/effects/formwizard.effect.service';
-import { PatientRecordModel } from '../shared/interfaces/template';
+import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
 
 
 @Component({
@@ -10,8 +9,9 @@ import { PatientRecordModel } from '../shared/interfaces/template';
   templateUrl: './form-loader.component.html',
   styleUrls: ['./form-loader.component.scss']
 })
-export class FormLoaderComponent {
-  constructor(public breadcrumbEffect: BreadcrumbEffectService, public recordEffect: FormwizardEffectService) { }
+export class FormLoaderComponent implements OnInit {
+  constructor(public breadcrumbEffect: BreadcrumbEffectService, 
+              public recordEffect: FormwizardEffectService) { }
 
   searchString = "";
   pagination: {
@@ -19,18 +19,29 @@ export class FormLoaderComponent {
     pageSize: number,
     total: number
   } = {
-    current: 1,
+    current: 0,
     pageSize: 10,
     total: 50
   }
 
-  onSort(event: any) {
+  patientRecords: PatientRecordModel[] = [];
+  patientRecordFromSearch: PatientRecordModel[] = [];
 
+  ngOnInit(): void {
+    this.recordEffect.getPatientRecords().subscribe((data: Pagination<PatientRecordModel>) => {
+      if(data.content?.length) {
+        console.log(data.content)
+        this.patientRecords = data.content;
+      }
+    });
   }
 
-  getFormList(): Observable<PatientRecordModel[]> {
-    return this.recordEffect.getFormRecords().pipe(map(formRecords => {
-      return !this.searchString.length ? formRecords : formRecords.filter(record => record.id === this.searchString || record.patient.name.toLowerCase().includes(this.searchString))
-    }))
+  onSearch(searchTerm: string): void {
+    this.searchString = searchTerm;
+    this.recordEffect.searchPatientRecord(this.searchString).subscribe((searchResult: Pagination<PatientRecordModel>) => {
+      if(searchResult.content?.length) {
+        this.patientRecordFromSearch = searchResult.content;
+      }
+    })
   }
 }
