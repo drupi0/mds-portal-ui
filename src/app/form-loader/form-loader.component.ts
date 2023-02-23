@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { ApiService } from '../services/api.service';
 import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.service';
-import { FormwizardEffectService } from '../services/effects/formwizard.effect.service';
 import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
 
 
@@ -10,35 +11,31 @@ import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
   styleUrls: ['./form-loader.component.scss']
 })
 export class FormLoaderComponent implements OnInit {
-  constructor(public breadcrumbEffect: BreadcrumbEffectService, 
-              public recordEffect: FormwizardEffectService) { }
+  constructor(public breadcrumbEffect: BreadcrumbEffectService, public api: ApiService) { }
 
   searchString = "";
-  pagination: {
-    current: number,
-    pageSize: number,
-    total: number
-  } = {
-    current: 0,
-    pageSize: 10,
-    total: 50
-  }
 
   patientRecords: PatientRecordModel[] = [];
   patientRecordFromSearch: PatientRecordModel[] = [];
 
+  pagination = {
+    currentPage: 1,
+    offset: 0,
+    size: 10,
+    totalElements: 100
+  }
+
   ngOnInit(): void {
-    this.recordEffect.getPatientRecords().subscribe((data: Pagination<PatientRecordModel>) => {
+    this.api.getRecords(this.pagination.offset, this.pagination.size).subscribe((data: Pagination<PatientRecordModel>) => {
       if(data.content?.length) {
-        console.log(data.content)
-        this.patientRecords = data.content;
+        this.patientRecords = data.content || [];
       }
     });
   }
 
   onSearch(searchTerm: string): void {
     this.searchString = searchTerm;
-    this.recordEffect.searchPatientRecord(this.searchString).subscribe((searchResult: Pagination<PatientRecordModel>) => {
+    this.api.searchRecords(this.pagination.offset, this.pagination.size, searchTerm).subscribe((searchResult: Pagination<PatientRecordModel>) => {
       if(searchResult.content?.length) {
         this.patientRecordFromSearch = searchResult.content;
       }

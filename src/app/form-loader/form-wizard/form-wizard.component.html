@@ -3,7 +3,7 @@
         <div class="mb-3 col d-flex flex-column">
             <label class="form-label">Patient's Name</label>
             <div ngbDropdown class="d-inline-block">
-                <input type="text" class="form-control" formControlName="name" ngbDropdownToggle>
+                <input type="text" class="form-control" formControlName="name" (ngModelChange)="onPatientSearch(defaultForm.controls.name.value)" ngbDropdownToggle>
                 <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
                     <button ngbDropdownItem *ngFor="let patient of (patientList | async)" (click)="assignPatient(patient)">
                         {{ patient.name }}
@@ -27,6 +27,7 @@
         <div class="mb-3 col-3">
             <label class="form-label">Date of Birth</label>
             <input type="text" class="form-control" [autoClose]="true"
+                formControlName="dateOfBirth"
                 ngbDatepicker #dob="ngbDatepicker"
                 [minDate]="{year: 1900, month: 1, day: 1}" 
                 [maxDate]="todayDate"

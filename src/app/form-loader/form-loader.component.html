@@ -1,3 +1,4 @@
+<lib-ngx-notification></lib-ngx-notification>
 <div class="d-flex mb-4">
     <div class="flex-fill d-flex align-items-center me-2">
         <label for="searchBox" class="form-label" class="me-2">Search</label>
@@ -15,15 +16,18 @@
     <div class="card p-3">
         <div class="row p-3 border-bottom">
             <div class="col-2 fw-bold">
-                Date
+                Collection Datetime
+            </div>
+            <div class="col-2 fw-bold">
+                Received Datetime
             </div>
             <div class="col-3 fw-bold">
                 Form ID
             </div>
-            <div class="col-4 fw-bold">
+            <div class="col-3 fw-bold">
                 Patient Name
             </div>
-            <div class="col-2 fw-bold">
+            <div class="col-1 fw-bold">
                Status
             </div>
             <div class="col-1 fw-bold">
@@ -31,15 +35,18 @@
         </div>
         <div class="row border-bottom hover p-3" *ngFor="let form of (searchString.length ? patientRecordFromSearch : patientRecords)">
             <div class="col-2">
-                {{ form.date }}
+                {{ form.collectionDateTime }}
+            </div>
+            <div class="col-2">
+                {{ form.receivedDateTime }}
             </div>
             <div class="col-3">
                 <a [routerLink]="[form.id]">{{ form.id }}</a>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 {{ form.patient.name }}
             </div>
-            <div class="col-2 fw-bold">
+            <div class="col-1 fw-bold">
                 <ng-container [ngSwitch]="form.status | lowercase">
                     <span *ngSwitchCase="'routine'" class="badge bg-primary"> {{ form.status | titlecase }}</span>
                     <span *ngSwitchCase="'stat'" class="badge bg-secondary"> {{ form.status | titlecase }}</span>
@@ -60,8 +67,8 @@
         </div>
     </div>
     <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="patientRecords.length">
-        <ngb-pagination [(page)]="pagination.current" [pageSize]="pagination.pageSize" 
-        [collectionSize]="pagination.total"></ngb-pagination>
+        <ngb-pagination [page]="pagination.currentPage" [pageSize]="pagination.size"
+        [collectionSize]="pagination.totalElements"></ngb-pagination>
     </div>
 </div>
 

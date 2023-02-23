@@ -54,9 +54,9 @@ export class ApiService {
     return this.httpClient.post<PatientRecordModel>(`${this.BASE_URL}/record`, record);
   }
 
-  getRecords(pagination: Pagination<any>) {
+  getRecords(pageNumber: number, pageSize: number) {
     return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record`, {
-      params: { ...pagination },
+      params: { pageNumber, pageSize },
       ...this.HTTP_OPTIONS
     }).pipe(map((data) => {
       return {
@@ -66,9 +66,9 @@ export class ApiService {
     }));
   }
 
-  searchRecords(pagination: Pagination<any>, searchString: string) {
+  searchRecords(pageNumber: number, pageSize: number, searchString: string) {
     return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record/search`, {
-      params: { ...pagination, query: searchString },
+      params: { pageNumber, pageSize, query: searchString },
       ...this.HTTP_OPTIONS
     });
   }

@@ -3,11 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, catchError, EMPTY, forkJoin, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, delay, EMPTY, forkJoin, of, switchMap, take } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
-import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
-import { StaffModel, PatientModel, PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
+import { PatientModel, PatientRecordModel, StaffModel, TemplateModel } from 'src/app/shared/interfaces/template';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
@@ -62,7 +61,12 @@ export class FormWizardComponent implements OnInit {
   }
 
   onPatientSearch(query: string) {
-    this.api.searchPatient(query).subscribe(patients => this.patientList.next(patients));
+    if(query.length < 3) {
+      this.patientList.next([]);
+      return;
+    }
+
+    this.api.searchPatient(query.trim().toLowerCase()).pipe(take(1), debounceTime(3000)).subscribe(patients => this.patientList.next(patients));
   }
 
 
@@ -285,16 +289,19 @@ export class FormWizardComponent implements OnInit {
     }
   }
 
-  assignPatient(patient: PatientModel) {
-    this.defaultForm.controls.name.setValue(patient.name);
+  assignPatient(patient: any) {
+    const patientObj: { name: string, dateOfBirth: string, sex: string} = patient;
+    this.defaultForm.controls.name.setValue(patientObj.name);
 
-    if (Object.keys(patient.dateOfBirth).length) {
-      this.defaultForm.controls.dateOfBirth.setValue(patient.dateOfBirth);
+    if (patientObj.dateOfBirth.length) {
+      this.defaultForm.controls.dateOfBirth.setValue(this.formatDateStringToNgbDate(patientObj.dateOfBirth));
       this.defaultForm.controls.age.setValue(this.calcAge);
+      
+      console.log(this.defaultForm.getRawValue())
     }
 
 
-    this.defaultForm.controls.sex.setValue(patient.sex);
+    this.defaultForm.controls.sex.setValue(patientObj.sex);
   }
 
   get todayDate() {
@@ -374,15 +381,15 @@ export class FormWizardComponent implements OnInit {
   }
 
   private showErrorToast(err: Error) {
-    this.notifSvc.sendMessage(err.message, 'danger', 'top-right');
+    this.notifSvc.sendMessage(err.message, 'danger', 'bottom-right');
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.sendMessage(content, 'success', 'top-right');
+    this.notifSvc.sendMessage(content, 'success', 'bottom-right');
   }
 
   private showInfoToast(content: string) {
-    this.notifSvc.sendMessage(content, 'info', 'top-right');
+    this.notifSvc.sendMessage(content, 'info', 'bottom-right');
   }
 
 

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, filter, map, Observable, of, take, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
-import { FormwizardEffectService } from 'src/app/services/effects/formwizard.effect.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { StaffModel } from 'src/app/shared/interfaces/template';
 
@@ -43,7 +42,7 @@ export class StaffModalComponent implements OnInit {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
       this.resetForm();
-      this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} with license no. ${addedStaff.licNo} to the staff list`, 'success', 'top-right');
+      this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} with license no. ${addedStaff.licNo} to the staff list`, 'success', 'bottom-right');
     });
   }
 
@@ -66,7 +65,7 @@ export class StaffModalComponent implements OnInit {
         if(response) {
           this.api.deleteStaff(staff).subscribe(() => {
             this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
-            this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'top-right');
+            this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'bottom-right');
           });
       }
     })

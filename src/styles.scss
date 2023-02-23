@@ -67,3 +67,21 @@ body {
         margin-top: 20px !important;
     }
 }
+
+.ngx-notification {
+    padding: 10px;
+    background-color: #2d2d30;
+    border-color: #272729;
+    color: #c9c9c9;
+}
+
+::ng-deep {
+    lib-ngx-notification {
+        .success {
+            padding: 10px !important;
+            background-color: red !important;
+        }
+    }
+}
+
+//   bottom-right ngx-notification show success
