@@ -200,17 +200,17 @@
                         <td *ngFor="let group of reportTemplate.group; let colIndex = index">
                             <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
                                 <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
-                                    placeholder="Input a Number">
+                                    placeholder="Input a Number" (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
                                 <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
-                                    placeholder="Input a Value">
+                                    placeholder="Input a Value"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                                    <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker" placeholder="Select Date"
+                                    <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker" placeholder="Select Date"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
                                         [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults" (click)="d.toggle()" />
                                 </div>
                                 <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
                                     <input type="text" class="tbl-data" [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
                                     <button type="button" class="btn btn-block btn-outline-primary dp-toggle text-truncate" ngbDropdownToggle>
-                                        {{ reportTemplate.group[colIndex].values[rowIndex] }}
+                                        {{ reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults.split(',')[0] }}
                                     </button>
                                     <div ngbDropdownMenu>
                                         <button ngbDropdownItem (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, dropdownItems.trim())"

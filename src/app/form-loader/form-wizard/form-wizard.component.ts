@@ -138,8 +138,6 @@ export class FormWizardComponent implements OnInit {
   }
 
   saveForm() {
-    // to implement how to get form values from table
-    
     const formValue = this.defaultForm.getRawValue();
     const patientModel: PatientModel = {
       name: formValue.name,
@@ -220,6 +218,15 @@ export class FormWizardComponent implements OnInit {
       }
       group.values.splice(rowIndex, 1);
     });
+  }
+
+  templateChange(templateIndex: number, rowIndex: number, colIndex: number, target: any) {
+    const inputValue = (target as HTMLInputElement).value
+
+    const tempList = this.templateList.getValue();
+    tempList[templateIndex].group[colIndex].values[rowIndex] = inputValue;
+
+    this.templateList.next(tempList);
   }
 
 

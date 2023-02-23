@@ -48,8 +48,6 @@ export class TemplateModalComponent implements OnInit {
   }
 
   save() {
-    console.log(this.template);
-
     this.activeModal.close({
       data: this.template,
       isDeleted: false

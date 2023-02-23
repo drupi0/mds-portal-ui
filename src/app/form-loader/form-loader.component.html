@@ -40,8 +40,11 @@
                 {{ form.patient.name }}
             </div>
             <div class="col-2 fw-bold">
-                <span class="badge bg-secondary"> {{ form.status }}</span>
-                <!-- <span class="badge bg-primary">Done</span> -->
+                <ng-container [ngSwitch]="form.status | lowercase">
+                    <span *ngSwitchCase="'routine'" class="badge bg-primary"> {{ form.status | titlecase }}</span>
+                    <span *ngSwitchCase="'stat'" class="badge bg-secondary"> {{ form.status | titlecase }}</span>
+                    <span *ngSwitchCase="'urgent'" class="badge bg-danger"> {{ form.status | titlecase }}</span>
+                </ng-container>
              </div>
             <div class="col-1 fw-bold d-flex">
                 <button class="btn btn-danger circular-btn">
