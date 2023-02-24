@@ -1,7 +1,12 @@
 .modal-body {
-    max-height: calc(100vh - 120px);
+    height: calc(100vh - 120px);
     overflow: auto;
     background-color: #d5d5d5;
-    font-family: 'Courier New', Courier, monospace;
+    * {
+        font-family: 'Courier New', Courier, monospace !important;
+    }   
 }
 
+.container {
+    min-width: 1320px;
+}

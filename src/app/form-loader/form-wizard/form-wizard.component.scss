@@ -4,11 +4,17 @@ table {
     }
 }
 
+.wizard-body {
+    height: calc(100vh - 80px - 108px);
+    overflow: auto;
+}
+
 .field-container {
     background-color: #fff;
     border: none !important;
     padding: 10px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+    min-width: 1190px;
 }
 
 .card {
@@ -30,6 +36,11 @@ table {
         width: 60px !important;
     }
     width: 10% !important;
+}
+
+.error {
+    box-shadow: 1px 1px 5px 1px rgba(225, 56, 104, 0.2) inset !important;
+    border-color: rgba(#e13868, 0.5) !important;
 }
 
 .dp-input {

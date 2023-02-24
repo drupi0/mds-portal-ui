@@ -1,8 +1,7 @@
 <lib-ngx-notification></lib-ngx-notification>
-<div class="d-flex mb-4">
+<div class="d-flex mb-1 mt-4 px-4">
     <div class="flex-fill d-flex align-items-center me-2">
-        <label for="searchBox" class="form-label" class="me-2">Search</label>
-        <input #searchForm type="text" class="form-control" name="searchBox" (keyup.enter)="onSearch(searchForm.value)">
+        <input placeholder="Search Patient Record" #searchForm type="text" class="form-control" name="searchBox" (keyup.enter)="onSearch(searchForm.value)">
         <button class="btn btn-primary ms-2" (click)="onSearch(searchForm.value)">
             <div class="d-flex align-items-center">
                 <mds-icons icon="search" [width]="15" [height]="15"></mds-icons>
@@ -12,7 +11,7 @@
     </div>
     <button class="btn btn-primary" [routerLink]="['new']">New Form</button>
 </div>
-<div class="vh-100">
+<div class="v-100 p-4">
     <div class="card p-3">
         <div class="row p-3 border-bottom">
             <div class="col-2 fw-bold">
@@ -54,7 +53,7 @@
                 </ng-container>
              </div>
             <div class="col-1 fw-bold d-flex">
-                <button class="btn btn-danger circular-btn">
+                <button class="btn btn-danger circular-btn" disabled>
                     <mds-icons icon="trash"></mds-icons>
                 </button>
                 <button class="btn btn-primary circular-btn ms-2" [routerLink]="[form.id]">

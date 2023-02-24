@@ -35,17 +35,15 @@
                 </div>
                 <div class="row">
                     <div class="col-2 fw-bold">Status:</div>
-                    <div class="col">{{ formData?.status }}</div>
+                    <div class="col">{{ formData?.status | uppercase }}</div>
                     <div class="col-2 fw-bold">Collection Date/Time:</div>
-                    <div class="col-1">{{ dateFormat(formData?.collectionDateTime) }}</div>
-                    <div class="col-1">14:30</div>
+                    <div class="col-2">{{ dateFormat(formData?.collectionDateTime) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-2 fw-bold">Specimen:</div>
                     <div class="col">0107:H101</div>
                     <div class="col-2 fw-bold">Received Date/Time:</div>
-                    <div class="col-1">{{ dateFormat(formData?.receivedDateTime) }}</div>
-                    <div class="col-1">14:30</div>
+                    <div class="col-2">{{ dateFormat(formData?.receivedDateTime) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-2 fw-bold">Ordered:</div>
@@ -97,14 +95,14 @@
 
 <div class="modal-header align-items-center">
     <h4 class="modal-title fw-bold">Print Preview</h4>
-    <span class="ms-3"><mds-icons icon="alert" ngbPopover="Preview might differ from actual printed report." [openDelay]="500"
+    <span class="ms-3 text-secondary"><mds-icons icon="alert" ngbPopover="Preview might differ from actual printed report." [openDelay]="500"
         triggers="mouseenter:mouseleave"></mds-icons></span>
     <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
 </div>
 <div class="modal-body overflow-auto">
    <ng-container [ngTemplateOutlet]="printPreview"></ng-container>
 </div>
-<div class="modal-footer d-flex">
+<div class="modal-footer d-flex position-sticky">
     <div class="flex-fill">
     </div>
     <div>

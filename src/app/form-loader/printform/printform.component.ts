@@ -46,6 +46,7 @@ export class PrintformComponent implements OnInit {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
       window.open(pdf.output('bloburl'), '_blank');
+      this.activeModal.dismiss();
     });
   }
 

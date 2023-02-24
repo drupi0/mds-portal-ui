@@ -1,152 +1,182 @@
-<div class="field-container px-5 border rounded">
-    <div class="row mt-3" [formGroup]="defaultForm">
-        <div class="mb-3 col d-flex flex-column">
-            <label class="form-label">Patient's Name</label>
-            <div ngbDropdown class="d-inline-block">
-                <input type="text" class="form-control" formControlName="name" (ngModelChange)="onPatientSearch(defaultForm.controls.name.value)" ngbDropdownToggle>
-                <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
-                    <button ngbDropdownItem *ngFor="let patient of (patientList | async)" (click)="assignPatient(patient)">
-                        {{ patient.name }}
+<div class="wizard-body pt-4 px-5">
+    <div class="field-container px-5 border rounded">
+        <div class="row mt-3" [formGroup]="defaultForm">
+            <div class="mb-3 col d-flex flex-column">
+                <label class="form-label">Patient's Name</label>
+                <div ngbDropdown class="d-inline-block">
+                    <input type="text" class="form-control" formControlName="name"
+                        (ngModelChange)="onPatientSearch(defaultForm.controls.name.value)" ngbDropdownToggle
+                        [ngClass]="{
+                            error: !defaultForm.controls.name.value
+                        }">
+                    <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
+                        <button ngbDropdownItem *ngFor="let patient of (patientList | async)"
+                            (click)="assignPatient(patient)">
+                            {{ patient.name }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 col-2 d-flex flex-column">
+                <label class="form-label">Gender</label>
+                <div ngbDropdown class="d-inline-block">
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" [ngClass]="{
+                        error: !defaultForm.controls.sex.value
+                    }" ngbDropdownToggle>
+                        {{ (defaultForm.controls.sex.value | titlecase) || 'Select Gender'}}
                     </button>
+                    <div ngbDropdownMenu>
+                        <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('male')">Male</button>
+                        <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('female')">Female</button>
+                    </div>
+                </div>
+                <input type="text" class="form-control" formControlName="sex" hidden>
+            </div>
+            <div class="mb-3 col-3">
+                <label class="form-label">Date of Birth</label>
+                <input type="text" class="form-control" [autoClose]="true" formControlName="dateOfBirth" ngbDatepicker
+                    #dob="ngbDatepicker" [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate"
+                    (click)="dob.toggle()" (dateSelect)="dateBlur($event, defaultForm.controls.dateOfBirth)"
+                    (blur)="dateBlur($event, defaultForm.controls.dateOfBirth)" placeholder="YYYY-MM-DD" [ngClass]="{
+                        error: !defaultForm.controls.dateOfBirth.value
+                    }">
+            </div>
+            <div class="mb-3 col-2">
+                <label class="form-label">Age</label>
+                <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
+            </div>
+        </div>
+        <div class="row" [formGroup]="defaultForm">
+            <div class="mb-3 col-3">
+                <label class="form-label">Spec #</label>
+                <input type="text" class="form-control" formControlName="specNo" [ngClass]="{
+                    error: !defaultForm.controls.specNo.value
+                }">
+            </div>
+            <div class="mb-3 col">
+                <label class="form-label">Ordering Dr.</label>
+                <input type="text" class="form-control" formControlName="orderingDr" [ngClass]="{
+                    error: !defaultForm.controls.orderingDr.value
+                }">
+            </div>
+    
+            <div class="mb-3 col-2 d-flex flex-column">
+                <label class="form-label">Status</label>
+                <div ngbDropdown class="d-inline-block">
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
+                        {{ (defaultForm.controls.status.value | titlecase) || 'Select Status'}}
+                    </button>
+                    <div ngbDropdownMenu>
+                        <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('routine')">Routine</button>
+                        <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('stat')">Stat</button>
+                        <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('urgent')">Urgent</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="mb-3 col-2 d-flex flex-column">
-            <label class="form-label">Gender</label>
-            <div ngbDropdown class="d-inline-block">
-                <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
-                    {{ (defaultForm.controls.sex.value | titlecase) ||  'Select Gender'}}
+        <div class="row" [formGroup]="defaultForm">
+            <div class="mb-3 col-3">
+                <label class="form-label">Specimen</label>
+                <input type="text" class="form-control" formControlName="specimen" [ngClass]="{
+                    error: !defaultForm.controls.specimen.value
+                }">
+            </div>
+            <div class="mb-3 col">
+                <label class="form-label">Ordered</label>
+                <input type="text" class="form-control" formControlName="ordered" [ngClass]="{
+                    error: !defaultForm.controls.ordered.value
+                }">
+            </div>
+            <div class="mb-3 col-3">
+                <label class="form-label">Collection Date/Time</label>
+                <input type="text" class="form-control" formControlName="collectionDateTime" ngbDatepicker
+                    #cd="ngbDatepicker" [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate"
+                    (click)="cd.toggle()">
+            </div>
+            <div class="mb-3 col-3">
+                <label class="form-label">Received Date/Time</label>
+                <input type="text" class="form-control" formControlName="receivedDateTime" ngbDatepicker #rd="ngbDatepicker"
+                    [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate" (click)="rd.toggle()">
+            </div>
+        </div>
+    </div>
+    <div class="field-container px-5 border rounded mt-3">
+        <div class="d-flex justify-content-end">
+            <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
+                <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
+                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
+                        Load Template
+                    </button>
+                    <div ngbDropdownMenu>
+                        <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
+                            (click)="addToTemplateField(templateItem)">{{ templateItem.name.trim() }} </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="newTemplate()">
+                    New
                 </button>
-                <div ngbDropdownMenu>
-                    <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('male')">Male</button>
-                    <button ngbDropdownItem (click)="defaultForm.controls.sex.setValue('female')">Female</button>
-                </div>
             </div>
-            <input type="text" class="form-control" formControlName="sex" hidden>
         </div>
-        <div class="mb-3 col-3">
-            <label class="form-label">Date of Birth</label>
-            <input type="text" class="form-control" [autoClose]="true"
-                formControlName="dateOfBirth"
-                ngbDatepicker #dob="ngbDatepicker"
-                [minDate]="{year: 1900, month: 1, day: 1}" 
-                [maxDate]="todayDate"
-                (click)="dob.toggle()"
-                (dateSelect)="dateBlur($event, defaultForm.controls.dateOfBirth)"
-                (blur)="dateBlur($event, defaultForm.controls.dateOfBirth)"
-                placeholder="YYYY-MM-DD">
-        </div>
-        <div class="mb-3 col-2">
-            <label class="form-label">Age</label>
-            <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
+        <!-- template containers -->
+        <div class="card pb-3" *ngIf="(templateList | async) as tempList">
+            <ng-container *ngIf="tempList.length !== 0 else emptyState;">
+                <ng-container [ngTemplateOutlet]="fieldInput" *ngFor="let template of tempList; let templateIndex = index;"
+                    [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+            </ng-container>
         </div>
     </div>
-    <div class="row" [formGroup]="defaultForm">
-        <div class="mb-3 col-3">
-            <label class="form-label">Spec #</label>
-            <input type="text" class="form-control" formControlName="specNo">
-        </div>
-        <div class="mb-3 col">
-            <label class="form-label">Ordering Dr.</label>
-            <input type="text" class="form-control" formControlName="orderingDr">
-        </div>
-
-        <div class="mb-3 col-2 d-flex flex-column">
-            <label class="form-label">Status</label>
-            <div ngbDropdown class="d-inline-block">
-                <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
-                    {{ (defaultForm.controls.status.value | titlecase) ||  'Select Status'}}
-                </button>
-                <div ngbDropdownMenu>
-                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('routine')">Routine</button>
-                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('stat')">Stat</button>
-                    <button ngbDropdownItem (click)="defaultForm.controls.status.setValue('urgent')">Urgent</button>
-                </div>
+    <div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
+        <div class="row mt-3">
+            <div class="mb-3 col">
+                <label class="form-label">Comment</label>
+                <textarea type="text" class="form-control" formControlName="comment" rows="5"></textarea>
             </div>
         </div>
     </div>
-    <div class="row" [formGroup]="defaultForm">
-        <div class="mb-3 col-3">
-            <label class="form-label">Specimen</label>
-            <input type="text" class="form-control" formControlName="specimen">
-        </div>
-        <div class="mb-3 col">
-            <label class="form-label">Ordered</label>
-            <input type="text" class="form-control" formControlName="ordered">
-        </div>
-        <div class="mb-3 col-3">
-            <label class="form-label">Collection Date/Time</label>
-            <input type="text" class="form-control" formControlName="collectionDateTime"
-                ngbDatepicker #cd="ngbDatepicker"
-                [minDate]="{year: 1900, month: 1, day: 1}" 
-                [maxDate]="todayDate"
-                (click)="cd.toggle()">
-        </div>
-        <div class="mb-3 col-3">
-            <label class="form-label">Received Date/Time</label>
-            <input type="text" class="form-control" formControlName="receivedDateTime"
-                ngbDatepicker #rd="ngbDatepicker"
-                [minDate]="{year: 1900, month: 1, day: 1}" 
-                [maxDate]="todayDate"
-                (click)="rd.toggle()">
-        </div>
-    </div>
-</div>
-<div class="field-container px-5 border rounded mt-3">
-    <div class="d-flex justify-content-end">
-        <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
-            <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
-                <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
-                    Load Template
-                </button>
-                <div ngbDropdownMenu>
-                    <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                        (click)="addToTemplateField(templateItem)">{{ templateItem.name.trim() }} </button>
-                </div>
+    <div class="field-container px-5 border rounded mt-3 mb-5" [formGroup]="defaultForm">
+        <div class="row mt-3">
+            <div class="mb-3 col">
+                <label class="form-label">Performed by</label>
+                <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
+                    (click)="showStaffModal(defaultForm.controls.performedBy)" [ngClass]="{
+                        error: !defaultForm.controls.performedBy.value?.name
+                    }" readonly>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="newTemplate()">
-                New
-            </button>
-        </div>
-    </div>
-    <!-- template containers -->
-    <div class="card pb-3" *ngIf="(templateList | async) as tempList">
-        <ng-container *ngIf="tempList.length !== 0 else emptyState;">
-            <ng-container [ngTemplateOutlet]="fieldInput"
-                *ngFor="let template of tempList; let templateIndex = index;"
-                [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
-        </ng-container>
-    </div>
-</div>
-
-<div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
-    <div class="row mt-3">
-        <div class="mb-3 col">
-            <label class="form-label">Comment</label>
-            <textarea type="text" class="form-control" formControlName="comment" rows="5"></textarea>
+            <div class="mb-3 col">
+                <label class="form-label">Verified by</label>
+                <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
+                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" [ngClass]="{
+                        error: !defaultForm.controls.verifiedBy.value?.name
+                    }" readonly>
+            </div>
+            <div class="mb-3 col">
+                <label class="form-label">Pathologist</label>
+                <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
+                    (click)="showStaffModal(defaultForm.controls.pathologist)" 
+                    [ngClass]="{
+                        error: !defaultForm.controls.pathologist.value?.name
+                    }" readonly>
+            </div>
         </div>
     </div>
 </div>
-<div class="field-container px-5 border rounded mt-3" [formGroup]="defaultForm">
-    <div class="row mt-3">
-        <div class="mb-3 col">
-            <label class="form-label">Performed by</label>
-            <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''" (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
-        </div>
-        <div class="mb-3 col">
-            <label class="form-label">Verified by</label>
-            <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''" (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
-        </div>
-        <div class="mb-3 col">
-            <label class="form-label">Pathologist</label>
-            <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''" (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
-        </div>
+<div class="d-flex p-4 align-items-center position-sticky border-top bg-white">
+    <div class="flex-fill">
+    <button class="btn btn-danger d-flex align-items-center me-3" (click)="clearForm()">
+            <mds-icons icon="close"></mds-icons>
+            <span class="ms-2">Clear</span>
+        </button>
     </div>
-</div>
-<div class="mt-3 d-flex justify-content-end p-4">
-    <button class="btn btn-primary me-2" (click)="saveForm()">Save Form</button>
-    <button class="btn btn-secondary me-2" (click)="printForm()">Print Form</button>
-    <button class="btn btn-danger" (click)="clearForm()">Clear</button>
+    <span class="me-2 text-danger" *ngIf="saveDisabled"
+    ngbPopover="Please fill up all the fields mark with red." [openDelay]="500" triggers="mouseenter:mouseleave">
+    <mds-icons icon="alert"></mds-icons></span>
+    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm()" [disabled]="saveDisabled">
+        <mds-icons icon="save"></mds-icons>
+        <span class="ms-2">Save</span>
+    </button>
+    <button class="btn btn-secondary d-flex align-items-center" (click)="printForm()" [disabled]="saveDisabled">
+        <mds-icons icon="file"></mds-icons>
+        <span class="ms-2">Save & Preview</span></button>
 </div>
 
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
@@ -155,18 +185,18 @@
             <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
         </div>
         <button class="btn btn-outline-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
-            ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave" (click)="editTemplate(reportTemplate)">
+            ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave"
+            (click)="editTemplate(reportTemplate)">
             <mds-icons icon="edit"></mds-icons>
         </button>
         <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
             ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
-            triggers="mouseenter:mouseleave"
-            (click)="saveTemplate(reportTemplate, tableData)">
+            triggers="mouseenter:mouseleave" (click)="saveTemplate(reportTemplate, tableData)">
             <mds-icons icon="save"></mds-icons>
         </button>
         <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
-            ngbPopover="Removes this template from the current form" [openDelay]="500"
-            triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
+            ngbPopover="Removes this template from the current form" [openDelay]="500" triggers="mouseenter:mouseleave"
+            (click)="removeFromTemplateField(reportTemplateIndex)">
             <mds-icons icon="trash"></mds-icons>
         </button>
     </div>
@@ -189,8 +219,7 @@
                     <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index">
                         <td class="menu">
                             <div class="d-flex">
-                                <button class="btn btn-outline-success circular-btn"
-                                    (click)="addRow(reportTemplate)">
+                                <button class="btn btn-outline-success circular-btn" (click)="addRow(reportTemplate)">
                                     <mds-icons icon="plus"></mds-icons>
                                 </button>
                                 <button class="btn btn-outline-danger circular-btn"
@@ -201,21 +230,42 @@
                         </td>
                         <td *ngFor="let group of reportTemplate.group; let colIndex = index">
                             <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
-                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
-                                    placeholder="Input a Number" (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
-                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [value]="reportTemplate.group[colIndex].values[rowIndex]"
-                                    placeholder="Input a Value"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
+                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [ngClass]="{
+                                    error: !reportTemplate.group[colIndex].values[rowIndex] || !reportTemplate.group[colIndex].values[rowIndex].trim().length
+                                }" [value]="reportTemplate.group[colIndex].values[rowIndex]"
+                                    placeholder="Input a Number"
+                                    (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
+                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [ngClass]="{
+                                    error: !reportTemplate.group[colIndex].values[rowIndex] || !reportTemplate.group[colIndex].values[rowIndex].trim().length
+                                }"
+                                    [value]="reportTemplate.group[colIndex].values[rowIndex]"
+                                    placeholder="Input a Value"
+                                    (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                                    <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker" placeholder="Select Date"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
-                                        [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults" (click)="d.toggle()" (dateSelect)="reportTemplate.group[colIndex].values[rowIndex] = $event"/>
+                                    <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker"
+                                        placeholder="Select Date"
+                                        (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
+                                        [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults"
+                                        (click)="d.toggle()"
+                                        [ngClass]="{
+                                            error: !reportTemplate.group[colIndex].values[rowIndex] || !reportTemplate.group[colIndex].values[rowIndex].trim().length
+                                        }"
+                                        (dateSelect)="reportTemplate.group[colIndex].values[rowIndex] = $event" />
                                 </div>
-                                <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
-                                    <input type="text" class="tbl-data" [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
-                                    <button type="button" class="btn btn-block btn-outline-primary dp-toggle text-truncate" ngbDropdownToggle>
-                                        {{ reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults.split(',')[0] }}
+                                <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body" [ngClass]="{
+                                    error: !reportTemplate.group[colIndex].values[rowIndex] || !reportTemplate.group[colIndex].values[rowIndex].trim().length
+                                }">
+                                    <input type="text" class="tbl-data"
+                                        [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
+                                    <button type="button"
+                                        class="btn btn-block btn-outline-primary dp-toggle text-truncate"
+                                        ngbDropdownToggle>
+                                        {{ reportTemplate.group[colIndex].values[rowIndex] ||
+                                        reportTemplate.group[colIndex].defaults.split(',')[0] }}
                                     </button>
                                     <div ngbDropdownMenu>
-                                        <button ngbDropdownItem (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, dropdownItems.trim())"
+                                        <button ngbDropdownItem
+                                            (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, dropdownItems.trim())"
                                             *ngFor="let dropdownItems of reportTemplate.group[colIndex].defaults.split(',');">{{
                                             dropdownItems.trim() }}</button>
                                     </div>

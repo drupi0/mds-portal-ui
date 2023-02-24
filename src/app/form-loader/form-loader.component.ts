@@ -22,7 +22,7 @@ export class FormLoaderComponent implements OnInit {
     currentPage: 1,
     offset: 0,
     size: 10,
-    totalElements: 100
+    totalElements: 10
   }
 
   ngOnInit(): void {

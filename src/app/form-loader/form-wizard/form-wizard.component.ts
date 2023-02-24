@@ -183,6 +183,10 @@ export class FormWizardComponent implements OnInit {
     return patientFormJson;
   }
 
+  get saveDisabled(): boolean {
+    return document.getElementsByClassName("error").length !== 0;
+  }
+
   saveForm(navigateToHome: boolean = true) {
     this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
       this.showErrorToast(err);
