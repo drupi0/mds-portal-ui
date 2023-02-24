@@ -145,6 +145,7 @@
 </div>
 <div class="mt-3 d-flex justify-content-end p-4">
     <button class="btn btn-primary me-2" (click)="saveForm()">Save Form</button>
+    <button class="btn btn-secondary me-2" (click)="printForm()">Print Form</button>
     <button class="btn btn-danger" (click)="clearForm()">Clear</button>
 </div>
 
@@ -206,7 +207,7 @@
                                     placeholder="Input a Value"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
                                     <input type="text" class="tbl-data form-control" ngbDatepicker #d="ngbDatepicker" placeholder="Select Date"  (blur)="templateChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
-                                        [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults" (click)="d.toggle()" />
+                                        [value]="reportTemplate.group[colIndex].values[rowIndex] || reportTemplate.group[colIndex].defaults" (click)="d.toggle()" (dateSelect)="reportTemplate.group[colIndex].values[rowIndex] = $event"/>
                                 </div>
                                 <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
                                     <input type="text" class="tbl-data" [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>

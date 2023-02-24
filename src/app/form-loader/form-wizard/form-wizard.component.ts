@@ -7,6 +7,7 @@ import { BehaviorSubject, catchError, debounceTime, delay, EMPTY, forkJoin, of, 
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { PatientModel, PatientRecordModel, StaffModel, TemplateModel } from 'src/app/shared/interfaces/template';
+import { PrintformComponent } from '../printform/printform.component';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
@@ -46,6 +47,7 @@ export class FormWizardComponent implements OnInit {
   templateOptions: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   templateList: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   patientList:  BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
+  patientFormId: string = "";
   
 
   initFormBuilder() {
@@ -55,6 +57,7 @@ export class FormWizardComponent implements OnInit {
       const { formId } = param;
 
       if (formId) {
+        this.patientFormId = formId;
         this.initFormTemplate(formId);
       }
     });
@@ -141,7 +144,7 @@ export class FormWizardComponent implements OnInit {
 
   }
 
-  saveForm() {
+  private prepareRecord(): Partial<PatientRecordModel> {
     const formValue = this.defaultForm.getRawValue();
     const patientModel: PatientModel = {
       name: formValue.name,
@@ -176,19 +179,24 @@ export class FormWizardComponent implements OnInit {
         dateOfBirth: this.dateToString(patientRecord.patient.dateOfBirth)
       }
     }
-   
-    this.api.saveRecord(patientFormJson).pipe(catchError((err: Error) => {
-      
-      this.showErrorToast(err);
 
+    return patientFormJson;
+  }
+
+  saveForm(navigateToHome: boolean = true) {
+    this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
+      this.showErrorToast(err);
       return EMPTY;
     })).subscribe((record: PatientRecordModel) => {
-      
-      this.ngZone.run(() => {
-        this.router.navigate(["form"]).then(() => {
-          this.showSuccessToast(`Form ${record.id} successfully saved`);
+      if(navigateToHome) {
+        this.ngZone.run(() => {
+          this.router.navigate(["form"]).then(() => {
+            this.showSuccessToast(`Form ${record.id} successfully saved`);
+          });
         });
-      });
+      } else {
+        this.showSuccessToast(`Form ${record.id} successfully saved`);
+      }
     });
   }
 
@@ -198,7 +206,13 @@ export class FormWizardComponent implements OnInit {
   }
 
   printForm() {
+    const modalRef = this.modalService.open(PrintformComponent, {
+      fullscreen: true,
+      backdrop: 'static'
+    });
 
+    this.saveForm(false);
+    modalRef.componentInstance.formData = this.prepareRecord();
   }
 
   newTemplate() {
@@ -236,14 +250,15 @@ export class FormWizardComponent implements OnInit {
 
   addToTemplateField(template: TemplateModel) {
     const tempList = this.templateList.getValue() || [];
+    const newTemplate = JSON.parse(JSON.stringify(template));
 
     if (template.group[0].values.length === 0) {
-      this.addRow(template);
+      this.addRow(newTemplate);
     }
 
-    console.log(tempList);
-
-    tempList.push(template);
+    console.log(newTemplate);
+    
+    tempList.push(newTemplate);
 
     this.templateList.next(tempList);
   }
@@ -387,11 +402,6 @@ export class FormWizardComponent implements OnInit {
   private showSuccessToast(content: string) {
     this.notifSvc.sendMessage(content, 'success', 'bottom-right');
   }
-
-  private showInfoToast(content: string) {
-    this.notifSvc.sendMessage(content, 'info', 'bottom-right');
-  }
-
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal, 
               private calendar: NgbCalendar, private api: ApiService, 

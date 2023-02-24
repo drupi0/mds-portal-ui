@@ -1,0 +1,124 @@
+<ng-template #printPreview>
+    <div class="container bg-white shadow mt-3">
+        <div #printArea class="p-5">
+            <div class="row mt-4">
+                <div class="col-1">
+                    <img src="/assets/logo.png" style="height: 100px">
+                </div>
+                <div class="col d-flex flex-column align-items-center justify-content-center">
+                    <span class="fw-bold">MULTIHEALTH DYNAMIC SOLUTIONS INC.</span>
+                    <div class="d-flex">
+                        <span class="me-3">(056) 255-1277</span>
+                        <span class="me-3">www.mdsolutionsph.com</span>
+                        <span>info@mdsolutionsph.com</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded p-3 mt-4">
+                <div class="row">
+                    <div class="col-2 fw-bold">Name:</div>
+                    <div class="col">{{ formData?.patient?.name }}</div>
+                    <div class="col-2 fw-bold">Age/Sex:</div>
+                    <div class="col-2">{{ calcAge(formData?.patient?.dateOfBirth)}} /{{ formData?.patient?.sex }}</div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-2 fw-bold">Spec. #:</div>
+                    <div class="col">{{ formData?.specNo }}</div>
+                    <div class="col-2 fw-bold">DOB:</div>
+                    <div class="col-1">{{ dateFormat(formData?.patient?.dateOfBirth) }}</div>
+                    <div class="col-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
+                    <div class="col">{{ formData?.orderingDoctor }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2 fw-bold">Status:</div>
+                    <div class="col">{{ formData?.status }}</div>
+                    <div class="col-2 fw-bold">Collection Date/Time:</div>
+                    <div class="col-1">{{ dateFormat(formData?.collectionDateTime) }}</div>
+                    <div class="col-1">14:30</div>
+                </div>
+                <div class="row">
+                    <div class="col-2 fw-bold">Specimen:</div>
+                    <div class="col">0107:H101</div>
+                    <div class="col-2 fw-bold">Received Date/Time:</div>
+                    <div class="col-1">{{ dateFormat(formData?.receivedDateTime) }}</div>
+                    <div class="col-1">14:30</div>
+                </div>
+                <div class="row">
+                    <div class="col-2 fw-bold">Ordered:</div>
+                    <div class="col">{{ formData?.ordered }}</div>
+                </div>
+            </div>
+            <div class="rounded p-3 mt-4" *ngFor="let field of reportField">
+                <div class="row">
+                    <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
+                </div>
+                <div class="row mt-3">
+                    <table class="table w-100">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let col of field.group">{{ col.name }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of field.group[0].values; let rowIndex = index">
+                                <td *ngFor="let group of field.group; let colIndex = index">
+                                    {{ group.values[rowIndex] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-2 fw-bold">COMMENT:</div>
+                <div class="col">{{ formData?.comments }}</div>
+            </div>
+            <div class="row mt-4 border border-3 border-dark">
+                <div class="col fw-bold text-center">** END OF REPORT**</div>
+            </div>
+            <div class="row mt-4">
+                <div class="col fw-bold">Performed by:</div>
+                <div class="col fw-bold">Verified by:</div>
+                <div class="col fw-bold">Pathologist:</div>
+            </div>
+            <div class="row mt-4 mb-3">
+                <div class="col">{{ formData?.performedBy?.name }} / Lic No. {{ formData?.performedBy?.licNo }}</div>
+                <div class="col">{{ formData?.verifiedBy?.name }} / Lic No. {{ formData?.verifiedBy?.licNo }}</div>
+                <div class="col">{{ formData?.pathologist?.name }} / Lic No. {{ formData?.pathologist?.licNo }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5 mb-5"></div>
+</ng-template>
+
+<div class="modal-header align-items-center">
+    <h4 class="modal-title fw-bold">Print Preview</h4>
+    <span class="ms-3"><mds-icons icon="alert" ngbPopover="Preview might differ from actual printed report." [openDelay]="500"
+        triggers="mouseenter:mouseleave"></mds-icons></span>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body overflow-auto">
+   <ng-container [ngTemplateOutlet]="printPreview"></ng-container>
+</div>
+<div class="modal-footer d-flex">
+    <div class="flex-fill">
+    </div>
+    <div>
+        <button type="button" class="btn btn-outline-secondary" (click)="dismiss()">
+            <div class="d-flex">
+                <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Close</span>
+            </div>
+        </button>
+        <button type="button" class="btn btn-primary ms-2" (click)="downloadAsPdf()">
+            <div class="d-flex">
+                <mds-icons icon="print" [width]="20" [height]="20"></mds-icons>
+                <span class="ms-2">Print</span>
+            </div>
+        </button>
+    </div>
+</div>

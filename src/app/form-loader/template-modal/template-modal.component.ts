@@ -35,7 +35,7 @@ export class TemplateModalComponent implements OnInit {
       name: `Column ${this.template.group.length + 1}`,
       type: FieldType.DEFAULT,
       defaults: "",
-      values: [""]
+      values: []
     });
   }
 

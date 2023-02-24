@@ -24,6 +24,7 @@ import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.compo
 
 import { NgxNotificationModule } from 'ngx-notification';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
+import { PrintformComponent } from './form-loader/printform/printform.component';
 
 const appRoutes: Routes = [{
   path: "login",
@@ -76,7 +77,8 @@ const appRoutes: Routes = [{
     TemplateModalComponent,
     IconsComponent,
     StaffModalComponent,
-    YesNoModalComponent
+    YesNoModalComponent,
+    PrintformComponent
   ],
   imports: [
     BrowserModule,
