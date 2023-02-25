@@ -1,7 +1,7 @@
 <div class="wizard-body pt-4 px-5">
     <div class="field-container px-5 border rounded">
         <div class="row mt-3" [formGroup]="defaultForm">
-            <div class="mb-3 col d-flex flex-column">
+            <div class="mb-3 col-6 d-flex flex-column">
                 <label class="form-label">Patient's Name</label>
                 <div ngbDropdown class="d-inline-block">
                     <input type="text" class="form-control" formControlName="name"
@@ -32,22 +32,20 @@
                 </div>
                 <input type="text" class="form-control" formControlName="sex" hidden>
             </div>
-            <div class="mb-3 col-3">
+            <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Date of Birth</label>
-                <input type="text" class="form-control" [autoClose]="true" formControlName="dateOfBirth" ngbDatepicker
-                    #dob="ngbDatepicker" [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate"
-                    (click)="dob.toggle()" (dateSelect)="dateBlur($event, defaultForm.controls.dateOfBirth)"
-                    (blur)="dateBlur($event, defaultForm.controls.dateOfBirth)" placeholder="YYYY-MM-DD" [ngClass]="{
-                        error: !defaultForm.controls.dateOfBirth.value
-                    }">
+                <mds-datetimepicker [showTime]="false" 
+                    [minDate]="{year: 1900, month: 1, day: 1}"
+                    [date]="defaultForm.controls.dateOfBirth.value" 
+                    (onChange)="defaultForm.controls.dateOfBirth.setValue($event)"></mds-datetimepicker>
             </div>
-            <div class="mb-3 col-2">
+            <div class="mb-3 col-1">
                 <label class="form-label">Age</label>
                 <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
             </div>
         </div>
         <div class="row" [formGroup]="defaultForm">
-            <div class="mb-3 col-3">
+            <div class="mb-3 col-2">
                 <label class="form-label">Spec #</label>
                 <input type="text" class="form-control" formControlName="specNo" [ngClass]="{
                     error: !defaultForm.controls.specNo.value
@@ -75,28 +73,31 @@
             </div>
         </div>
         <div class="row" [formGroup]="defaultForm">
-            <div class="mb-3 col-3">
+            <div class="mb-3 col-2">
                 <label class="form-label">Specimen</label>
                 <input type="text" class="form-control" formControlName="specimen" [ngClass]="{
                     error: !defaultForm.controls.specimen.value
                 }">
             </div>
-            <div class="mb-3 col">
+            <div class="mb-3 col-6">
                 <label class="form-label">Ordered</label>
                 <input type="text" class="form-control" formControlName="ordered" [ngClass]="{
                     error: !defaultForm.controls.ordered.value
                 }">
             </div>
-            <div class="mb-3 col-3">
+            <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Collection Date/Time</label>
-                <input type="text" class="form-control" formControlName="collectionDateTime" ngbDatepicker
-                    #cd="ngbDatepicker" [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate"
-                    (click)="cd.toggle()">
+                <mds-datetimepicker
+                    [time]="splitDateTime(defaultForm.controls.collectionDateTime.value).time" 
+                    [date]="splitDateTime(defaultForm.controls.collectionDateTime.value).date"
+                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)"></mds-datetimepicker>
             </div>
-            <div class="mb-3 col-3">
+            <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Received Date/Time</label>
-                <input type="text" class="form-control" formControlName="receivedDateTime" ngbDatepicker #rd="ngbDatepicker"
-                    [minDate]="{year: 1900, month: 1, day: 1}" [maxDate]="todayDate" (click)="rd.toggle()">
+                <mds-datetimepicker
+                [time]="splitDateTime(defaultForm.controls.receivedDateTime.value).time" 
+                [date]="splitDateTime(defaultForm.controls.receivedDateTime.value).date"
+                (onChange)="defaultForm.controls.receivedDateTime.setValue($event)"></mds-datetimepicker>
             </div>
         </div>
     </div>

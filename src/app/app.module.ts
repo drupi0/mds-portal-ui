@@ -25,6 +25,7 @@ import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.compo
 import { NgxNotificationModule } from 'ngx-notification';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { PrintformComponent } from './form-loader/printform/printform.component';
+import { DatetimepickerComponent } from './shared/components/datetimepicker/datetimepicker.component';
 
 const appRoutes: Routes = [{
   path: "login",
@@ -78,7 +79,8 @@ const appRoutes: Routes = [{
     IconsComponent,
     StaffModalComponent,
     YesNoModalComponent,
-    PrintformComponent
+    PrintformComponent,
+    DatetimepickerComponent
   ],
   imports: [
     BrowserModule,

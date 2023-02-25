@@ -36,8 +36,8 @@ export interface PatientRecordModel {
     status: string,
     specimen: string,
     ordered: string,
-    collectionDateTime: NgbDateStruct,
-    receivedDateTime: NgbDateStruct,
+    collectionDateTime: string,
+    receivedDateTime: string,
     comments: string
     data: string
 }

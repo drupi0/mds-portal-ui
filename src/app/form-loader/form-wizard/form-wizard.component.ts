@@ -35,8 +35,8 @@ export class FormWizardComponent implements OnInit {
     status: new FormControl("routine"),
     specimen: new FormControl(),
     ordered: new FormControl(),
-    collectionDateTime: new FormControl(this.todayDate as NgbDateStruct),
-    receivedDateTime: new FormControl(this.todayDate as NgbDateStruct),
+    collectionDateTime: new FormControl(),
+    receivedDateTime: new FormControl(),
     comment: new FormControl(),
     performedBy: new FormControl<StaffModel>(this.defaultStaff),
     verifiedBy: new FormControl<StaffModel>(this.defaultStaff),
@@ -171,16 +171,19 @@ export class FormWizardComponent implements OnInit {
     } as PatientRecordModel;
 
     const patientFormJson: {} = {
-      ...patientRecord,
-      collectionDateTime:  this.dateToString(patientRecord.collectionDateTime),
-      receivedDateTime: this.dateToString(patientRecord.receivedDateTime),
-      patient: {
-        ...patientRecord.patient,
-        dateOfBirth: this.dateToString(patientRecord.patient.dateOfBirth)
-      }
+      ...patientRecord
     }
 
     return patientFormJson;
+  }
+
+  splitDateTime(value: string): { date: string, time: string } {
+    if(!value) {
+      value = "";
+    }
+
+    const [date, time] = value.split(" ");
+    return {date, time};
   }
 
   get saveDisabled(): boolean {
@@ -259,8 +262,6 @@ export class FormWizardComponent implements OnInit {
     if (template.group[0].values.length === 0) {
       this.addRow(newTemplate);
     }
-
-    console.log(newTemplate);
     
     tempList.push(newTemplate);
 
@@ -298,25 +299,14 @@ export class FormWizardComponent implements OnInit {
     })
   }
 
-  dateBlur(event: any | NgbDateStruct, control: FormControl) {
-   
-    if(event instanceof FocusEvent ) {
-
-      const dateValue = (event.target as HTMLInputElement).value
-      control.setValue(this.formatDateStringToNgbDate(dateValue));
-      return;
-    }
-  }
 
   assignPatient(patient: any) {
     const patientObj: { name: string, dateOfBirth: string, sex: string} = patient;
     this.defaultForm.controls.name.setValue(patientObj.name);
 
     if (patientObj.dateOfBirth.length) {
-      this.defaultForm.controls.dateOfBirth.setValue(this.formatDateStringToNgbDate(patientObj.dateOfBirth));
+      this.defaultForm.controls.dateOfBirth.setValue(patientObj.dateOfBirth);
       this.defaultForm.controls.age.setValue(this.calcAge);
-      
-      console.log(this.defaultForm.getRawValue())
     }
 
 
@@ -332,45 +322,20 @@ export class FormWizardComponent implements OnInit {
       return "";
     }
 
-    const { year, month, day } = this.defaultForm.get('dateOfBirth')?.value;
-    let age = this.todayDate.year - year
-    const monthDiff = this.todayDate.month - month;
-    if (monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < day)) {
+    const [day, month, year] = this.defaultForm.get('dateOfBirth')?.value.split("/");
+    let age = this.todayDate.year - parseInt(year)
+    const monthDiff = this.todayDate.month - parseInt(month);
+    if (monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < parseInt(day))) {
       age--;
     }
 
     return `${age}`;
   }
 
-  private formatDateStringToNgbDate(date: string): NgbDateStruct {
-    const splitDate = date.split("-");
-
-    if(splitDate.length < 3) {
-      return this.todayDate;
-    }
-
-    return {
-      year: parseInt(splitDate[0]),
-      month: parseInt(splitDate[1]),
-      day: parseInt(splitDate[2])
-    }
-  }
-
-  private dateToString(dateJson: NgbDateStruct) {
-    return `${dateJson.year}-${dateJson.month}-${dateJson.day}`
-  }
-
-
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {
-        ...patientRecord,
-        patient: {
-          ...patientRecord?.patient,
-          dateOfBirth: this.formatDateStringToNgbDate(patientRecord?.patient?.dateOfBirth)
-        },
-        receivedDateTime: this.formatDateStringToNgbDate(patientRecord?.receivedDateTime),
-        collectionDateTime: this.formatDateStringToNgbDate(patientRecord?.collectionDateTime)
+        ...patientRecord
       } as PatientRecordModel;
 
       this.templateList.next(JSON.parse(record.data));
