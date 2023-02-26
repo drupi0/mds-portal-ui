@@ -55,13 +55,13 @@ export class PrintformComponent implements OnInit {
   }
 
   dateFormat(date: string | any) {
-    const [year, month, day ] = date.split("-");
+    const [year, month, day ] = date.split("/");
 
     return `${day}/${month}/${year}`;
   }
 
   calcAge(date: string | any) {
-    const [year, month, day ] = date.split("-");
+    const [month, day, year ] = date.split("/");
     const todayDate = this.calendar.getToday();
     let age = todayDate.year - parseInt(year);
     

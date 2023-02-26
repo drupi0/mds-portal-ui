@@ -1,28 +1,30 @@
-<div class="d-inline-block" ngbDropdown #dp="ngbDropdown">
-    <button type="button" class="btn btn-outline-primary dp-input" ngbDropdownToggle>
-        <ng-container *ngIf="stringifyDate().concat(stringifyTime()).length; else placeholder">
-            <span>{{ stringifyDate().concat(showTime ? ' ' + stringifyTime() : '') }}</span>
-        </ng-container>
-        <ng-template #placeholder>
-            <span class="text-muted">MM/DD/YYYY{{ showTime ? ' HH:MM' : ''}}</span>
-        </ng-template>
-    </button>
-    <div ngbDropdownMenu>
-        <div class="d-flex">
-            <div class="border-bottom" [ngClass]="{
-                'border-end': showTime
-            }">
-                <ngb-datepicker class="border-0" [minDate]="minDate" (ngModelChange)="onDateSet($event)" [ngModel]="dateObj"></ngb-datepicker>
-            </div>
-            <div class="d-flex align-items-center border-bottom" *ngIf="showTime">
-                <div class="d-flex flex-column align-items-center p-2">
-                    <ngb-timepicker [meridian]="true" [ngModel]="timeObj" (ngModelChange)="onTimeSet($event)"></ngb-timepicker>
+<div class="d-block">
+    <div ngbDropdown #dp="ngbDropdown" container="body">
+        <button type="button" class="btn btn-outline-primary dp-input" ngbDropdownToggle>
+            <ng-container *ngIf="stringifyDate().concat(stringifyTime()).length; else placeholder">
+                <span>{{ stringifyDate().concat(showTime ? ' ' + stringifyTime() : '') }}</span>
+            </ng-container>
+            <ng-template #placeholder>
+                <span class="text-muted">MM/DD/YYYY{{ showTime ? ' HH:MM' : ''}}</span>
+            </ng-template>
+        </button>
+        <div ngbDropdownMenu >
+            <div class="d-flex">
+                <div class="border-bottom" [ngClass]="{
+                    'border-end': showTime
+                }">
+                    <ngb-datepicker class="border-0" [minDate]="minDate" (ngModelChange)="onDateSet($event)" [ngModel]="dateObj"></ngb-datepicker>
+                </div>
+                <div class="d-flex align-items-center border-bottom" *ngIf="showTime">
+                    <div class="d-flex flex-column align-items-center p-2">
+                        <ngb-timepicker [meridian]="true" [ngModel]="timeObj" (ngModelChange)="onTimeSet($event)"></ngb-timepicker>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="d-flex justify-content-end p-2 bg-light">
-            <button type="button" class="btn btn-light" (click)="set(dp, true)">Cancel</button>
-            <button type="button" class="btn btn-primary ms-2" (click)="set(dp)">Set</button>
+            <div class="d-flex justify-content-end p-2 bg-light">
+                <button type="button" class="btn btn-light" (click)="set(dp, true)">Cancel</button>
+                <button type="button" class="btn btn-primary ms-2" (click)="set(dp)">Set</button>
+            </div>
         </div>
     </div>
 </div>

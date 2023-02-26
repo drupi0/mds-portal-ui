@@ -14,7 +14,7 @@ export interface TemplateModel {
 export interface PatientModel {
     id?: string
     name: string,
-    dateOfBirth: NgbDateStruct,
+    dateOfBirth: string,
     sex: string,
 }
 

@@ -1,9 +1,9 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbCalendar, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, catchError, debounceTime, delay, EMPTY, forkJoin, of, switchMap, take } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, of, switchMap, take } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { PatientModel, PatientRecordModel, StaffModel, TemplateModel } from 'src/app/shared/interfaces/template';
@@ -47,11 +47,12 @@ export class FormWizardComponent implements OnInit {
   templateOptions: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   templateList: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   patientList:  BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
-  patientFormId: string = "";
-  
+  patientFormId: string = "";  
 
   initFormBuilder() {
-    this.api.getTemplates().subscribe((list: TemplateModel[]) => this.templateOptions.next(list));
+    this.api.getTemplates().subscribe((list: TemplateModel[]) => {
+      this.templateOptions.next(list)
+    });
 
     this.route.params.subscribe(param => {
       const { formId } = param;
@@ -115,24 +116,27 @@ export class FormWizardComponent implements OnInit {
   }
 
   saveTemplate(template: TemplateModel, templateHtml: HTMLTableSectionElement) {
-    template.group.forEach(group => group.values = []);
+    const updateTemplate: TemplateModel = JSON.parse(JSON.stringify(template));
+    updateTemplate.group.forEach(group => group.values = []);
 
     Array.from(templateHtml.getElementsByTagName("tr")).forEach(row => {
       Array.from(row.getElementsByClassName("tbl-data")).forEach((data, index) => {
         const value = (data as HTMLInputElement).value;
-        template.group[index].values.push(!value ? '' : value.trim());
+        updateTemplate.group[index].values.push(!value ? '' : value.trim());
       });
     });
 
-    this.api.updateTemplate(template).pipe(catchError((err: Error) => {
+    this.api.updateTemplate(updateTemplate).pipe(catchError((err: Error) => {
       err.message = `Error saving '${template.name}'. Template might be outdated or has been deleted from the database.`
       this.showErrorToast(err);
       return EMPTY;
-    })).subscribe(() => {
-      const tempOptions = this.templateOptions.getValue();
-      this.templateOptions.next([...tempOptions.filter(opt => opt.id !== template.id), template]);
-
-      this.showSuccessToast(`Successfully updated '${ template.name }'`);
+    })).subscribe((updatedTempResponse: TemplateModel) => {
+      const tempOptions: TemplateModel[] = JSON.parse(JSON.stringify(this.templateOptions.getValue()));
+      const toUpdateIndex = tempOptions.findIndex(opt => opt.id === updatedTempResponse.id);
+      tempOptions.splice(toUpdateIndex, 1, updatedTempResponse);
+      this.templateOptions.next(tempOptions);
+      this.showSuccessToast(`Successfully updated '${ updatedTempResponse.name }'`);
+     
     });
   }
 
@@ -190,6 +194,20 @@ export class FormWizardComponent implements OnInit {
     return document.getElementsByClassName("error").length !== 0;
   }
 
+  isErrorColumn(group: { values: []}): boolean {
+    return group.values.some(val => !val);
+    // return true;
+  }
+
+  inputChange(templateIndex: number, rowIndex: number, colIndex: number, target: any) {
+    const inputValue = (target as HTMLInputElement).value
+
+    const tempList = this.templateList.getValue();
+    tempList[templateIndex].group[colIndex].values[rowIndex] = inputValue;
+
+    this.templateList.next(tempList);
+  }
+
   saveForm(navigateToHome: boolean = true) {
     this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
       this.showErrorToast(err);
@@ -245,15 +263,6 @@ export class FormWizardComponent implements OnInit {
     });
   }
 
-  templateChange(templateIndex: number, rowIndex: number, colIndex: number, target: any) {
-    const inputValue = (target as HTMLInputElement).value
-
-    const tempList = this.templateList.getValue();
-    tempList[templateIndex].group[colIndex].values[rowIndex] = inputValue;
-
-    this.templateList.next(tempList);
-  }
-
 
   addToTemplateField(template: TemplateModel) {
     const tempList = this.templateList.getValue() || [];
@@ -264,7 +273,6 @@ export class FormWizardComponent implements OnInit {
     }
     
     tempList.push(newTemplate);
-
     this.templateList.next(tempList);
   }
 
@@ -322,7 +330,7 @@ export class FormWizardComponent implements OnInit {
       return "";
     }
 
-    const [day, month, year] = this.defaultForm.get('dateOfBirth')?.value.split("/");
+    const [month, day, year] = this.defaultForm.get('dateOfBirth')?.value.split("/");
     let age = this.todayDate.year - parseInt(year)
     const monthDiff = this.todayDate.month - parseInt(month);
     if (monthDiff < 0 || (monthDiff === 0 && this.todayDate.day < parseInt(day))) {
@@ -374,5 +382,6 @@ export class FormWizardComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal, 
               private calendar: NgbCalendar, private api: ApiService, 
-              private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router) { }
+              private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
+              ) { }
 }

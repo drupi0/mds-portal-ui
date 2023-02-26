@@ -1,4 +1,4 @@
-:host {
+:host ::ng-deep {
     .dp-input {
         color: #212529;
         background-color: #ffffff;
@@ -9,9 +9,15 @@
             content: none !important;
         }
         min-width: 20ch;
+        display: block;
     }
 
     --bs-info: var(--bs-primary);
+    width: 100%;
+
+    .dropdown-toggle {
+        width: 100%;
+    }
 }
 
 .dropdown-menu {

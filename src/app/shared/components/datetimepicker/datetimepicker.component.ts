@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -9,6 +9,7 @@ import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-boot
 export class DatetimepickerComponent implements OnChanges, OnInit {
   @Input() date: string = "";
   @Input() time: string = "";
+
   @Input() showTime: boolean = true;
   @Input() minDate: NgbDateStruct = {} as NgbDateStruct;
 
@@ -18,6 +19,23 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
   @Output() onChange: EventEmitter<string> = new EventEmitter();
 
   ngOnInit() {
+    const currentDt = new Date();
+
+    this.timeObj = {
+      hour: currentDt.getHours(),
+      minute: currentDt.getMinutes(),
+      second: currentDt.getSeconds()
+    }
+
+    this.dateObj = {
+      day: currentDt.getDate(),
+      month: currentDt.getMonth() + 1,
+      year: currentDt.getFullYear()
+    }
+
+    this.date = `${this.doublePadding(this.dateObj.month)}/${this.doublePadding(this.dateObj.day)}/${this.dateObj.year}`;
+    this.time = `${this.doublePadding(this.timeObj.hour)}:${this.doublePadding(this.timeObj.minute)}`
+    
     this.initDateTime();
   }
 
@@ -44,25 +62,8 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
   }
 
   private initDateTime() {
-    const currentDt = new Date();
-
-    if(!Object.keys(this.minDate).length) {
-      this.minDate = {
-        year: currentDt.getFullYear() - 10,
-        month: 1,
-        day: 1
-      }
-    }
-
-    if(!this.time) {
-     
-      this.timeObj = {
-        hour: currentDt.getHours(),
-        minute: currentDt.getMinutes(),
-        second: currentDt.getSeconds()
-      }
-    } else {
-      console.log(this.time)
+    
+    if(this.time) {
       const [hh, mm] = this.time.split(":");
       this.timeObj = {
         hour: parseInt(hh),
@@ -71,13 +72,7 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
       }
     }
 
-    if(!this.date) {
-      this.dateObj = {
-        day: currentDt.getDate(),
-        month: currentDt.getMonth() + 1,
-        year: currentDt.getFullYear()
-      }
-    } else {
+    if(this.date) {
       const [mm, dd, yyyy] = this.date.split("/");
       this.dateObj = {
         day: parseInt(dd),
@@ -102,30 +97,33 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
 
   stringifyDate() {
     const { day, month, year } = this.dateObj;
-    return `${this.doublePadding(day)}/${this.doublePadding(month)}/${year}`;
+    return `${this.doublePadding(month)}/${this.doublePadding(day)}/${year}`;
   }
 
   private doublePadding(numParam: number): string {
     return (numParam).toLocaleString(undefined, { minimumIntegerDigits: 2 });
   }
 
-  set(dp: NgbDropdown, isCancelled: boolean = false) {
+  set(dp: NgbDropdown | undefined, isCancelled: boolean = false) {
     if(isCancelled) {
       this.initDateTime();
     } else {
       const { hour, minute } = this.timeObj;
       const { day, month, year } = this.dateObj;
   
-      let dateString = `${day}/${month}/${year}`
+      let dateString = `${this.doublePadding(month)}/${this.doublePadding(day)}/${year}`
 
       if(this.showTime) {
-        dateString = dateString.concat(` ${hour}:${minute}`);
+        dateString = dateString.concat(` ${this.doublePadding(hour)}:${this.doublePadding(minute)}`);
       }
 
       this.onChange.next(dateString);
     }
 
-    dp.close();
+    if(dp) {
+      dp.close();
+    }
+    
   }
 
   constructor(){}

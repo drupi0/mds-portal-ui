@@ -31,7 +31,7 @@ table {
     overflow-y: visible;
 }
 
-.menu{
+.menu {
     .d-flex {
         width: 60px !important;
     }
@@ -39,8 +39,14 @@ table {
 }
 
 .error {
-    box-shadow: 1px 1px 5px 1px rgba(225, 56, 104, 0.2) inset !important;
-    border-color: rgba(#e13868, 0.5) !important;
+    &::after {
+        color: #e13868;
+        content: " *";
+    }
+}
+
+.error-dt {
+    background: rgba(#e13868, 0.1);
 }
 
 .dp-input {
@@ -62,12 +68,9 @@ table {
 tbody {
     td:not(.menu) {
         text-align: center;
-        width: 20%;
         input {
-            margin: 0 auto;
             width: 200px !important;
         }
-
         .dp-toggle{
             color: #212529;
             background-color: #ffffff;
@@ -79,5 +82,11 @@ tbody {
                 content: none !important;
             }
         }
+    }
+}
+
+:host ::ng-deep {
+    mds-datetimepicker {
+        max-width: 200px;
     }
 }
