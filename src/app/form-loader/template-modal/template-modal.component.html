@@ -38,14 +38,10 @@
                 <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
                     [(ngModel)]="template.group[index].defaults">
                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                    <button class="btn btn-sm btn-outline-primary me-2" (click)="d.toggle()">
-                        <div class="d-flex align-items-center">
-                            <mds-icons icon="calendar" [width]="15" [height]="15"></mds-icons>
-                            <span class="ms-2">Select</span>
-                        </div>
-                    </button>
-                    <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker"
-                        (dateSelect)="onDateSelect(index, $event)" readonly />
+                    <mds-datetimepicker (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                </div>
+                <div *ngSwitchCase="'DATE'" class="d-flex">
+                    <mds-datetimepicker [showTime]="false" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                 </div>
                 <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Default, Option 1, Option 2"
                     ngbPopover="Split dropdown items using a comma(','). First item will be used as default selection." [openDelay]="500"

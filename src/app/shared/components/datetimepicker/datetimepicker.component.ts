@@ -18,32 +18,29 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
   @Output() onChange: EventEmitter<string> = new EventEmitter();
 
   ngOnInit() {
-    // this.initDateTime();
+    this.initDateTime();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const { time, date, showTime, minDate } = changes;
+    const { date, time, showTime, minDate } = changes;
 
-    if(time) {
+    if(time?.currentValue) {
       this.time = time?.currentValue;
+      debugger
     }
 
-    if(date) {
+    if(date?.currentValue) {
       this.date = date?.currentValue;
     }
 
-    if(showTime){
+    if(showTime?.currentValue){
       this.showTime = showTime?.currentValue;
     }
 
-    if(minDate) {
+    if(minDate?.currentValue) {
       this.minDate = minDate?.currentValue;
     }
     
-    if(time) {
-      this.time = time?.currentValue;
-    }
-
     this.initDateTime();
   }
 
@@ -59,12 +56,14 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
     }
 
     if(!this.time) {
+     
       this.timeObj = {
         hour: currentDt.getHours(),
         minute: currentDt.getMinutes(),
         second: currentDt.getSeconds()
       }
     } else {
+      console.log(this.time)
       const [hh, mm] = this.time.split(":");
       this.timeObj = {
         hour: parseInt(hh),
@@ -99,12 +98,16 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
 
   stringifyTime() {
     const { hour, minute } = this.timeObj;
-    return `${hour}:${minute}`;
+    return `${this.doublePadding(hour)}:${this.doublePadding(minute)}`;
   }
 
   stringifyDate() {
     const { day, month, year } = this.dateObj;
-    return `${day}/${month}/${year}`;
+    return `${this.doublePadding(day)}/${this.doublePadding(month)}/${year}`;
+  }
+
+  private doublePadding(numParam: number): string {
+    return (numParam).toLocaleString(undefined, { minimumIntegerDigits: 2 });
   }
 
   set(dp: NgbDropdown, isCancelled: boolean = false) {

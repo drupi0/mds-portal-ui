@@ -24,10 +24,8 @@ export class TemplateModalComponent implements OnInit {
     this.template.group[index].type = key as FieldType;
   }
 
-  onDateSelect(index: number, date: NgbDate) {
-    this.template.group[index].defaults = `${date.year}-${
-      date.month.toLocaleString('en-US', { minimumIntegerDigits: 2 })}-${
-      date.day.toLocaleString('en-US', { minimumIntegerDigits: 2 })}`
+  onDateSelect(index: number, date: string) {
+    this.template.group[index].defaults = date
   }
 
   addNewColumn() {
