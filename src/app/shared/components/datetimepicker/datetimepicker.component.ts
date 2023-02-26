@@ -26,7 +26,6 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
 
     if(time?.currentValue) {
       this.time = time?.currentValue;
-      debugger
     }
 
     if(date?.currentValue) {
