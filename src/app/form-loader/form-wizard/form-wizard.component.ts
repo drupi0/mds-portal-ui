@@ -360,6 +360,29 @@ export class FormWizardComponent implements OnInit {
     return `${age}`;
   }
 
+  duplicateTemplate(template: TemplateModel) {
+    const modalRef = this.modalService.open(TemplateModalComponent, {
+      size: 'xl',
+      backdrop: 'static'
+    });
+
+    const dupTemplate: TemplateModel = JSON.parse(JSON.stringify(template));
+
+    dupTemplate.id = "";
+    dupTemplate.name = dupTemplate.name.concat(" - Copy");
+    dupTemplate.group = dupTemplate.group.map(grp => ({ ...grp, id: ""}));
+
+    modalRef.componentInstance.template = dupTemplate;
+  
+
+    modalRef.closed.pipe(switchMap(({ data }: { data: TemplateModel }) => {
+      return this.api.saveTemplate(data);
+    })).subscribe((newTemplate: TemplateModel) => {
+      this.showSuccessToast(`Template named '${newTemplate.name} has been saved.'`);
+      this.templateOptions.next([...this.templateOptions.getValue(), newTemplate]);
+    });
+  }
+
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {
