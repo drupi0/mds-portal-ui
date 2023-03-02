@@ -17,7 +17,6 @@ export class NavigatorComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbSvc.initBreadcrumbs();
-    console.log(this.breadcrumbSvc.getRoles());
 
     this.breadcrumbSvc.getToken().subscribe(auth => {
       this.currentUser = auth;

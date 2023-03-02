@@ -248,14 +248,14 @@
                                     placeholder="Input a Value" (blur)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
                                     <input type="text" class="tbl-data"
-                                        [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dTarget />
+                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dTarget />
                                     <mds-datetimepicker (onChange)="dTarget.value = $event"
                                         [date]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[0]"
                                         [time]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[1]"></mds-datetimepicker>
                                 </div>
                                 <div *ngSwitchCase="'DATE'" class="d-flex">
                                     <input type="text" class="tbl-data"
-                                        [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dtTarget />
+                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dtTarget />
                                     <mds-datetimepicker [showTime]="false" (onChange)="dtTarget.value = $event"
                                         [date]="reportTemplate.group[colIndex].values[rowIndex]"></mds-datetimepicker>
                                 </div>

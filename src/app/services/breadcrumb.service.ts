@@ -1,10 +1,10 @@
-import { BehaviorSubject, EMPTY, filter, from, map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, filter, from, map, Observable, Subject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, ActivationStart, Router } from '@angular/router';
 
-import { BreadcrumbItem, DefaultRoutes } from 'src/app/shared/interfaces/state';
 import { KeycloakService } from 'keycloak-angular';
+import { BreadcrumbItem, DefaultRoutes } from 'src/app/shared/interfaces/state';
 import { AuthModel } from '../shared/interfaces/template';
 
 @Injectable({
