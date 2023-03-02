@@ -50,3 +50,12 @@ export interface Pagination<T> {
     totalPages?: number,
     empty?: boolean
 }
+
+export interface AuthModel {
+    family_name: string,
+    given_name: string,
+    email: string,
+    realm_access: {
+      roles: string[]
+    }
+  }

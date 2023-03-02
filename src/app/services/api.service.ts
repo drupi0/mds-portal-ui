@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { env } from 'src/environment';
+import { FormModel } from '../shared/interfaces/form';
 import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
 
 @Injectable({
@@ -64,6 +65,13 @@ export class ApiService {
         content: data.content?.map(record => ({ ...record, data: JSON.parse(record.data)}))
       }
     }));
+  }
+
+  deleteRecord(formId: string) {
+    return this.httpClient.delete<PatientRecordModel>(`${this.BASE_URL}/record`, {
+      ...this.HTTP_OPTIONS,
+      body: { formId }
+    })
   }
 
   searchRecords(pageNumber: number, pageSize: number, searchString: string) {

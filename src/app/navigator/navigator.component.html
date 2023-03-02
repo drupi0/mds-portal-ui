@@ -1,6 +1,6 @@
 <div class="d-flex w-100 align-items-center">
     <img src="assets/logo_no_text.png" [routerLink]="['']" width="80" class="me-3">
-    <ul ngbNav [activeId]="effect.activeTab$ | async" class="nav-pills">
+    <ul ngbNav [activeId]="breadcrumbSvc.activeTab$ | async" class="nav-pills">
         <li [ngbNavItem]="link.href" *ngFor="let link of links">
             <a ngbNavLink [routerLink]="[link.href]" class="me-2">{{ link.title }}</a>
         </li>
@@ -8,10 +8,10 @@
     <div class="flex-fill text-end">
         <div ngbDropdown class="d-inline-block">
             <button type="button" class="btn btn-link" id="dropdownBasic1" ngbDropdownToggle>
-                Francis Duya
+               {{ currentUser.given_name }} {{ currentUser.family_name }}
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                <button ngbDropdownItem>Log Out</button>
+                <button ngbDropdownItem (click)="logout()">Log Out</button>
             </div>
         </div>
     </div>

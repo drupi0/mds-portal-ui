@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, of, switchMap, take } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, Observable, of, switchMap, take } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { PatientModel, PatientRecordModel, StaffModel, TemplateModel } from 'src/app/shared/interfaces/template';
@@ -48,6 +48,7 @@ export class FormWizardComponent implements OnInit {
   templateList: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   patientList:  BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
   patientFormId: string = "";  
+  isAdmin = false;
 
   initFormBuilder() {
     this.api.getTemplates().subscribe((list: TemplateModel[]) => {
@@ -75,6 +76,11 @@ export class FormWizardComponent implements OnInit {
 
 
   ngOnInit() {
+    this.route.data.subscribe(data => {
+      const { isAdmin } = data;
+      (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
+    });
+    
     this.initFormBuilder();
   }
 
@@ -196,7 +202,6 @@ export class FormWizardComponent implements OnInit {
 
   isErrorColumn(group: { values: []}): boolean {
     return group.values.some(val => !val);
-    // return true;
   }
 
   inputChange(templateIndex: number, rowIndex: number, colIndex: number, target: any) {
@@ -299,9 +304,24 @@ export class FormWizardComponent implements OnInit {
       size: 'xl',
       backdrop: 'static'
     });
+
+    modalRef.componentInstance.isAdmin = this.isAdmin;
+    modalRef.componentInstance.selectedStaff = control.value;
     
     modalRef.closed.subscribe(data => {
       if (data) {
+        if(this.defaultForm.controls.pathologist.value?.id === data.id) {
+          this.defaultForm.controls.pathologist.setValue(data);
+        }
+
+        if(this.defaultForm.controls.verifiedBy.value?.id === data.id) {
+          this.defaultForm.controls.verifiedBy.setValue(data);
+        }
+
+        if(this.defaultForm.controls.performedBy.value?.id === data.id) {
+          this.defaultForm.controls.performedBy.setValue(data);
+        }
+
         control.setValue(data);
       }
     })
@@ -340,6 +360,29 @@ export class FormWizardComponent implements OnInit {
     return `${age}`;
   }
 
+  duplicateTemplate(template: TemplateModel) {
+    const modalRef = this.modalService.open(TemplateModalComponent, {
+      size: 'xl',
+      backdrop: 'static'
+    });
+
+    const dupTemplate: TemplateModel = JSON.parse(JSON.stringify(template));
+
+    dupTemplate.id = "";
+    dupTemplate.name = dupTemplate.name.concat(" - Copy");
+    dupTemplate.group = dupTemplate.group.map(grp => ({ ...grp, id: ""}));
+
+    modalRef.componentInstance.template = dupTemplate;
+  
+
+    modalRef.closed.pipe(switchMap(({ data }: { data: TemplateModel }) => {
+      return this.api.saveTemplate(data);
+    })).subscribe((newTemplate: TemplateModel) => {
+      this.showSuccessToast(`Template named '${newTemplate.name} has been saved.'`);
+      this.templateOptions.next([...this.templateOptions.getValue(), newTemplate]);
+    });
+  }
+
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {
@@ -369,6 +412,11 @@ export class FormWizardComponent implements OnInit {
 
       this.defaultForm.setValue(formValues);
 
+      if(this.patientFormId.length !== 0 && !this.isAdmin) {
+        this.defaultForm.controls.name.disable({
+          onlySelf: true
+        });
+      }
     })
   }
 

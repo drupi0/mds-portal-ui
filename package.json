@@ -24,6 +24,8 @@
     "dom-to-image": "^2.6.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+    "keycloak-angular": "^13.0.0",
+    "keycloak-js": "^21.0.1",
     "ngx-notification": "^1.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

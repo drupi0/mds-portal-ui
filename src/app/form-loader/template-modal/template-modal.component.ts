@@ -28,8 +28,8 @@ export class TemplateModalComponent implements OnInit {
     this.template.group[index].defaults = date
   }
 
-  addNewColumn() {
-    this.template.group.push({
+  addNewColumn(index: number) {
+    this.template.group.splice(index + 1, 0, {
       name: `Column ${this.template.group.length + 1}`,
       type: FieldType.DEFAULT,
       defaults: "",

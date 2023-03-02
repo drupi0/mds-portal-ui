@@ -115,8 +115,12 @@
                         Load Template
                     </button>
                     <div ngbDropdownMenu>
-                        <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                            (click)="addToTemplateField(templateItem)">{{ templateItem.name.trim() }} </button>
+                        <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index" class="d-flex align-items-center">
+                        <span class="flex-fill" (click)="addToTemplateField(templateItem)">{{ templateItem.name.trim() }} </span>
+                        <button ngbPopover="Duplicate this template" [openDelay]="500" triggers="mouseenter:mouseleave" class="btn btn-secondary circular-btn p-2" (click)="duplicateTemplate(templateItem)" *ngIf="isAdmin">
+                            <mds-icons icon="copy"></mds-icons>
+                        </button>
+                        </button>
                     </div>
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="newTemplate()">
