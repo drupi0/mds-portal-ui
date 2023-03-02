@@ -4,30 +4,32 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
 </div>
 <div class="modal-body">
-    <div class="card p-4">
+    <div class="card p-4" *ngIf="isAdmin">
         <div class="row">
             <div class="col-6">
                 <label for="staffName">Name</label>
                 <input type="text" class="form-control" [(ngModel)]="newStaff.name">
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <label for="staffName">License No.</label>
                 <input type="text" class="form-control" [(ngModel)]="newStaff.licNo">
             </div>
-            <div class="col-2 d-flex align-items-end">
-                <button class="btn btn-outline-primary me-2" (click)="saveStaff()"
+            <div class="col d-flex justify-content-end">
+                <div class="d-flex align-items-end">
+                    <button class="btn btn-primary me-2" (click)="saveStaff()"
                     [disabled]="!newStaff.name.trim().length || !newStaff.licNo.trim().length">
                     <div class="d-flex align-items-center">
                         <mds-icons icon="plus" [width]="15" [height]="15"></mds-icons>
-                        <span class="ms-2">Add</span>
+                        <span class="ms-2">{{ newStaff.id?.length === 0 ? 'Add' : 'Update'}}</span>
                     </div>
                 </button>
-                <button class="btn btn-outline-danger" (click)="resetForm()">
+                <button class="btn btn-secondary" (click)="resetForm()">
                     <div class="d-flex align-items-center">
                         <mds-icons icon="reset" [width]="15" [height]="15"></mds-icons>
                         <span class="ms-2">Reset</span>
                     </div>
                 </button>
+                </div>
             </div>
         </div>
     </div>
@@ -38,7 +40,7 @@
                     [(ngModel)]="searchQuery">
             </div>
         </div>
-        <div class="row pt-3">
+        <div class="pt-3">
             <div class="row border-bottom mb-3 pb-3 mt-2">
                 <div class="col-6 fw-bold">
                     Name
@@ -54,23 +56,20 @@
                     [ngTemplateOutletContext]="{ searchQuery }"> </ng-container>
                 <div class="row align-items-center mb-2 py-3 hover" *ngFor="let staff of (staffList | async)">
                     <div class="col-6">
-                        {{ staff.name }}
+                        <span>{{ staff.name }}</span>
                     </div>
                     <div class="col-4">
-                        {{ staff.licNo }}
+                        <span>{{ staff.licNo }}</span>
                     </div>
                     <div class="col-2 d-flex justify-content-end">
-                        <button type="button" class="btn btn-primary me-1" (click)="selectStaff(staff)">
-                            <div class="d-flex align-items-center">
-                                <mds-icons icon="check" [width]="15" [height]="15"></mds-icons>
-                                <span class="ms-2">Select</span>
-                            </div>
+                        <button class="btn btn-danger circular-btn" (click)="deleteStaff(staff)">
+                            <mds-icons icon="trash"></mds-icons>
                         </button>
-                        <button type="button" class="btn btn-danger" (click)="deleteStaff(staff)">
-                            <div class="d-flex align-items-center">
-                                <mds-icons icon="trash" [width]="15" [height]="15"></mds-icons>
-                                <span class="ms-2">Delete</span>
-                            </div>
+                        <button class="btn btn-primary circular-btn ms-2"  (click)="editStaff(staff)">
+                            <mds-icons icon="edit"></mds-icons>
+                        </button>
+                        <button class="btn btn-success circular-btn ms-2"  (click)="selectStaff(staff)">
+                            <mds-icons icon="check"></mds-icons>
                         </button>
                     </div>
                 </div>

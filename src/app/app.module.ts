@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
@@ -13,8 +13,6 @@ import {
 import { AppComponent } from './app.component';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
 import { FormWizardComponent } from './form-loader/form-wizard/form-wizard.component';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
 import { BreadcrumbsComponent } from './navigator/breadcrumbs/breadcrumbs.component';
 import { NavigatorComponent } from './navigator/navigator.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
@@ -26,13 +24,14 @@ import { NgxNotificationModule } from 'ngx-notification';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { PrintformComponent } from './form-loader/printform/printform.component';
 import { DatetimepickerComponent } from './shared/components/datetimepicker/datetimepicker.component';
+import { initializeKeycloak } from './keycloak-init.factory';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { AuthGuard } from './auth.guard';
 
-const appRoutes: Routes = [{
-  path: "login",
-  component: LoginComponent
-},
+const appRoutes: Routes = [
 {
   path: "form",
+  canActivate: [AuthGuard],
   data: {
     breadcrumb: "Form"
   },
@@ -68,8 +67,6 @@ const appRoutes: Routes = [{
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    HomeComponent,
     TemplateCreatorComponent,
     FormLoaderComponent,
     NavigatorComponent,
@@ -93,7 +90,8 @@ const appRoutes: Routes = [{
     NgbAlertModule,
     NgbPopoverModule,
     NgbPaginationModule,
-    NgxNotificationModule
+    NgxNotificationModule,
+    KeycloakAngularModule
   ],
   providers: [
     provideHttpClient(
@@ -103,7 +101,13 @@ const appRoutes: Routes = [{
           return next(req);
         },
       ])
-    )
+    ),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService],
+    }
   ],
   bootstrap: [AppComponent]
 })

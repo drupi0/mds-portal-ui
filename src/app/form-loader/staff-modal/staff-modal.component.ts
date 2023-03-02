@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, map, Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { StaffModel } from 'src/app/shared/interfaces/template';
 
@@ -18,9 +19,14 @@ export class StaffModalComponent implements OnInit {
 
   searchQuery: string = "";
   newStaff: StaffModel = {
+    id: "",
     name: "",
     licNo: ""
   }
+
+  selectedStaff: StaffModel = {} as StaffModel;
+
+  isAdmin: boolean = false;
 
   staffList$: BehaviorSubject<StaffModel[]> = new BehaviorSubject([] as StaffModel[]);
 
@@ -41,9 +47,18 @@ export class StaffModalComponent implements OnInit {
   saveStaff() {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
+      if(this.newStaff.id?.length === 0) {
+        this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} to staff list`, 'success', 'bottom-right');
+      } else {
+        this.notifSvc.sendMessage(`Successfully updated ${addedStaff.name} record from staff list`, 'success', 'bottom-right');
+      }
       this.resetForm();
-      this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} with license no. ${addedStaff.licNo} to the staff list`, 'success', 'bottom-right');
     });
+  }
+
+  editStaff(staff: StaffModel) {
+    this.newStaff = staff;
+    this.staffList$.next(this.staffList$.getValue().filter(staffEl => staffEl.id !== staff.id));
   }
 
   
@@ -61,9 +76,14 @@ export class StaffModalComponent implements OnInit {
     modalRef.componentInstance.modalBody = `Delete ${staff.name} with license no. ${staff.licNo} from the list of staff?`
 
     modalRef.closed.subscribe((response) => {
-      console.log(response);
         if(response) {
-          this.api.deleteStaff(staff).subscribe(() => {
+          this.api.deleteStaff(staff).pipe(catchError((err) => {
+            if(err) {
+              this.notifSvc.sendMessage(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`, 'danger', 'bottom-right')
+            }
+
+            return EMPTY;
+          })).subscribe(() => {
             this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
             this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'bottom-right');
           });
@@ -73,12 +93,21 @@ export class StaffModalComponent implements OnInit {
 
   resetForm() {
     this.newStaff = {
+      id: "",
       name: "",
       licNo: ""
     }
   }
 
   dismiss() {
+    const staffToReturn = this.staffList$.getValue().find(staff => this.selectedStaff.id === staff.id);
+
+    if(staffToReturn) {
+      this.activeModal.close(staffToReturn);
+
+      return;
+    }
+
     this.activeModal.dismiss();
   }
 }

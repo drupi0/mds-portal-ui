@@ -1,10 +1,10 @@
-import { BehaviorSubject, filter } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
+import { BreadcrumbService } from '../services/breadcrumb.service';
 import { DefaultRoutes } from '../shared/interfaces/state';
-import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.service';
+import { AuthModel } from '../shared/interfaces/template';
 
 @Component({
   selector: 'mds-navigator',
@@ -13,12 +13,23 @@ import { BreadcrumbEffectService } from '../services/effects/breadcrumb.effect.s
 })
 export class NavigatorComponent implements OnInit {
   links = DefaultRoutes;
+  currentUser: AuthModel = {} as AuthModel
 
   ngOnInit(): void {
-    this.effect.initBreadcrumbs();
+    this.breadcrumbSvc.initBreadcrumbs();
+    console.log(this.breadcrumbSvc.getRoles());
+
+    this.breadcrumbSvc.getToken().subscribe(auth => {
+      this.currentUser = auth;
+    })
+    
   }
 
-  constructor(public router: Router, public effect: BreadcrumbEffectService) {
+  logout() {
+    this.breadcrumbSvc.logout();
+  }
+
+  constructor(public router: Router, public breadcrumbSvc: BreadcrumbService) {
 
   }
 }

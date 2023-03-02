@@ -9,7 +9,7 @@
             </div>
         </button>
     </div>
-    <button class="btn btn-primary" [routerLink]="['new']">New Form</button>
+    <button class="btn btn-secondary" [routerLink]="['new']">New Form</button>
 </div>
 <div class="v-100 p-4">
     <div class="card p-3">
@@ -53,7 +53,7 @@
                 </ng-container>
              </div>
             <div class="col-1 fw-bold d-flex">
-                <button class="btn btn-danger circular-btn" disabled>
+                <button class="btn btn-danger circular-btn" (click)="deleteRecord(form)" *ngIf="isAdmin">
                     <mds-icons icon="trash"></mds-icons>
                 </button>
                 <button class="btn btn-primary circular-btn ms-2" [routerLink]="[form.id]">
