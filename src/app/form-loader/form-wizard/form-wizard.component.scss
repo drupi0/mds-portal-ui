@@ -4,11 +4,6 @@ table {
     }
 }
 
-.wizard-body {
-    height: calc(100vh - 80px - 108px);
-    overflow: auto;
-}
-
 .field-container {
     background-color: #fff;
     border: none !important;
@@ -89,4 +84,9 @@ tbody {
     mds-datetimepicker {
         max-width: 200px;
     }
+}
+
+.wizard-body {
+    height: calc(100vh - 80px - 108px);
+    overflow: auto;
 }

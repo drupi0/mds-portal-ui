@@ -18,14 +18,14 @@
                 <div class="row">
                     <div class="col-2 fw-bold">Name:</div>
                     <div class="col">{{ formData?.patient?.name }}</div>
-                    <div class="col-2 fw-bold">Age/Sex:</div>
+                    <div class="col-3 fw-bold">Age/Sex:</div>
                     <div class="col-2">{{ calcAge(formData?.patient?.dateOfBirth)}} / {{ formData?.patient?.sex | uppercase }}</div>
                     
                 </div>
                 <div class="row">
                     <div class="col-2 fw-bold">Spec. #:</div>
                     <div class="col">{{ formData?.specNo }}</div>
-                    <div class="col-2 fw-bold">DOB:</div>
+                    <div class="col-3 fw-bold">Date of Birth:</div>
                     <div class="col-1">{{ formData?.patient?.dateOfBirth }}</div>
                     <div class="col-1"></div>
                 </div>
@@ -36,13 +36,13 @@
                 <div class="row">
                     <div class="col-2 fw-bold">Status:</div>
                     <div class="col">{{ formData?.status | uppercase }}</div>
-                    <div class="col-2 fw-bold">Collection Date/Time:</div>
+                    <div class="col-3 fw-bold">Collection Date/Time:</div>
                     <div class="col-2">{{ formData?.collectionDateTime }}</div>
                 </div>
                 <div class="row">
                     <div class="col-2 fw-bold">Specimen:</div>
                     <div class="col">{{ formData?.specimen }}</div>
-                    <div class="col-2 fw-bold">Received Date/Time:</div>
+                    <div class="col-3 fw-bold">Received Date/Time:</div>
                     <div class="col-2">{{ formData?.receivedDateTime }}</div>
                 </div>
                 <div class="row">
