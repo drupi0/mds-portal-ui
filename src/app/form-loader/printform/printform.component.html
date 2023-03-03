@@ -1,7 +1,7 @@
 <ng-template #printPreview>
     <div class="container bg-white shadow mt-3">
         <div #printArea class="p-5">
-            <div class="row mt-4">
+            <div class="main-row row mt-4">
                 <div class="col-1">
                     <img src="/assets/logo.png" style="height: 100px">
                 </div>
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            <div class="border rounded p-3 mt-4">
+            <div class="main-row border rounded p-3 mt-4">
                 <div class="row">
                     <div class="col-2 fw-bold">Name:</div>
                     <div class="col">{{ formData?.patient?.name }}</div>
@@ -50,7 +50,7 @@
                     <div class="col">{{ formData?.ordered }}</div>
                 </div>
             </div>
-            <div class="rounded p-3 mt-4" *ngFor="let field of reportField">
+            <div class="main-row rounded p-3 mt-4" *ngFor="let field of reportField">
                 <div class="row">
                     <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
                 </div>
@@ -71,24 +71,25 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-4">
+            <div class="main-row row mt-4">
                 <div class="col-2 fw-bold">COMMENT:</div>
                 <div class="col">{{ formData?.comments }}</div>
             </div>
-            <div class="row mt-4 border border-3 border-dark">
+            <div class="main-row row mt-4 border border-3 border-dark">
                 <div class="col fw-bold text-center">** END OF REPORT**</div>
             </div>
-            <div class="row mt-4">
+            <div class="main-row row mt-4">
                 <div class="col fw-bold">Performed by:</div>
                 <div class="col fw-bold">Verified by:</div>
                 <div class="col fw-bold">Pathologist:</div>
             </div>
-            <div class="row mt-4 mb-3">
+            <div class="main-row row mt-4 mb-3">
                 <div class="col">{{ formData?.performedBy?.name }} / Lic No. {{ formData?.performedBy?.licNo }}</div>
                 <div class="col">{{ formData?.verifiedBy?.name }} / Lic No. {{ formData?.verifiedBy?.licNo }}</div>
                 <div class="col">{{ formData?.pathologist?.name }} / Lic No. {{ formData?.pathologist?.licNo }}</div>
             </div>
         </div>
+        <div [innerHTML]="formattedPage" #formattedArea></div>
     </div>
     <div class="row mt-5 mb-5"></div>
 </ng-template>

@@ -1,7 +1,9 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import html2canvas from "html2canvas";
+import * as htmlToImage from 'html-to-image';
 import jsPDF, { jsPDFOptions } from "jspdf";
+import { BehaviorSubject, debounceTime } from 'rxjs';
 import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
 @Component({
@@ -10,15 +12,19 @@ import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/tem
   styleUrls: ['./printform.component.scss']
 })
 export class PrintformComponent implements OnInit {
-  
-  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar) {}
+
+  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer : Renderer2, private sanitizer: DomSanitizer) { }
 
   @ViewChild('printArea', { static: false }) dataToExport: ElementRef | undefined;
+  @ViewChild('formattedArea', { static: false }) formattedArea: ElementRef | undefined;
   @Input() formData: PatientRecordModel | undefined;
   reportField: TemplateModel[] = [];
 
+  formattedPage: SafeHtml = "";
+  canvasElements: BehaviorSubject<HTMLCanvasElement[]> = new BehaviorSubject([] as HTMLCanvasElement[]);
+
   ngOnInit(): void {
-    if(this.formData?.data) {
+    if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);
     }
   }
@@ -28,10 +34,42 @@ export class PrintformComponent implements OnInit {
       return;
     }
 
-    html2canvas(this.dataToExport.nativeElement).then((canvas) => {
+    const elements: HTMLElement[] = this.dataToExport.nativeElement.getElementsByClassName("main-row");
+    let pageGroup: HTMLElement[] = [];
+    const groups: any = [];
+    let totalHeight = 0;
 
-      const imgData = canvas.toDataURL('image/png');
+    Array.from(elements).forEach(row => {
+      if(totalHeight >= 1122.519685){
+        groups.push(pageGroup);
+        pageGroup = [];
+        totalHeight = 0;
+      }
 
+      pageGroup.push(row);
+      totalHeight += row.getBoundingClientRect().height;
+    });
+
+    groups.push(pageGroup);
+
+    groups.forEach(async (divGroups: HTMLElement[]) => {
+      const group = document.createElement("div");
+      group.classList.add("p-5", "bg-white");
+
+      divGroups.forEach(g => {
+        this.renderer.appendChild(group, g.cloneNode(true));
+      });
+
+      this.renderer.appendChild(this.formattedArea?.nativeElement, group);
+      const canvas = await htmlToImage.toCanvas(group);
+      this.addToCanvas(canvas);
+    });
+
+    this.canvasElements.pipe(debounceTime(1000)).subscribe((canvasList: HTMLCanvasElement[]) => {
+      if(this.formattedArea?.nativeElement) {
+        this.formattedArea.nativeElement.hidden = true;
+      }
+      
       let jsPdfOptions: jsPDFOptions = {
         orientation: "p",
         unit: "mm",
@@ -40,14 +78,26 @@ export class PrintformComponent implements OnInit {
 
       const pdf = new jsPDF(jsPdfOptions);
 
-      const imgProps= pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      canvasList.reverse().forEach((canvas, index) => {
+        const imgData = canvas.toDataURL('image/jpeg');
+        const imgProps= pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(canvas, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+        if(index < canvasList.length - 1) {
+          pdf.addPage();
+        }
+      });
 
       window.open(pdf.output('bloburl'), '_blank');
       this.activeModal.dismiss();
     });
+  }
+
+  addToCanvas(canvas: HTMLCanvasElement) {
+    this.canvasElements.next([...this.canvasElements.getValue(), canvas]);
   }
 
   dismiss() {
@@ -55,16 +105,16 @@ export class PrintformComponent implements OnInit {
   }
 
   dateFormat(date: string | any) {
-    const [year, month, day ] = date.split("/");
+    const [year, month, day] = date.split("/");
 
     return `${day}/${month}/${year}`;
   }
 
   calcAge(date: string | any) {
-    const [month, day, year ] = date.split("/");
+    const [month, day, year] = date.split("/");
     const todayDate = this.calendar.getToday();
     let age = todayDate.year - parseInt(year);
-    
+
     const monthDiff = todayDate.month - parseInt(month);
     if (monthDiff < 0 || (monthDiff === 0 && todayDate.day < parseInt(day))) {
       age--;
