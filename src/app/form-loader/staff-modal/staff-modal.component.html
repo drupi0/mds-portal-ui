@@ -62,12 +62,14 @@
                         <span>{{ staff.licNo }}</span>
                     </div>
                     <div class="col-2 d-flex justify-content-end">
-                        <button class="btn btn-danger circular-btn" (click)="deleteStaff(staff)">
-                            <mds-icons icon="trash"></mds-icons>
-                        </button>
-                        <button class="btn btn-primary circular-btn ms-2"  (click)="editStaff(staff)">
-                            <mds-icons icon="edit"></mds-icons>
-                        </button>
+                        <ng-container *ngIf="isAdmin">
+                            <button class="btn btn-danger circular-btn" (click)="deleteStaff(staff)">
+                                <mds-icons icon="trash"></mds-icons>
+                            </button>
+                            <button class="btn btn-primary circular-btn ms-2"  (click)="editStaff(staff)">
+                                <mds-icons icon="edit"></mds-icons>
+                            </button>
+                        </ng-container>
                         <button class="btn btn-success circular-btn ms-2"  (click)="selectStaff(staff)">
                             <mds-icons icon="check"></mds-icons>
                         </button>

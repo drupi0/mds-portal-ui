@@ -12,7 +12,7 @@
     <button class="btn btn-secondary" [routerLink]="['new']">New Form</button>
 </div>
 <div class="v-100 p-4">
-    <div class="card p-3">
+    <div class="card p-3 field-container">
         <div class="row p-3 border-bottom">
             <div class="col-2 fw-bold">
                 Collection Datetime
@@ -52,11 +52,11 @@
                     <span *ngSwitchCase="'urgent'" class="badge bg-danger"> {{ form.status | titlecase }}</span>
                 </ng-container>
              </div>
-            <div class="col-1 fw-bold d-flex">
-                <button class="btn btn-danger circular-btn" (click)="deleteRecord(form)" *ngIf="isAdmin">
+            <div class="col-1 fw-bold d-flex align-items-end">
+                <button class="btn btn-danger circular-btn me-2" (click)="deleteRecord(form)" *ngIf="isAdmin">
                     <mds-icons icon="trash"></mds-icons>
                 </button>
-                <button class="btn btn-primary circular-btn ms-2" [routerLink]="[form.id]">
+                <button class="btn btn-primary circular-btn" [routerLink]="[form.id]">
                     <mds-icons icon="edit"></mds-icons>
                 </button>
             </div>
