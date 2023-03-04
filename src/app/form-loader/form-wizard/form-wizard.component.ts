@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -213,11 +213,14 @@ export class FormWizardComponent implements OnInit {
     this.templateList.next(tempList);
   }
 
-  saveForm(navigateToHome: boolean = true) {
+  saveForm(navigateToHome: boolean = true, callback = () => {}) {
     this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
       this.showErrorToast(err);
       return EMPTY;
     })).subscribe((record: PatientRecordModel) => {
+
+      this.defaultForm.controls.id.setValue(record.id);
+
       if(navigateToHome) {
         this.ngZone.run(() => {
           this.router.navigate(["form"]).then(() => {
@@ -226,6 +229,7 @@ export class FormWizardComponent implements OnInit {
         });
       } else {
         this.showSuccessToast(`Form ${record.id} successfully saved`);
+        callback();
       }
     });
   }
@@ -241,8 +245,9 @@ export class FormWizardComponent implements OnInit {
       backdrop: 'static'
     });
 
-    this.saveForm(false);
-    modalRef.componentInstance.formData = this.prepareRecord();
+    this.saveForm(false, () => {
+      modalRef.componentInstance.formData = this.prepareRecord();
+    });
   }
 
   newTemplate() {
@@ -273,7 +278,7 @@ export class FormWizardComponent implements OnInit {
     const tempList = this.templateList.getValue() || [];
     const newTemplate = JSON.parse(JSON.stringify(template));
 
-    if (template.group[0].values.length === 0) {
+    if (template.group[0].values.join(",").trim().length === 0) {
       this.addRow(newTemplate);
     }
     
@@ -283,6 +288,10 @@ export class FormWizardComponent implements OnInit {
 
   addRow(template: TemplateModel) {
     template.group.forEach((group) => {
+      if(group.values.join(",").trim().length === 0) {
+        group.values = [];
+      }
+
       switch (group.type) {
         case FieldType.DROPDOWN:
           group.values.push(group.defaults.split(",")[0]);

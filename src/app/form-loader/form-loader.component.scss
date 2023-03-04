@@ -15,3 +15,14 @@ a {
     font-weight: 400;
     font-size: small;
 }
+
+.field-container {
+    background-color: #fff;
+    border: none !important;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+
+    div {
+        display: flex;
+        align-items: center;
+    }
+}
