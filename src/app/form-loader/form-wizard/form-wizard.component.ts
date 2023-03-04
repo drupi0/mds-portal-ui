@@ -1,12 +1,18 @@
+import { NgxNotificationService } from 'ngx-notification';
+import {
+  BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, Observable, of, switchMap, take
+} from 'rxjs';
+import { ApiService } from 'src/app/services/api.service';
+import { FieldType } from 'src/app/shared/interfaces/form';
+import {
+  PatientModel, PatientRecordModel, StaffModel, TemplateModel
+} from 'src/app/shared/interfaces/template';
+
 import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, Observable, of, switchMap, take } from 'rxjs';
-import { ApiService } from 'src/app/services/api.service';
-import { FieldType } from 'src/app/shared/interfaces/form';
-import { PatientModel, PatientRecordModel, StaffModel, TemplateModel } from 'src/app/shared/interfaces/template';
+
 import { PrintformComponent } from '../printform/printform.component';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
@@ -17,7 +23,7 @@ import { TemplateModalComponent } from '../template-modal/template-modal.compone
   styleUrls: ['./form-wizard.component.scss']
 })
 export class FormWizardComponent implements OnInit {
-  
+
   defaultStaff: StaffModel = {
     name: "",
     id: "",
@@ -43,11 +49,11 @@ export class FormWizardComponent implements OnInit {
     pathologist: new FormControl<StaffModel>(this.defaultStaff)
   });
 
-  
+
   templateOptions: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   templateList: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
-  patientList:  BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
-  patientFormId: string = "";  
+  patientList: BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
+  patientFormId: string = "";
   isAdmin = false;
 
   initFormBuilder() {
@@ -66,7 +72,7 @@ export class FormWizardComponent implements OnInit {
   }
 
   onPatientSearch(query: string) {
-    if(query.length < 3) {
+    if (query.length < 3) {
       this.patientList.next([]);
       return;
     }
@@ -80,7 +86,7 @@ export class FormWizardComponent implements OnInit {
       const { isAdmin } = data;
       (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
     });
-    
+
     this.initFormBuilder();
   }
 
@@ -97,7 +103,7 @@ export class FormWizardComponent implements OnInit {
     modalRef.componentInstance.template = JSON.parse(JSON.stringify(template));
 
     modalRef.closed.pipe(switchMap(({ data, isDeleted }: { data: TemplateModel, isDeleted: boolean }) => {
-      if(isDeleted) {
+      if (isDeleted) {
         return forkJoin({ data: this.api.deleteTemplate(data), isDeleted: of(isDeleted) });
       }
 
@@ -107,14 +113,14 @@ export class FormWizardComponent implements OnInit {
 
       const { data, isDeleted } = returnValue as { data: TemplateModel, isDeleted: boolean };
 
-      if(isDeleted) {
+      if (isDeleted) {
         this.showSuccessToast(`Template ${data.name} has been deleted`);
       }
 
       const tempOptions = this.templateOptions.getValue().filter(templateField => templateField.id !== data.id);
       const tempList = this.templateList.getValue().filter(templateItem => templateItem.id !== data.id);
-  
-      
+
+
       this.templateOptions.next([...tempOptions, ...(!isDeleted ? [data] : [])]);
       this.templateList.next([...tempList, ...(!isDeleted ? [data] : [])]);
 
@@ -141,8 +147,8 @@ export class FormWizardComponent implements OnInit {
       const toUpdateIndex = tempOptions.findIndex(opt => opt.id === updatedTempResponse.id);
       tempOptions.splice(toUpdateIndex, 1, updatedTempResponse);
       this.templateOptions.next(tempOptions);
-      this.showSuccessToast(`Successfully updated '${ updatedTempResponse.name }'`);
-     
+      this.showSuccessToast(`Successfully updated '${updatedTempResponse.name}'`);
+
     });
   }
 
@@ -188,19 +194,19 @@ export class FormWizardComponent implements OnInit {
   }
 
   splitDateTime(value: string): { date: string, time: string } {
-    if(!value) {
+    if (!value) {
       value = "";
     }
 
     const [date, time] = value.split(" ");
-    return {date, time};
+    return { date, time };
   }
 
   get saveDisabled(): boolean {
     return document.getElementsByClassName("error").length !== 0;
   }
 
-  isErrorColumn(group: { values: []}): boolean {
+  isErrorColumn(group: { values: [] }): boolean {
     return group.values.some(val => !val);
   }
 
@@ -221,7 +227,7 @@ export class FormWizardComponent implements OnInit {
 
       this.defaultForm.controls.id.setValue(record.id);
 
-      if(navigateToHome) {
+      if (navigateToHome) {
         this.ngZone.run(() => {
           this.router.navigate(["form"]).then(() => {
             this.showSuccessToast(`Form ${record.id} successfully saved`);
@@ -280,14 +286,14 @@ export class FormWizardComponent implements OnInit {
     if (template.group[0].values.join(",").trim().length === 0) {
       this.addRow(newTemplate);
     }
-    
+
     tempList.push(newTemplate);
     this.templateList.next(tempList);
   }
 
   addRow(template: TemplateModel) {
     template.group.forEach((group) => {
-      if(group.values.join(",").trim().length === 0) {
+      if (group.values.join(",").trim().length === 0) {
         group.values = [];
       }
 
@@ -315,18 +321,18 @@ export class FormWizardComponent implements OnInit {
 
     modalRef.componentInstance.isAdmin = this.isAdmin;
     modalRef.componentInstance.selectedStaff = control.value;
-    
+
     modalRef.closed.subscribe(data => {
       if (data) {
-        if(this.defaultForm.controls.pathologist.value?.id === data.id) {
+        if (this.defaultForm.controls.pathologist.value?.id === data.id) {
           this.defaultForm.controls.pathologist.setValue(data);
         }
 
-        if(this.defaultForm.controls.verifiedBy.value?.id === data.id) {
+        if (this.defaultForm.controls.verifiedBy.value?.id === data.id) {
           this.defaultForm.controls.verifiedBy.setValue(data);
         }
 
-        if(this.defaultForm.controls.performedBy.value?.id === data.id) {
+        if (this.defaultForm.controls.performedBy.value?.id === data.id) {
           this.defaultForm.controls.performedBy.setValue(data);
         }
 
@@ -337,7 +343,7 @@ export class FormWizardComponent implements OnInit {
 
 
   assignPatient(patient: any) {
-    const patientObj: { name: string, dateOfBirth: string, sex: string} = patient;
+    const patientObj: { name: string, dateOfBirth: string, sex: string } = patient;
     this.defaultForm.controls.name.setValue(patientObj.name);
 
     if (patientObj.dateOfBirth.length) {
@@ -378,10 +384,10 @@ export class FormWizardComponent implements OnInit {
 
     dupTemplate.id = "";
     dupTemplate.name = dupTemplate.name.concat(" - Copy");
-    dupTemplate.group = dupTemplate.group.map(grp => ({ ...grp, id: ""}));
+    dupTemplate.group = dupTemplate.group.map(grp => ({ ...grp, id: "" }));
 
     modalRef.componentInstance.template = dupTemplate;
-  
+
 
     modalRef.closed.pipe(switchMap(({ data }: { data: TemplateModel }) => {
       return this.api.saveTemplate(data);
@@ -416,11 +422,11 @@ export class FormWizardComponent implements OnInit {
         performedBy: record.performedBy,
         verifiedBy: record.verifiedBy,
         pathologist: record.pathologist
-    }
+      }
 
       this.defaultForm.setValue(formValues);
 
-      if(this.patientFormId.length !== 0 && !this.isAdmin) {
+      if (this.patientFormId.length !== 0 && !this.isAdmin) {
         this.defaultForm.controls.name.disable({
           onlySelf: true
         });
@@ -429,15 +435,15 @@ export class FormWizardComponent implements OnInit {
   }
 
   private showErrorToast(err: Error) {
-    this.notifSvc.sendMessage(err.message, 'danger', 'bottom-right');
+    this.notifSvc.sendMessage(err.message, 'danger', 'top-left');
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.sendMessage(content, 'success', 'bottom-right');
+    this.notifSvc.sendMessage(content, 'success', 'top-left');
   }
 
-  constructor(private route: ActivatedRoute, private modalService: NgbModal, 
-              private calendar: NgbCalendar, private api: ApiService, 
-              private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
-              ) { }
+  constructor(private route: ActivatedRoute, private modalService: NgbModal,
+    private calendar: NgbCalendar, private api: ApiService,
+    private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
+  ) { }
 }

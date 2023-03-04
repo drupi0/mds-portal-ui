@@ -1,5 +1,6 @@
-import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
-import { FieldType } from "./form";
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
+import { FieldType } from './form';
 
 export interface TemplateModel {
     name: string;
@@ -45,10 +46,16 @@ export interface PatientRecordModel {
 export interface Pagination<T> {
     pageNumber: number,
     pageSize: number,
-    content?: T[],
+    content: T[],
     numberOfElements?: number,
-    totalPages?: number,
+    totalPages: number,
+    totalElements: number,
     empty?: boolean
+    pageable: {
+        offset: number,
+        pageNumber: number,
+        pageSize: number
+    }
 }
 
 export interface AuthModel {
@@ -56,6 +63,6 @@ export interface AuthModel {
     given_name: string,
     email: string,
     realm_access: {
-      roles: string[]
+        roles: string[]
     }
-  }
+}

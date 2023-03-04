@@ -1,12 +1,13 @@
+import { NgxNotificationService } from 'ngx-notification';
+import { Observable } from 'rxjs';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgxNotificationService } from 'ngx-notification';
-import { Observable } from 'rxjs';
+
 import { ApiService } from '../services/api.service';
 import { YesNoModalComponent } from '../shared/components/yes-no-modal/yes-no-modal.component';
 import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
-
 
 @Component({
   selector: 'mds-form-loader',
@@ -35,9 +36,19 @@ export class FormLoaderComponent implements OnInit {
       (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
     });
 
-    this.api.getRecords(this.pagination.offset, this.pagination.size).subscribe((data: Pagination<PatientRecordModel>) => {
-      if(data.content?.length) {
-        this.patientRecords = data.content || [];
+    this.loadRecords();
+  }
+
+  loadRecords() {
+
+    this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size).subscribe((data: Pagination<PatientRecordModel>) => {
+
+      this.patientRecords = data.content || [];
+
+      this.pagination = {
+        ...this.pagination,
+        offset: this.pagination.currentPage * this.pagination.size,
+        totalElements: data.totalElements
       }
     });
   }
@@ -48,15 +59,15 @@ export class FormLoaderComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Delete "${ form.id }"?`
+    modalRef.componentInstance.title = `Delete "${form.id}"?`
     modalRef.componentInstance.modalBody = `Are you sure you want to PERMANENTLY delete this record?`
 
     modalRef.closed.subscribe((response) => {
-        if(response) {
-          this.api.deleteRecord(form.id as string).subscribe(() => {
-            this.patientRecords = this.patientRecords.filter(record => record.id !== form.id);
-            this.notifSvc.sendMessage(`Successfully deleted ${form.id} from the staff list`, 'success', 'bottom-right');
-          })
+      if (response) {
+        this.api.deleteRecord(form.id as string).subscribe(() => {
+          this.patientRecords = this.patientRecords.filter(record => record.id !== form.id);
+          this.notifSvc.sendMessage(`Successfully deleted ${form.id} from the staff list`, 'success', 'top-left');
+        })
       }
     });
   }
@@ -64,7 +75,7 @@ export class FormLoaderComponent implements OnInit {
   onSearch(searchTerm: string): void {
     this.searchString = searchTerm;
     this.api.searchRecords(this.pagination.offset, this.pagination.size, searchTerm).subscribe((searchResult: Pagination<PatientRecordModel>) => {
-      if(searchResult.content?.length) {
+      if (searchResult.content?.length) {
         this.patientRecordFromSearch = searchResult.content;
       }
     })

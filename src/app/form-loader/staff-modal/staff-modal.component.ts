@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxNotificationService } from 'ngx-notification';
 import { BehaviorSubject, catchError, EMPTY, map, Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { StaffModel } from 'src/app/shared/interfaces/template';
+
+import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'mds-staff-modal',
@@ -15,7 +16,7 @@ import { StaffModel } from 'src/app/shared/interfaces/template';
 export class StaffModalComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private api: ApiService, private modalService: NgbModal,
-              private notifSvc: NgxNotificationService) { }
+    private notifSvc: NgxNotificationService) { }
 
   searchQuery: string = "";
   newStaff: StaffModel = {
@@ -38,8 +39,8 @@ export class StaffModalComponent implements OnInit {
 
   get staffList(): Observable<StaffModel[]> {
     return this.staffList$.pipe(map((staffArray: StaffModel[]) => {
-      return this.searchQuery.trim().length ? staffArray.filter(item => 
-        item.name.toLocaleLowerCase().includes(this.searchQuery.trim().toLowerCase()) 
+      return this.searchQuery.trim().length ? staffArray.filter(item =>
+        item.name.toLocaleLowerCase().includes(this.searchQuery.trim().toLowerCase())
         || item.licNo === this.searchQuery.trim().toLowerCase()) : staffArray;
     }));
   }
@@ -47,10 +48,10 @@ export class StaffModalComponent implements OnInit {
   saveStaff() {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
-      if(this.newStaff.id?.length === 0) {
-        this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} to staff list`, 'success', 'bottom-right');
+      if (this.newStaff.id?.length === 0) {
+        this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} to staff list`, 'success', 'top-left');
       } else {
-        this.notifSvc.sendMessage(`Successfully updated ${addedStaff.name} record from staff list`, 'success', 'bottom-right');
+        this.notifSvc.sendMessage(`Successfully updated ${addedStaff.name} record from staff list`, 'success', 'top-left');
       }
       this.resetForm();
     });
@@ -61,7 +62,7 @@ export class StaffModalComponent implements OnInit {
     this.staffList$.next(this.staffList$.getValue().filter(staffEl => staffEl.id !== staff.id));
   }
 
-  
+
   selectStaff(staff: StaffModel) {
     this.activeModal.close(staff);
   }
@@ -72,21 +73,21 @@ export class StaffModalComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Delete "${ staff.name }"?`
+    modalRef.componentInstance.title = `Delete "${staff.name}"?`
     modalRef.componentInstance.modalBody = `Delete ${staff.name} with license no. ${staff.licNo} from the list of staff?`
 
     modalRef.closed.subscribe((response) => {
-        if(response) {
-          this.api.deleteStaff(staff).pipe(catchError((err) => {
-            if(err) {
-              this.notifSvc.sendMessage(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`, 'danger', 'bottom-right')
-            }
+      if (response) {
+        this.api.deleteStaff(staff).pipe(catchError((err) => {
+          if (err) {
+            this.notifSvc.sendMessage(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`, 'danger', 'top-left')
+          }
 
-            return EMPTY;
-          })).subscribe(() => {
-            this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
-            this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'bottom-right');
-          });
+          return EMPTY;
+        })).subscribe(() => {
+          this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
+          this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'top-left');
+        });
       }
     })
   }
@@ -102,7 +103,7 @@ export class StaffModalComponent implements OnInit {
   dismiss() {
     const staffToReturn = this.staffList$.getValue().find(staff => this.selectedStaff.id === staff.id);
 
-    if(staffToReturn) {
+    if (staffToReturn) {
       this.activeModal.close(staffToReturn);
 
       return;

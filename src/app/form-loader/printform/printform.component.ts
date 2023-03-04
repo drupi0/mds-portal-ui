@@ -1,10 +1,11 @@
+import * as htmlToImage from 'html-to-image';
+import jsPDF, { jsPDFOptions } from 'jspdf';
+import { BehaviorSubject, debounceTime, forkJoin, from, Observable } from 'rxjs';
+import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
+
 import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import * as htmlToImage from 'html-to-image';
-import jsPDF, { jsPDFOptions } from "jspdf";
-import { BehaviorSubject, debounceTime } from 'rxjs';
-import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
 @Component({
   selector: 'mds-printform',
@@ -13,7 +14,7 @@ import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/tem
 })
 export class PrintformComponent implements OnInit {
 
-  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer : Renderer2, private sanitizer: DomSanitizer) { }
+  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitizer: DomSanitizer) { }
 
   @ViewChild('printArea', { static: false }) dataToExport: ElementRef | undefined;
   @ViewChild('formattedArea', { static: false }) formattedArea: ElementRef | undefined;
@@ -21,7 +22,7 @@ export class PrintformComponent implements OnInit {
   reportField: TemplateModel[] = [];
 
   formattedPage: SafeHtml = "";
-  canvasElements: BehaviorSubject<HTMLCanvasElement[]> = new BehaviorSubject([] as HTMLCanvasElement[]);
+  isPrinting: boolean = false;
 
   ngOnInit(): void {
     if (this.formData?.data) {
@@ -34,13 +35,15 @@ export class PrintformComponent implements OnInit {
       return;
     }
 
+    this.isPrinting = true;
+
     const elements: HTMLElement[] = this.dataToExport.nativeElement.getElementsByClassName("main-row");
     let pageGroup: HTMLElement[] = [];
     const groups: any = [];
     let totalHeight = 0;
 
     Array.from(elements).forEach(row => {
-      if(totalHeight >= 1122.519685){
+      if (totalHeight >= 1122.519685) {
         groups.push(pageGroup);
         pageGroup = [];
         totalHeight = 0;
@@ -52,6 +55,8 @@ export class PrintformComponent implements OnInit {
 
     groups.push(pageGroup);
 
+    let canvasElements: Observable<HTMLCanvasElement>[] = [];
+
     groups.forEach(async (divGroups: HTMLElement[]) => {
       const group = document.createElement("div");
       group.classList.add("p-5", "bg-white");
@@ -61,15 +66,14 @@ export class PrintformComponent implements OnInit {
       });
 
       this.renderer.appendChild(this.formattedArea?.nativeElement, group);
-      const canvas = await htmlToImage.toCanvas(group);
-      this.addToCanvas(canvas);
+      canvasElements.push(from(htmlToImage.toCanvas(group)))
     });
 
-    this.canvasElements.pipe(debounceTime(1000)).subscribe((canvasList: HTMLCanvasElement[]) => {
-      if(this.formattedArea?.nativeElement) {
+    forkJoin(canvasElements).subscribe(canvasList => {
+      if (this.formattedArea?.nativeElement) {
         this.formattedArea.nativeElement.hidden = true;
       }
-      
+
       let jsPdfOptions: jsPDFOptions = {
         orientation: "p",
         unit: "mm",
@@ -78,26 +82,23 @@ export class PrintformComponent implements OnInit {
 
       const pdf = new jsPDF(jsPdfOptions);
 
-      canvasList.reverse().forEach((canvas, index) => {
+      canvasList.forEach((canvas, index) => {
         const imgData = canvas.toDataURL('image/jpeg');
-        const imgProps= pdf.getImageProperties(imgData);
+        const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
         pdf.addImage(canvas, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-        if(index < canvasList.length - 1) {
+        if (index < canvasList.length - 1) {
           pdf.addPage();
         }
       });
 
       window.open(pdf.output('bloburl'), '_blank');
+      this.isPrinting = false;
       this.activeModal.dismiss();
     });
-  }
-
-  addToCanvas(canvas: HTMLCanvasElement) {
-    this.canvasElements.next([...this.canvasElements.getValue(), canvas]);
   }
 
   dismiss() {
