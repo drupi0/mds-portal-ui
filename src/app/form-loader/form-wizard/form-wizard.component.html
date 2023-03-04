@@ -12,7 +12,8 @@
                     <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
                         <button ngbDropdownItem *ngFor="let patient of (patientList | async)"
                             (click)="assignPatient(patient)">
-                            {{ patient.name }}
+                            <span>{{ patient.name }}</span>
+                            <span class="text-muted ms-2"><em>{{ patient.dateOfBirth }}</em></span>
                         </button>
                     </div>
                 </div>

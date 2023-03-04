@@ -213,7 +213,7 @@ export class FormWizardComponent implements OnInit {
     this.templateList.next(tempList);
   }
 
-  saveForm(navigateToHome: boolean = true, callback = () => {}) {
+  saveForm(navigateToHome: boolean = true) {
     this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
       this.showErrorToast(err);
       return EMPTY;
@@ -229,7 +229,6 @@ export class FormWizardComponent implements OnInit {
         });
       } else {
         this.showSuccessToast(`Form ${record.id} successfully saved`);
-        callback();
       }
     });
   }
@@ -245,9 +244,9 @@ export class FormWizardComponent implements OnInit {
       backdrop: 'static'
     });
 
-    this.saveForm(false, () => {
-      modalRef.componentInstance.formData = this.prepareRecord();
-    });
+    this.saveForm(false);
+
+    modalRef.componentInstance.formData = this.prepareRecord();
   }
 
   newTemplate() {
