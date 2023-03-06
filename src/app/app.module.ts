@@ -2,7 +2,7 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { NgxNotificationModule } from 'ngx-notification';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,6 +28,8 @@ import {
 import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
+import { firstValueFrom } from 'rxjs';
+import * as environment from 'src/environment'
 
 const appRoutes: Routes = [
   {
@@ -109,6 +111,18 @@ const appRoutes: Routes = [
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService],
+    },
+    {
+      provide: 'env',
+      useFactory: (http: HttpClient) => firstValueFrom(http.get(`environment.json?t=${new Date().getTime()}`)),
+      deps: [HttpClient]
+    },
+    {
+      provide: 'environment',
+      useFactory: (env: any) => {
+        return { ...environment, ...env };
+      },
+      deps: ['env']
     }
   ],
   bootstrap: [AppComponent]
