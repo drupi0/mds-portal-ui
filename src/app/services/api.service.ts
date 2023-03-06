@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
-import env from 'assets/environment.json';
+import { environment as env } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
