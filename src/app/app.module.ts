@@ -28,8 +28,6 @@ import {
 import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
-import { firstValueFrom } from 'rxjs';
-import * as environment from 'src/environment'
 
 const appRoutes: Routes = [
   {
@@ -112,18 +110,6 @@ const appRoutes: Routes = [
       multi: true,
       deps: [KeycloakService],
     },
-    {
-      provide: 'env',
-      useFactory: (http: HttpClient) => firstValueFrom(http.get(`environment.json?t=${new Date().getTime()}`)),
-      deps: [HttpClient]
-    },
-    {
-      provide: 'environment',
-      useFactory: (env: any) => {
-        return { ...environment, ...env };
-      },
-      deps: ['env']
-    }
   ],
   bootstrap: [AppComponent]
 })

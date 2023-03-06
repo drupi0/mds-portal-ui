@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { env } from 'src/environment';
-import { FormModel } from '../shared/interfaces/form';
 import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
+import env from 'src/assets/environment.json';
 
 @Injectable({
   providedIn: 'root'
