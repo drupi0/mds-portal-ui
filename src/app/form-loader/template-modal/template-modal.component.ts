@@ -22,10 +22,17 @@ export class TemplateModalComponent implements OnInit {
 
   changeType(key: string, index: number) {
     this.template.group[index].type = key as FieldType;
+
+    for(let i = 0; i <  this.template.group[index].values.length; i++) {
+      this.template.group[index].values[i] = "";
+    }
   }
 
   onDateSelect(index: number, date: string) {
     this.template.group[index].defaults = date
+    for(let i = 0; i <  this.template.group[index].values.length; i++) {
+      this.template.group[index].values[i] = date;
+    }
   }
 
   addNewColumn(index: number) {
@@ -46,6 +53,8 @@ export class TemplateModalComponent implements OnInit {
   }
 
   save() {
+    console.log(this.template);
+    
     this.activeModal.close({
       data: this.template,
       isDeleted: false

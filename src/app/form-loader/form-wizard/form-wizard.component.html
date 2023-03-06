@@ -8,7 +8,9 @@
                 }">Patient's Name</label>
                 <div ngbDropdown class="d-inline-block">
                     <input type="text" class="form-control" formControlName="name"
-                        (ngModelChange)="onPatientSearch(defaultForm.controls.name.value)" ngbDropdownToggle>
+                        (ngModelChange)="onPatientSearch(defaultForm.controls.name.value)" ngbDropdownToggle [ngClass]="{
+                            error_input: !defaultForm.controls.name.value
+                        }">
                     <div ngbDropdownMenu [hidden]="!(patientList | async)?.length">
                         <button ngbDropdownItem *ngFor="let patient of (patientList | async)"
                             (click)="assignPatient(patient)">
@@ -23,7 +25,9 @@
                     error: !defaultForm.controls.sex.value
                 }">Gender</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle [ngClass]="{
+                        error_input: !defaultForm.controls.sex.value
+                    }">
                         {{ (defaultForm.controls.sex.value | titlecase) || 'Select Gender'}}
                     </button>
                     <div ngbDropdownMenu>
@@ -39,13 +43,17 @@
                 }">Date of Birth</label>
                 <mds-datetimepicker [showTime]="false" [minDate]="{year: 1900, month: 1, day: 1}"
                     [date]="defaultForm.controls.dateOfBirth.value"
-                    (onChange)="defaultForm.controls.dateOfBirth.setValue($event)"></mds-datetimepicker>
+                    (onChange)="defaultForm.controls.dateOfBirth.setValue($event)" [ngClass]="{
+                        error_dt: !defaultForm.controls.dateOfBirth.value
+                    }"></mds-datetimepicker>
             </div>
             <div class="mb-3 col-1">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.dateOfBirth.value
                 }">Age</label>
-                <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly>
+                <input type="text" class="form-control" formControlName="age" [value]="calcAge" readonly [ngClass]="{
+                    error_input: !defaultForm.controls.dateOfBirth.value
+                }">
             </div>
         </div>
         <div class="row" [formGroup]="defaultForm">
@@ -53,19 +61,25 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.specNo.value
                 }">Spec #</label>
-                <input type="text" class="form-control" formControlName="specNo">
+                <input type="text" class="form-control" formControlName="specNo" [ngClass]="{
+                    error_input: !defaultForm.controls.specNo.value
+                }">
             </div>
             <div class="mb-3 col">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.orderingDr.value
                 }">Ordering Dr.</label>
-                <input type="text" class="form-control" formControlName="orderingDr">
+                <input type="text" class="form-control" formControlName="orderingDr" [ngClass]="{
+                    error_input: !defaultForm.controls.orderingDr.value
+                }">
             </div>
 
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Status</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle>
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle [ngClass]="{
+                        error_input: !defaultForm.controls.status.value
+                    }">
                         {{ (defaultForm.controls.status.value | titlecase) || 'Select Status'}}
                     </button>
                     <div ngbDropdownMenu>
@@ -82,13 +96,17 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.specimen.value
                 }">Specimen</label>
-                <input type="text" class="form-control" formControlName="specimen">
+                <input type="text" class="form-control" formControlName="specimen" [ngClass]="{
+                    error_input: !defaultForm.controls.specimen.value
+                }">
             </div>
             <div class="mb-3 col-6">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.ordered.value
                 }">Ordered</label>
-                <input type="text" class="form-control" formControlName="ordered">
+                <input type="text" class="form-control" formControlName="ordered" [ngClass]="{
+                    error_input: !defaultForm.controls.ordered.value
+                }">
             </div>
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label" [ngClass]="{
@@ -96,7 +114,9 @@
                 }">Collection Date/Time</label>
                 <mds-datetimepicker [time]="splitDateTime(defaultForm.controls.collectionDateTime.value).time"
                     [date]="splitDateTime(defaultForm.controls.collectionDateTime.value).date"
-                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)"></mds-datetimepicker>
+                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
+                        error_dt: !defaultForm.controls.collectionDateTime.value
+                    }"></mds-datetimepicker>
             </div>
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label" [ngClass]="{
@@ -104,7 +124,9 @@
                 }">Received Date/Time</label>
                 <mds-datetimepicker [time]="splitDateTime(defaultForm.controls.receivedDateTime.value).time"
                     [date]="splitDateTime(defaultForm.controls.receivedDateTime.value).date"
-                    (onChange)="defaultForm.controls.receivedDateTime.setValue($event)"></mds-datetimepicker>
+                    (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
+                        error_dt: !defaultForm.controls.receivedDateTime.value
+                    }"></mds-datetimepicker>
             </div>
         </div>
     </div>
@@ -112,16 +134,16 @@
         <div class="d-flex justify-content-end">
             <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
                 <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
-                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
+                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle >
                         Load Template
                     </button>
                     <div ngbDropdownMenu>
                         <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                            class="d-flex align-items-center">
-                            <span class="flex-fill" (click)="addToTemplateField(templateItem)">{{
+                            class="d-flex align-items-center p-0">
+                            <span class="flex-fill my-2 ms-2 my-2" (click)="addToTemplateField(templateItem)">{{
                                 templateItem.name.trim() }} </span>
                             <button ngbPopover="Duplicate this template" [openDelay]="500"
-                                triggers="mouseenter:mouseleave" class="btn btn-secondary circular-btn p-2"
+                                triggers="mouseenter:mouseleave" class="btn btn-secondary circular-btn my-2 me-2"
                                 (click)="duplicateTemplate(templateItem)">
                                 <mds-icons icon="copy"></mds-icons>
                             </button>
@@ -157,21 +179,27 @@
                     error: !defaultForm.controls.performedBy.value?.name
                 }">Performed by</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
+                    (click)="showStaffModal(defaultForm.controls.performedBy)" [ngClass]="{
+                        error_input: !defaultForm.controls.performedBy.value?.name
+                    }" readonly>
             </div>
             <div class="mb-3 col">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.verifiedBy.value?.name
                 }">Verified by</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
+                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly [ngClass]="{
+                        error_input: !defaultForm.controls.verifiedBy.value?.name
+                    }">
             </div>
             <div class="mb-3 col">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.pathologist.value?.name
                 }">Pathologist</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
+                    (click)="showStaffModal(defaultForm.controls.pathologist)" [ngClass]="{
+                        error_input: !defaultForm.controls.pathologist.value?.name
+                    }" readonly>
             </div>
         </div>
     </div>
@@ -259,18 +287,27 @@
                                 <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Number"
-                                    (blur)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
+                                    (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
+                                    [ngClass]="{
+                                        error_input: !reportTemplate.group[colIndex].values[rowIndex]
+                                    }">
                                 <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Value"
-                                    (blur)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)">
+                                    (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
+                                    [ngClass]="{
+                                        error_input: !reportTemplate.group[colIndex].values[rowIndex]
+                                    }">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
                                     <input type="text" class="tbl-data"
                                         [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dTarget />
                                     <mds-datetimepicker
                                         (onChange)="reportTemplate.group[colIndex].values[rowIndex] = $event"
                                         [date]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[0]"
-                                        [time]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[1]"></mds-datetimepicker>
+                                        [time]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[1]" 
+                                        [ngClass]="{
+                                            error_dt: !reportTemplate.group[colIndex].values[rowIndex]
+                                        }"></mds-datetimepicker>
                                 </div>
                                 <div *ngSwitchCase="'DATE'" class="d-flex">
                                     <input type="text" class="tbl-data"
@@ -278,14 +315,18 @@
                                         #dtTarget />
                                     <mds-datetimepicker [showTime]="false"
                                         (onChange)="reportTemplate.group[colIndex].values[rowIndex] = $event"
-                                        [date]="reportTemplate.group[colIndex].values[rowIndex]"></mds-datetimepicker>
+                                        [date]="reportTemplate.group[colIndex].values[rowIndex]" [ngClass]="{
+                                            error_dt: !reportTemplate.group[colIndex].values[rowIndex]
+                                        }"></mds-datetimepicker>
                                 </div>
                                 <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
                                     <input type="text" class="tbl-data"
                                         [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
                                     <button type="button"
                                         class="btn btn-block btn-outline-primary dp-toggle text-truncate"
-                                        ngbDropdownToggle>
+                                        ngbDropdownToggle [ngClass]="{
+                                            error_input: !reportTemplate.group[colIndex].values[rowIndex]
+                                        }">
                                         {{ reportTemplate.group[colIndex].values[rowIndex] ||
                                         reportTemplate.group[colIndex].defaults.split(',')[0] }}
                                     </button>

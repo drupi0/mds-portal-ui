@@ -74,7 +74,7 @@ export class FormLoaderComponent implements OnInit {
 
   onSearch(searchTerm: string): void {
     this.searchString = searchTerm;
-    this.api.searchRecords(this.pagination.offset, this.pagination.size, searchTerm).subscribe((searchResult: Pagination<PatientRecordModel>) => {
+    this.api.searchRecords(0, 10, searchTerm).subscribe((searchResult: Pagination<PatientRecordModel>) => {
       if (searchResult.content?.length) {
         this.patientRecordFromSearch = searchResult.content;
       }

@@ -283,6 +283,8 @@ export class FormWizardComponent implements OnInit {
     const tempList = this.templateList.getValue() || [];
     const newTemplate = JSON.parse(JSON.stringify(template));
 
+    console.log(newTemplate);
+
     if (template.group[0].values.join(",").trim().length === 0) {
       this.addRow(newTemplate);
     }
@@ -403,7 +405,9 @@ export class FormWizardComponent implements OnInit {
         ...patientRecord
       } as PatientRecordModel;
 
-      this.templateList.next(JSON.parse(record.data));
+      if(record.data.trim().length !== 0) {
+        this.templateList.next(JSON.parse(record.data));
+      }
 
       const formValues = {
         id: record.id,

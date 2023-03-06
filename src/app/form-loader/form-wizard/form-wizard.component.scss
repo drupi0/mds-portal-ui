@@ -40,8 +40,8 @@ table {
     }
 }
 
-.error-dt {
-    background: rgba(#e13868, 0.1);
+.error_input {
+    border: 1px solid #e13868 !important;
 }
 
 .dp-input {
@@ -83,6 +83,12 @@ tbody {
 :host ::ng-deep {
     mds-datetimepicker {
         max-width: 200px;
+    }
+
+    .error_dt {
+        button {
+            border: 1px solid #e13868;
+        }
     }
 }
 

@@ -15,14 +15,20 @@
 <div class="v-100 p-4">
     <div class="card p-3 field-container">
         <div class="row p-3 border-bottom">
-            <div class="col-2 fw-bold">
-                Collection Datetime
+            <div class="col-1 fw-bold">
+                Collection
             </div>
-            <div class="col-2 fw-bold">
-                Received Datetime
+            <div class="col-1 fw-bold">
+                Received
             </div>
-            <div class="col-3 fw-bold">
+            <div class="col-1 fw-bold">
                 Form ID
+            </div>
+            <div class="col-2 fw-bold">
+                Ordered
+            </div>
+            <div class="col-2 fw-bold">
+                Specimen
             </div>
             <div class="col-3 fw-bold">
                 Patient Name
@@ -35,17 +41,33 @@
         </div>
         <div class="row border-bottom hover p-3"
             *ngFor="let form of (searchString.length ? patientRecordFromSearch : patientRecords)">
-            <div class="col-2">
-                {{ form.collectionDateTime }}
+            <div class="col-1">
+                <span class="d-block text-nowrap text-truncate">
+                    {{ form.collectionDateTime }}
+                </span>
+            </div>
+            <div class="col-1">
+                <span class="d-block text-nowrap text-truncate">
+                    {{ form.receivedDateTime }}
+                </span>
+            </div>
+            <div class="col-1">
+                <a [routerLink]="[form.id]">{{ (form.id || '').split('-')[0] }}</a>
             </div>
             <div class="col-2">
-                {{ form.receivedDateTime }}
+                <span class="d-block text-nowrap text-truncate">
+                    {{ form.ordered }}
+                </span>
+            </div>
+            <div class="col-2">
+                <span class="d-block text-nowrap text-truncate">
+                    {{ form.specimen }}
+                </span>
             </div>
             <div class="col-3">
-                <a [routerLink]="[form.id]">{{ form.id }}</a>
-            </div>
-            <div class="col-3">
-                {{ form.patient.name }}
+                <span class="d-block text-nowrap text-truncate">
+                    {{ form.patient.name }}
+                </span>
             </div>
             <div class="col-1 fw-bold">
                 <ng-container [ngSwitch]="form.status | lowercase">
@@ -68,7 +90,7 @@
             <ng-container [ngTemplateOutlet]="emptyState" [ngTemplateOutletContext]="{ searchString }"></ng-container>
         </div>
     </div>
-    <div class="col-12 d-flex pt-3 justify-content-end align-items-end">
+    <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="!searchString.trim().length">
         <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
             [collectionSize]="pagination.totalElements"></ngb-pagination>
     </div>

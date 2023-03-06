@@ -18,6 +18,8 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
 
   @Output() onChange: EventEmitter<string> = new EventEmitter();
 
+  hasDateChange: boolean = false;
+
   ngOnInit() {
     const currentDt = new Date();
 
@@ -44,10 +46,12 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
 
     if(time?.currentValue) {
       this.time = time?.currentValue;
+      this.hasDateChange = true;
     }
 
     if(date?.currentValue) {
       this.date = date?.currentValue;
+      this.hasDateChange = true;
     }
 
     if(showTime?.currentValue){
@@ -104,9 +108,14 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
     return (numParam).toLocaleString(undefined, { minimumIntegerDigits: 2 });
   }
 
-  set(dp: NgbDropdown | undefined, isCancelled: boolean = false) {
+  set(dp: NgbDropdown | undefined, isCancelled: boolean = false, isReset: boolean = false) {
     if(isCancelled) {
       this.initDateTime();
+    } else if(isReset) {
+      this.date = "";
+      this.time = "";
+      this.hasDateChange = false;
+      this.onChange.next("");
     } else {
       const { hour, minute } = this.timeObj;
       const { day, month, year } = this.dateObj;
@@ -118,6 +127,8 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
       }
 
       this.onChange.next(dateString);
+
+      this.hasDateChange = true;
     }
 
     if(dp) {

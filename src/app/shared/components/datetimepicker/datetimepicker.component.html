@@ -1,7 +1,7 @@
 <div class="d-block">
     <div ngbDropdown #dp="ngbDropdown" container="body">
         <button type="button" class="btn btn-outline-primary dp-input" ngbDropdownToggle>
-            <ng-container *ngIf="stringifyDate().concat(stringifyTime()).length; else placeholder">
+            <ng-container *ngIf="hasDateChange else placeholder">
                 <span>{{ stringifyDate().concat(showTime ? ' ' + stringifyTime() : '') }}</span>
             </ng-container>
             <ng-template #placeholder>
@@ -21,9 +21,14 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-end p-2 bg-light">
-                <button type="button" class="btn btn-light" (click)="set(dp, true)">Cancel</button>
-                <button type="button" class="btn btn-primary ms-2" (click)="set(dp)">Set</button>
+            <div class="d-flex p-2 bg-light">
+                <div class="flex-fill">
+                    <button type="button" class="btn btn-sm btn-danger" (click)="set(dp, false, true)">Reset</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="set(dp, true)">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary ms-2" (click)="set(dp)">Set</button>
+                </div>
             </div>
         </div>
     </div>

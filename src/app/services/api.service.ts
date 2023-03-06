@@ -58,12 +58,7 @@ export class ApiService {
     return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record`, {
       params: { pageNumber, pageSize },
       ...this.HTTP_OPTIONS
-    }).pipe(map((data) => {
-      return {
-        ...data,
-        content: data.content?.map(record => ({ ...record, data: JSON.parse(record.data)}))
-      }
-    }));
+    });
   }
 
   deleteRecord(formId: string) {
