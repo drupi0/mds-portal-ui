@@ -8,7 +8,7 @@ import env from 'src/assets/environment.json';
   providedIn: 'root'
 })
 export class ApiService {
-  readonly BASE_URL = `${env.BASE_URL}/api/v1`
+  readonly API_URL = `${env.API_URL}/api/v1`
 
   readonly HTTP_OPTIONS = {
     headers: new HttpHeaders({
@@ -17,45 +17,45 @@ export class ApiService {
   };
 
   saveStaff(staff: StaffModel): Observable<StaffModel> {
-    return this.httpClient.post<StaffModel>(`${this.BASE_URL}/staff`, staff);
+    return this.httpClient.post<StaffModel>(`${this.API_URL}/staff`, staff);
   }
 
   getStaff(): Observable<StaffModel[]> {
-    return this.httpClient.get<StaffModel[]>(`${this.BASE_URL}/staff`);
+    return this.httpClient.get<StaffModel[]>(`${this.API_URL}/staff`);
   }
 
   deleteStaff(staff: StaffModel) : Observable<StaffModel> {
-    return this.httpClient.delete<StaffModel>(`${this.BASE_URL}/staff`, {
+    return this.httpClient.delete<StaffModel>(`${this.API_URL}/staff`, {
       ...this.HTTP_OPTIONS,
       body: staff
     });
   }
 
   saveTemplate(template: TemplateModel): Observable<TemplateModel> {
-    return this.httpClient.post<TemplateModel>(`${this.BASE_URL}/template`, template);
+    return this.httpClient.post<TemplateModel>(`${this.API_URL}/template`, template);
   }
 
   getTemplates(): Observable<TemplateModel[]> {
-    return this.httpClient.get<TemplateModel[]>(`${this.BASE_URL}/template`);
+    return this.httpClient.get<TemplateModel[]>(`${this.API_URL}/template`);
   }
 
   deleteTemplate(template: TemplateModel) : Observable<TemplateModel> {
-    return this.httpClient.delete<TemplateModel>(`${this.BASE_URL}/template`, {
+    return this.httpClient.delete<TemplateModel>(`${this.API_URL}/template`, {
       ...this.HTTP_OPTIONS,
       body: template
     });
   }
 
   updateTemplate(template: TemplateModel): Observable<TemplateModel> {
-    return this.httpClient.patch<TemplateModel>(`${this.BASE_URL}/template`, template);
+    return this.httpClient.patch<TemplateModel>(`${this.API_URL}/template`, template);
   }
 
   saveRecord(record: {}): Observable<PatientRecordModel> {
-    return this.httpClient.post<PatientRecordModel>(`${this.BASE_URL}/record`, record);
+    return this.httpClient.post<PatientRecordModel>(`${this.API_URL}/record`, record);
   }
 
   getRecords(pageNumber: number, pageSize: number) {
-    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record`, {
+    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record`, {
       params: { pageNumber, pageSize },
       ...this.HTTP_OPTIONS
     }).pipe(map((data) => {
@@ -67,25 +67,25 @@ export class ApiService {
   }
 
   deleteRecord(formId: string) {
-    return this.httpClient.delete<PatientRecordModel>(`${this.BASE_URL}/record`, {
+    return this.httpClient.delete<PatientRecordModel>(`${this.API_URL}/record`, {
       ...this.HTTP_OPTIONS,
       body: { formId }
     })
   }
 
   searchRecords(pageNumber: number, pageSize: number, searchString: string) {
-    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.BASE_URL}/record/search`, {
+    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record/search`, {
       params: { pageNumber, pageSize, query: searchString },
       ...this.HTTP_OPTIONS
     });
   }
 
   findRecord(formId: string): Observable<PatientRecordModel> {
-    return this.httpClient.get<PatientRecordModel>(`${this.BASE_URL}/record/${formId}`);
+    return this.httpClient.get<PatientRecordModel>(`${this.API_URL}/record/${formId}`);
   }
 
   searchPatient(query: string) {
-    return this.httpClient.get<PatientModel[]>(`${this.BASE_URL}/patient`, {
+    return this.httpClient.get<PatientModel[]>(`${this.API_URL}/patient`, {
       params: { query },
       ...this.HTTP_OPTIONS
     });
