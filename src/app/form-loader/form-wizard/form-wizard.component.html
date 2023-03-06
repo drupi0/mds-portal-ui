@@ -204,7 +204,7 @@
         </div>
     </div>
 </div>
-<div class="d-flex p-4 align-items-center position-sticky border-top bg-white">
+<div class="d-flex pt-3 px-2 align-items-center position-sticky border-top bg-white">
     <div class="flex-fill">
         <button class="btn border-0 btn-outline-secondary d-flex align-items-center me-3" (click)="clearForm()">
             <mds-icons icon="close"></mds-icons>
@@ -273,7 +273,10 @@
                     <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index" [id]="row">
                         <td class="menu">
                             <div class="d-flex">
-                                <button class="btn btn-outline-success circular-btn" (click)="addRow(reportTemplate)">
+                                <button class="btn btn-outline-success circular-btn" (click)="addRow(reportTemplate)" 
+                                ngbPopover="First row must have a value before adding new row" [openDelay]="1000"
+                                triggers="mouseenter:mouseleave"
+                                [disablePopover]="!reportTemplate.group[0].values.length">
                                     <mds-icons icon="plus"></mds-icons>
                                 </button>
                                 <button class="btn btn-outline-danger circular-btn"

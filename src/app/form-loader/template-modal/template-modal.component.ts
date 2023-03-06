@@ -23,6 +23,7 @@ export class TemplateModalComponent implements OnInit {
   changeType(key: string, index: number) {
     this.template.group[index].type = key as FieldType;
 
+    this.template.group[index].defaults = "";
     for(let i = 0; i <  this.template.group[index].values.length; i++) {
       this.template.group[index].values[i] = "";
     }
@@ -54,7 +55,7 @@ export class TemplateModalComponent implements OnInit {
 
   save() {
     console.log(this.template);
-    
+
     this.activeModal.close({
       data: this.template,
       isDeleted: false

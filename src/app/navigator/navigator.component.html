@@ -1,21 +1,19 @@
-<div class="d-flex w-100 align-items-center">
+<div class="d-flex w-100 align-items-center pb-3">
     <img src="assets/logo_no_text.png" [routerLink]="['']" width="80" class="me-3">
-    <ul ngbNav [activeId]="breadcrumbSvc.activeTab$ | async" class="nav-pills">
-        <li [ngbNavItem]="link.href" *ngFor="let link of links">
-            <a ngbNavLink [routerLink]="[link.href]" class="me-2">{{ link.title }}</a>
-        </li>
-    </ul>
-    <div class="flex-fill text-end">
+    <div class="flex-fill d-flex align-items-center">
+        <div class="flex-fill d-flex align-items-baseline">
+            <mds-breadcrumbs></mds-breadcrumbs>
+        </div>
         <div ngbDropdown class="d-inline-block">
             <button type="button" class="btn btn-link" id="dropdownBasic1" ngbDropdownToggle>
                {{ currentUser.given_name }} {{ currentUser.family_name }}
             </button>
-            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <div ngbDropdownMenu>
                 <button ngbDropdownItem (click)="logout()">Log Out</button>
             </div>
         </div>
     </div>
 </div>
-<div class="pt-3">
-    <mds-breadcrumbs></mds-breadcrumbs>
-</div>
+<!-- <div class="pt-3">
+   
+</div> -->

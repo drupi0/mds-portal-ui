@@ -1,7 +1,14 @@
-<nav aria-label="breadcrumb" *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs">
+<!-- <nav aria-label="breadcrumb" *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs" class="d-flex align-items-center">
     <ol class="breadcrumb">
         <li class="breadcrumb-item" *ngFor="let crumb of breadcrumbs">
-            <span class="badge text-bg-primary cursor-pointer" routerLink="{{ crumb.href }}">{{ crumb.title }}</span>
+            <span class="btn btn-link cursor-pointer" routerLink="{{ crumb.href }}">{{ crumb.title }}</span>
         </li>
     </ol>
-</nav>
+</nav> -->
+
+<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="d-flex align-items-center">
+    <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
+        <span class="btn btn-outline-primary border-0 cursor-pointer" routerLink="{{ crumb.href }}">{{ crumb.title }}</span>
+        <span *ngIf="!last" class="mx-2">-</span>
+    </ng-container>
+</div>
