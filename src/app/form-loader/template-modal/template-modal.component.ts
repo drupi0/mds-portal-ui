@@ -62,8 +62,6 @@ export class TemplateModalComponent implements OnInit {
   save() {
    this.template.group.forEach((g, index) => g.priority = index)
 
-   console.log(this.template);
-
     this.activeModal.close({
       data: this.template,
       isDeleted: false
@@ -138,7 +136,5 @@ export class TemplateModalComponent implements OnInit {
     moveItemInArray(tempGroup, event.previousIndex, event.currentIndex);
 
     this.template.group = tempGroup;
-
-    console.log(this.template.group);
   }
 }

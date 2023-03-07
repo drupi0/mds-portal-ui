@@ -1,29 +1,29 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'mds-datetimepicker',
   templateUrl: './datetimepicker.component.html',
   styleUrls: ['./datetimepicker.component.scss']
 })
-export class DatetimepickerComponent implements OnChanges, OnInit {
-  @Input() date: string = "";
-  @Input() time: string = "";
+export class DatetimepickerComponent implements OnChanges {
+  @Input() date: string | undefined;
+  @Input() id: string | undefined;
 
   @Input() showTime: boolean = true;
   @Input() minDate: NgbDateStruct = {} as NgbDateStruct;
+
+  @ViewChild("dp") dp : NgbDropdown | undefined;
 
   timeObj: NgbTimeStruct = {} as NgbTimeStruct;
   dateObj: NgbDateStruct = {} as NgbDateStruct;
 
   @Output() onChange: EventEmitter<string> = new EventEmitter();
 
-  @ViewChild("dtToggle")
-  dtToggle: HTMLButtonElement | undefined;
+  currentDateTime: BehaviorSubject<string> = new BehaviorSubject(`MM/DD/YYYY${ this.showTime ? ' HH:MM' : ''}`);
 
-  hasDateChange: boolean = false;
-
-  ngOnInit() {
+  ngOnChanges() {
     const currentDt = new Date();
 
     this.timeObj = {
@@ -38,40 +38,29 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
       year: currentDt.getFullYear()
     }
 
-    this.date = `${this.doublePadding(this.dateObj.month)}/${this.doublePadding(this.dateObj.day)}/${this.dateObj.year}`;
-    this.time = `${this.doublePadding(this.timeObj.hour)}:${this.doublePadding(this.timeObj.minute)}`
-    
     this.initDateTime();
   }
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    const { date, time, showTime, minDate } = changes;
 
-    if(time?.currentValue) {
-      this.time = time?.currentValue;
-      this.hasDateChange = true;
-    }
-
-    if(date?.currentValue) {
-      this.date = date?.currentValue;
-      this.hasDateChange = true;
-    }
-
-    if(showTime?.currentValue){
-      this.showTime = showTime?.currentValue;
-    }
-
-    if(minDate?.currentValue) {
-      this.minDate = minDate?.currentValue;
-    }
-    
-    this.initDateTime();
-  }
 
   private initDateTime() {
-    
-    if(this.time) {
-      const [hh, mm] = this.time.split(":");
+    if (!this.date) {
+      return;
+    }
+
+    const dateStr = this.showTime ? this.date.split(" ")[0] : this.date;
+
+    const [mm, dd, yyyy] = dateStr.split("/");
+
+    this.dateObj = {
+      day: parseInt(dd),
+      month: parseInt(mm),
+      year: parseInt(yyyy)
+    }
+
+    if (this.showTime) {
+      const timeStr = this.date.split(" ")[1];
+      const [hh, mm] = timeStr.split(":");
+
       this.timeObj = {
         hour: parseInt(hh),
         minute: parseInt(mm),
@@ -79,14 +68,7 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
       }
     }
 
-    if(this.date) {
-      const [mm, dd, yyyy] = this.date.split("/");
-      this.dateObj = {
-        day: parseInt(dd),
-        month: parseInt(mm),
-        year: parseInt(yyyy)
-      }
-    }
+    this.currentDateTime.next(this.stringifyDate().concat(this.showTime ? ` ${this.stringifyTime()}` : ""));
   }
 
   onDateSet(event: NgbDateStruct) {
@@ -111,34 +93,35 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
     return (numParam).toLocaleString(undefined, { minimumIntegerDigits: 2 });
   }
 
-  set(dp: NgbDropdown | undefined, isCancelled: boolean = false, isReset: boolean = false) {
-    if(isCancelled) {
+  set(isCancelled: boolean = false, isReset: boolean = false) {
+    if (isCancelled) {
       this.initDateTime();
-    } else if(isReset) {
-      this.date = "";
-      this.time = "";
-      this.hasDateChange = false;
+      this.dp?.close();
+
+      return;
+    }
+
+    if (isReset) {
+      this.currentDateTime.next(`MM/DD/YYYY${ this.showTime ? ' HH:MM' : ''}`);
       this.onChange.next("");
-    } else {
-      const { hour, minute } = this.timeObj;
-      const { day, month, year } = this.dateObj;
-  
-      let dateString = `${this.doublePadding(month)}/${this.doublePadding(day)}/${year}`
 
-      if(this.showTime) {
-        dateString = dateString.concat(` ${this.doublePadding(hour)}:${this.doublePadding(minute)}`);
-      }
+      this.dp?.close();
 
-      this.onChange.next(dateString);
-
-      this.hasDateChange = true;
+      return;
     }
 
-    if(dp) {
-      dp.close();
+    const { hour, minute } = this.timeObj;
+    const { day, month, year } = this.dateObj;
+
+    let dateString = `${this.doublePadding(month)}/${this.doublePadding(day)}/${year}`
+
+    if (this.showTime) {
+      dateString = dateString.concat(` ${this.doublePadding(hour)}:${this.doublePadding(minute)}`);
     }
-    
+
+    this.onChange.next(dateString);
+    this.dp?.close()
   }
 
-  constructor(){}
+  constructor() { }
 }

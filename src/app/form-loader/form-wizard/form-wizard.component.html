@@ -26,7 +26,8 @@
                     error: !defaultForm.controls.sex.value
                 }">Gender</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle [ngClass]="{
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle
+                        [ngClass]="{
                         error_input: !defaultForm.controls.sex.value
                     }">
                         {{ (defaultForm.controls.sex.value | titlecase) || 'Select Gender'}}
@@ -78,7 +79,8 @@
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Status</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle [ngClass]="{
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle
+                        [ngClass]="{
                         error_input: !defaultForm.controls.status.value
                     }">
                         {{ (defaultForm.controls.status.value | titlecase) || 'Select Status'}}
@@ -113,8 +115,7 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.collectionDateTime.value
                 }">Collection Date/Time</label>
-                <mds-datetimepicker [time]="splitDateTime(defaultForm.controls.collectionDateTime.value).time"
-                    [date]="splitDateTime(defaultForm.controls.collectionDateTime.value).date"
+                <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
                     (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.collectionDateTime.value
                     }"></mds-datetimepicker>
@@ -123,8 +124,7 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.receivedDateTime.value
                 }">Received Date/Time</label>
-                <mds-datetimepicker [time]="splitDateTime(defaultForm.controls.receivedDateTime.value).time"
-                    [date]="splitDateTime(defaultForm.controls.receivedDateTime.value).date"
+                <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
                     (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.receivedDateTime.value
                     }"></mds-datetimepicker>
@@ -135,7 +135,7 @@
         <div class="d-flex justify-content-end">
             <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
                 <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
-                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle >
+                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
                         Load Template
                     </button>
                     <div ngbDropdownMenu>
@@ -205,18 +205,15 @@
     <span class="me-3 text-danger" *ngIf="saveDisabled" [ngbPopover]="formError" [openDelay]="500"
         triggers="mouseenter:mouseleave">
         <mds-icons icon="alert"></mds-icons></span>
-    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm()"
-        [disabled]="saveDisabled">
+    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm()" [disabled]="saveDisabled">
         <mds-icons icon="close"></mds-icons>
         <span class="ms-2">Save & Exit</span>
     </button>
-    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm(false)"
-        [disabled]="saveDisabled">
+    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm(false)" [disabled]="saveDisabled">
         <mds-icons icon="save"></mds-icons>
         <span class="ms-2">Save</span>
     </button>
-    <button class="btn btn-primary d-flex align-items-center me-2" (click)="printForm()"
-        [disabled]="saveDisabled">
+    <button class="btn btn-primary d-flex align-items-center me-2" (click)="printForm()" [disabled]="saveDisabled">
         <mds-icons icon="file"></mds-icons>
         <span class="ms-2">Save & Preview</span>
     </button>
@@ -263,10 +260,11 @@
                     <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index" [id]="row">
                         <td class="menu">
                             <div class="d-flex">
-                                <button class="btn btn-outline-success circular-btn" (click)="addRow(reportTemplate)" 
-                                ngbPopover="First row must have a value before adding new row" [openDelay]="1000"
-                                triggers="mouseenter:mouseleave"
-                                [disablePopover]="!reportTemplate.group[0].values.length">
+                                <button class="btn btn-outline-success circular-btn"
+                                    (click)="addRow(reportTemplate, rowIndex)"
+                                    ngbPopover="First row must have a value before adding new row" [openDelay]="1000"
+                                    triggers="mouseenter:mouseleave"
+                                    [disablePopover]="!reportTemplate.group[0].values.length">
                                     <mds-icons icon="plus"></mds-icons>
                                 </button>
                                 <button class="btn btn-outline-danger circular-btn"
@@ -275,56 +273,61 @@
                                 </button>
                             </div>
                         </td>
-                        <td *ngFor="let group of reportTemplate.group; let colIndex = index" class="text-center">
+                        <td *ngFor="let group of reportTemplate.group; let colIndex = index;" class="text-center">
                             <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
-                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control"
+                                    [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Number"
                                     (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
                                     [ngClass]="{
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">
-                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control"
+                                    [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Value"
                                     (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
                                     [ngClass]="{
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">
+
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
-                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden />
-                                    <mds-datetimepicker
-                                        [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
+                                    <input type="text" class="tbl-data"
+                                        [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                        [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden/>
+                                    <mds-datetimepicker [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
                                         (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, rowIndex, $event)"
-                                        [date]="(reportTemplate.group[colIndex].values[rowIndex] || ' ').split(' ')[0]"
-                                        [time]="(reportTemplate.group[colIndex].values[rowIndex] || ' ').split(' ')[1]" 
+                                        [date]="reportTemplate.group[colIndex].values[rowIndex]"
                                         [ngClass]="{
-                                            error_dt: !reportTemplate.group[colIndex].values[rowIndex]
-                                        }"></mds-datetimepicker>
+                                    error_dt: !reportTemplate.group[colIndex].values[rowIndex]
+                                }" #dp></mds-datetimepicker>
                                 </div>
                                 <div *ngSwitchCase="'DATE'" class="d-flex">
-                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
-                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden />
+                                    <input type="text" class="tbl-data"
+                                        [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                        [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden/>
                                     <mds-datetimepicker [showTime]="false"
-                                        [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
-                                        (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, rowIndex, $event)"
-                                        [date]="reportTemplate.group[colIndex].values[rowIndex]" [ngClass]="{
-                                            error_dt: !reportTemplate.group[colIndex].values[rowIndex]
-                                        }"></mds-datetimepicker>
+                                            [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
+                                            (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, rowIndex, $event)"
+                                            [date]="reportTemplate.group[colIndex].values[rowIndex]" [ngClass]="{
+                                        error_dt: !reportTemplate.group[colIndex].values[rowIndex]
+                                    }"></mds-datetimepicker>
                                 </div>
                                 <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
-                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                    <input type="text" class="tbl-data"
+                                        [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                         [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
                                     <button type="button"
                                         class="btn btn-block btn-outline-primary dp-toggle text-truncate"
                                         ngbDropdownToggle [ngClass]="{
-                                            error_input: !reportTemplate.group[colIndex].values[rowIndex]
+                                            error_input: !reportTemplate.group[colIndex].values[rowIndex],
+                                            'text-muted': !reportTemplate.group[colIndex].values[rowIndex]
                                         }">
-                                        {{ reportTemplate.group[colIndex].values[rowIndex] ||
-                                        reportTemplate.group[colIndex].defaults.split(',')[0] }}
+                                        {{ reportTemplate.group[colIndex].values[rowIndex] || 'Select Value' }}
                                     </button>
                                     <div ngbDropdownMenu>
+                                        <button ngbDropdownItem (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, '')">Select Value</button>
                                         <button ngbDropdownItem
                                             (click)="dropdownClick(reportTemplateIndex, colIndex, rowIndex, dropdownItems.trim())"
                                             *ngFor="let dropdownItems of reportTemplate.group[colIndex].defaults.split(',');">{{

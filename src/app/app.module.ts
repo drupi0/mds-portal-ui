@@ -79,7 +79,7 @@ const appRoutes: Routes = [
     StaffModalComponent,
     YesNoModalComponent,
     PrintformComponent,
-    DatetimepickerComponent
+    DatetimepickerComponent,
   ],
   imports: [
     BrowserModule,

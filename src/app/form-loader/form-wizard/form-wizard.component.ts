@@ -8,7 +8,7 @@ import {
   PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
-import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ import { TemplateModalComponent } from '../template-modal/template-modal.compone
   templateUrl: './form-wizard.component.html',
   styleUrls: ['./form-wizard.component.scss']
 })
-export class FormWizardComponent implements OnInit {
+export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   defaultStaff: StaffModel = {
     name: "",
@@ -80,6 +80,10 @@ export class FormWizardComponent implements OnInit {
     this.api.searchPatient(query.trim().toLowerCase()).pipe(take(1), debounceTime(3000)).subscribe(patients => this.patientList.next(patients));
   }
 
+  ngAfterViewChecked(): void {
+    this.cdRef.detectChanges();
+  }
+
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -128,15 +132,10 @@ export class FormWizardComponent implements OnInit {
   }
 
   onDtChange(template: TemplateModel, groupId: string, row: number, event: string) {
-
-    interval(100).pipe(take(1)).subscribe(() => {
-      const groupIndex = template.group.findIndex(group => group.id === groupId);
-
-      if(groupIndex !== -1) {
-        template.group[groupIndex].values[row] = event;
-      }
-    });
-   
+    const groupIndex = template.group.findIndex(group => group.id === groupId);
+    if(groupIndex !== -1) {
+      template.group[groupIndex].values[row] = event;
+    }
   }
 
   saveTemplate(template: TemplateModel, templateHtml: HTMLTableSectionElement) {
@@ -207,15 +206,6 @@ export class FormWizardComponent implements OnInit {
     }
 
     return patientFormJson;
-  }
-
-  splitDateTime(value: string): { date: string, time: string } {
-    if (!value) {
-      value = "";
-    }
-
-    const [date, time] = value.split(" ");
-    return { date, time };
   }
 
   get saveDisabled(): boolean {
@@ -299,17 +289,15 @@ export class FormWizardComponent implements OnInit {
     const tempList = this.templateList.getValue() || [];
     const newTemplate = JSON.parse(JSON.stringify(template));
 
-    console.log(newTemplate);
-
     if (template.group[0].values.join(",").trim().length === 0) {
-      this.addRow(newTemplate);
+      this.addRow(newTemplate, template.group[0].values.length - 1);
     }
 
     tempList.push(newTemplate);
     this.templateList.next(tempList);
   }
 
-  addRow(template: TemplateModel) {
+  addRow(template: TemplateModel, rowIndex: number) {
     const groups: TemplateGroup[] = JSON.parse(JSON.stringify(template.group));
 
     groups.forEach((group) => {
@@ -319,10 +307,10 @@ export class FormWizardComponent implements OnInit {
 
       switch (group.type) {
         case FieldType.DROPDOWN:
-          group.values.push(group.defaults.split(",")[0]);
+          group.values.splice(rowIndex + 1, 0, group.defaults.split(",")[0]);
           break;
         default:
-          group.values.push(group.defaults);
+          group.values.splice(rowIndex + 1, 0, group.defaults);
       }
     });
 
@@ -469,5 +457,6 @@ export class FormWizardComponent implements OnInit {
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
     private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
+    private cdRef: ChangeDetectorRef
   ) { }
 }
