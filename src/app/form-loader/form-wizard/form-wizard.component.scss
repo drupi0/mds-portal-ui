@@ -16,11 +16,6 @@ table {
     border: none;
 }
 
-.empty-state {
-    min-height: 300px;
-    opacity: 0.2;
-}
-
 .overflow-x-auto {
     overflow-x: auto;
     overflow-y: visible;
@@ -92,7 +87,9 @@ tbody {
     }
 }
 
-.wizard-body {
-    height: calc(100vh - 70px - 73px);
-    overflow: auto;
+.footer {
+    z-index: 100;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
 }
