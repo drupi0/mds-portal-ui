@@ -176,31 +176,19 @@
     <div class="field-container px-5 border rounded mt-3 mb-5" [formGroup]="defaultForm">
         <div class="row mt-3">
             <div class="mb-3 col">
-                <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.performedBy.value?.name
-                }">Performed by</label>
+                <label class="form-label">Performed by</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.performedBy)" [ngClass]="{
-                        error_input: !defaultForm.controls.performedBy.value?.name
-                    }" readonly>
+                    (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
             </div>
             <div class="mb-3 col">
-                <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.verifiedBy.value?.name
-                }">Verified by</label>
+                <label class="form-label">Verified by</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly [ngClass]="{
-                        error_input: !defaultForm.controls.verifiedBy.value?.name
-                    }">
+                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
             </div>
             <div class="mb-3 col">
-                <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.pathologist.value?.name
-                }">Pathologist</label>
+                <label class="form-label">Pathologist</label>
                 <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.pathologist)" [ngClass]="{
-                        error_input: !defaultForm.controls.pathologist.value?.name
-                    }" readonly>
+                    (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
             </div>
         </div>
     </div>
@@ -289,14 +277,14 @@
                         </td>
                         <td *ngFor="let group of reportTemplate.group; let colIndex = index" class="text-center">
                             <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
-                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control"
+                                <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Number"
                                     (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
                                     [ngClass]="{
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">
-                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control"
+                                <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                     [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Value"
                                     (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
@@ -304,28 +292,29 @@
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">
                                 <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                                    <input type="text" class="tbl-data"
-                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden #dTarget />
+                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden />
                                     <mds-datetimepicker
-                                        (onChange)="reportTemplate.group[colIndex].values[rowIndex] = $event"
-                                        [date]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[0]"
-                                        [time]="reportTemplate.group[colIndex].values[rowIndex].split(' ')[1]" 
+                                        [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
+                                        (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, rowIndex, $event)"
+                                        [date]="(reportTemplate.group[colIndex].values[rowIndex] || ' ').split(' ')[0]"
+                                        [time]="(reportTemplate.group[colIndex].values[rowIndex] || ' ').split(' ')[1]" 
                                         [ngClass]="{
                                             error_dt: !reportTemplate.group[colIndex].values[rowIndex]
                                         }"></mds-datetimepicker>
                                 </div>
                                 <div *ngSwitchCase="'DATE'" class="d-flex">
-                                    <input type="text" class="tbl-data"
-                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden
-                                        #dtTarget />
+                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
+                                        [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]" hidden />
                                     <mds-datetimepicker [showTime]="false"
-                                        (onChange)="reportTemplate.group[colIndex].values[rowIndex] = $event"
+                                        [id]="reportTemplate.group[colIndex].id + '_' + rowIndex"
+                                        (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, rowIndex, $event)"
                                         [date]="reportTemplate.group[colIndex].values[rowIndex]" [ngClass]="{
                                             error_dt: !reportTemplate.group[colIndex].values[rowIndex]
                                         }"></mds-datetimepicker>
                                 </div>
                                 <div ngbDropdown *ngSwitchCase="'DROPDOWN'" class="d-inline-block" container="body">
-                                    <input type="text" class="tbl-data"
+                                    <input type="text" class="tbl-data" [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                         [value]="reportTemplate.group[colIndex].values[rowIndex]" hidden>
                                     <button type="button"
                                         class="btn btn-block btn-outline-primary dp-toggle text-truncate"

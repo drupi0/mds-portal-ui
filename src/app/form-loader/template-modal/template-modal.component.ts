@@ -1,15 +1,19 @@
+import { CdkDragDrop, CDK_DRAG_CONFIG, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { FieldType } from 'src/app/shared/interfaces/form';
-import { TemplateModel } from 'src/app/shared/interfaces/template';
+import { TemplateGroup, TemplateModel } from 'src/app/shared/interfaces/template';
 
-
+const DragConfig = {
+  zIndex: 10000
+};
 
 @Component({
   selector: 'mds-template-modal',
   templateUrl: './template-modal.component.html',
-  styleUrls: ['./template-modal.component.scss']
+  styleUrls: ['./template-modal.component.scss'],
+  providers: [{ provide: CDK_DRAG_CONFIG, useValue: DragConfig }]
 })
 export class TemplateModalComponent implements OnInit {
   @Input() template: TemplateModel = {} as TemplateModel;
@@ -17,6 +21,7 @@ export class TemplateModalComponent implements OnInit {
   isNew: boolean = false;
 
   selectionList = FieldType;
+  groups: any = ["hello test", "hello", "world", "hello test1", "hello test2", "hello test3"];
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal) { }
 
@@ -41,7 +46,8 @@ export class TemplateModalComponent implements OnInit {
       name: `Column ${this.template.group.length + 1}`,
       type: FieldType.DEFAULT,
       defaults: "",
-      values: []
+      values: [""],
+      priority: index + 1
     });
   }
 
@@ -54,7 +60,9 @@ export class TemplateModalComponent implements OnInit {
   }
 
   save() {
-    console.log(this.template);
+   this.template.group.forEach((g, index) => g.priority = index)
+
+   console.log(this.template);
 
     this.activeModal.close({
       data: this.template,
@@ -106,16 +114,31 @@ export class TemplateModalComponent implements OnInit {
             name: "Column 1",
             type: FieldType.DEFAULT,
             defaults: "",
-            values: []
+            values: [],
+            priority: 0
           },
           {
             name: "Column 2",
             type: FieldType.DEFAULT,
             defaults: "",
-            values: []
+            values: [],
+            priority: 1
           },
         ]
       }
     }
+  }
+
+  sort(event: CdkDragDrop<TemplateGroup[]>) {
+    const tempGroup: TemplateGroup[] = this.template.group;
+
+    this.template.group[event.previousIndex].priority = event.currentIndex;
+    this.template.group[event.currentIndex].priority = event.previousIndex;
+
+    moveItemInArray(tempGroup, event.previousIndex, event.currentIndex);
+
+    this.template.group = tempGroup;
+
+    console.log(this.template.group);
   }
 }

@@ -5,12 +5,16 @@ import { FieldType } from './form';
 export interface TemplateModel {
     name: string;
     id: string;
-    group: {
-        name: string,
-        type: FieldType,
-        defaults: string,
-        values: string[]
-    }[];
+    group: TemplateGroup[];
+}
+
+export interface TemplateGroup {
+    id?: string;
+    priority: number;
+    name: string;
+    type: FieldType;
+    defaults: string;
+    values: string[];
 }
 export interface PatientModel {
     id?: string

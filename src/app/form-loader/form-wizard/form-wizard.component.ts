@@ -1,11 +1,11 @@
 import { NgxNotificationService } from 'ngx-notification';
 import {
-  BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, Observable, of, switchMap, take
+  BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, interval, Observable, of, switchMap, take
 } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import {
-  PatientModel, PatientRecordModel, StaffModel, TemplateModel
+  PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
 import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
@@ -127,14 +127,30 @@ export class FormWizardComponent implements OnInit {
     });
   }
 
+  onDtChange(template: TemplateModel, groupId: string, row: number, event: string) {
+
+    interval(100).pipe(take(1)).subscribe(() => {
+      const groupIndex = template.group.findIndex(group => group.id === groupId);
+
+      if(groupIndex !== -1) {
+        template.group[groupIndex].values[row] = event;
+      }
+    });
+   
+  }
+
   saveTemplate(template: TemplateModel, templateHtml: HTMLTableSectionElement) {
     const updateTemplate: TemplateModel = JSON.parse(JSON.stringify(template));
     updateTemplate.group.forEach(group => group.values = []);
 
     Array.from(templateHtml.getElementsByTagName("tr")).forEach(row => {
-      Array.from(row.getElementsByClassName("tbl-data")).forEach((data, index) => {
-        const value = (data as HTMLInputElement).value;
-        updateTemplate.group[index].values.push(!value ? '' : value.trim());
+      Array.from(row.getElementsByClassName("tbl-data")).forEach((data) => {
+        const { id, value } = (data as HTMLInputElement);
+        const itemIndex = updateTemplate.group.findIndex(data => data.id === id.split(":")[0])
+
+        if(itemIndex != -1) {
+          updateTemplate.group[itemIndex].values.push(!value ? '' : value.trim());
+        }
       });
     });
 
@@ -294,7 +310,9 @@ export class FormWizardComponent implements OnInit {
   }
 
   addRow(template: TemplateModel) {
-    template.group.forEach((group) => {
+    const groups: TemplateGroup[] = JSON.parse(JSON.stringify(template.group));
+
+    groups.forEach((group) => {
       if (group.values.join(",").trim().length === 0) {
         group.values = [];
       }
@@ -307,6 +325,8 @@ export class FormWizardComponent implements OnInit {
           group.values.push(group.defaults);
       }
     });
+
+    template.group = groups;
   }
 
   removeFromTemplateField(templateIndex: number) {

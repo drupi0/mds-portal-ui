@@ -36,7 +36,9 @@ export class ApiService {
   }
 
   getTemplates(): Observable<TemplateModel[]> {
-    return this.httpClient.get<TemplateModel[]>(`${this.API_URL}/template`);
+    return this.httpClient.get<TemplateModel[]>(`${this.API_URL}/template`).pipe(map(templates => {
+      return templates.map(template => ({ ...template, group: template.group.sort((a, b) => a.priority - b.priority)}))
+    }));
   }
 
   deleteTemplate(template: TemplateModel) : Observable<TemplateModel> {

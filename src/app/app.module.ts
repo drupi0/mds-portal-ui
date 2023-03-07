@@ -1,6 +1,7 @@
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { NgxNotificationModule } from 'ngx-notification';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import {DragDropModule} from '@angular/cdk/drag-drop'; 
 
 import { HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
@@ -93,7 +94,8 @@ const appRoutes: Routes = [
     NgbPaginationModule,
     NgxNotificationModule,
     KeycloakAngularModule,
-    NgScrollbarModule
+    NgScrollbarModule,
+    DragDropModule
   ],
   providers: [
     provideHttpClient(

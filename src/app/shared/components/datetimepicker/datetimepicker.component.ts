@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -17,6 +17,9 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
   dateObj: NgbDateStruct = {} as NgbDateStruct;
 
   @Output() onChange: EventEmitter<string> = new EventEmitter();
+
+  @ViewChild("dtToggle")
+  dtToggle: HTMLButtonElement | undefined;
 
   hasDateChange: boolean = false;
 
@@ -40,7 +43,7 @@ export class DatetimepickerComponent implements OnChanges, OnInit {
     
     this.initDateTime();
   }
-
+  
   ngOnChanges(changes: SimpleChanges): void {
     const { date, time, showTime, minDate } = changes;
 
