@@ -257,7 +257,7 @@
                     </tr>
                 </thead>
                 <tbody #tableData>
-                    <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index" [id]="row">
+                    <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index; trackBy: trackByFn;" [id]="row">
                         <td class="menu">
                             <div class="d-flex">
                                 <button class="btn btn-outline-success circular-btn"
@@ -273,21 +273,19 @@
                                 </button>
                             </div>
                         </td>
-                        <td *ngFor="let group of reportTemplate.group; let colIndex = index;" class="text-center">
+                        <td *ngFor="let group of reportTemplate.group; let colIndex = index; trackBy: trackByFn;" class="text-center">
                             <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
                                 <input type="number" *ngSwitchCase="'NUMBER'" class="tbl-data form-control"
                                     [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
-                                    [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Number"
-                                    (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
+                                    [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]"
                                     [ngClass]="{
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">
                                 <input type="text" *ngSwitchCase="'TEXT'" class="tbl-data form-control"
                                     [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
-                                    [value]="reportTemplate.group[colIndex].values[rowIndex] || ''"
                                     placeholder="Input a Value"
-                                    (change)="inputChange(reportTemplateIndex, rowIndex, colIndex, $event.target)"
+                                    [(ngModel)]="reportTemplate.group[colIndex].values[rowIndex]"
                                     [ngClass]="{
                                         error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                     }">

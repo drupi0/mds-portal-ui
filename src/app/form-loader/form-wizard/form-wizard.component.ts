@@ -151,6 +151,10 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  trackByFn(index: number) {
+    return index;
+  }
+
   saveTemplate(template: TemplateModel, templateHtml: HTMLTableSectionElement) {
     const updateTemplate: TemplateModel = JSON.parse(JSON.stringify(template));
     updateTemplate.group.forEach(group => group.values = []);
@@ -320,9 +324,18 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
       switch (group.type) {
         case FieldType.DROPDOWN:
+          if(!group.values.length) {
+            group.values = Array(2).fill(group.defaults.split(",")[0]);
+            break;
+          }
+          
           group.values.splice(rowIndex + 1, 0, group.defaults.split(",")[0]);
           break;
         default:
+          if(!group.values.length) {
+            group.values = Array(2).fill(group.defaults);
+            break;
+          }
           group.values.splice(rowIndex + 1, 0, group.defaults);
       }
     });
