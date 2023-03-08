@@ -9,6 +9,7 @@
                {{ currentUser.given_name }} {{ currentUser.family_name }}
             </button>
             <div ngbDropdownMenu>
+                <a href="/auth/realms/mds-auth/account/" ngbDropdownItem>Account Settings</a>
                 <button ngbDropdownItem (click)="logout()">Log Out</button>
             </div>
         </div>
