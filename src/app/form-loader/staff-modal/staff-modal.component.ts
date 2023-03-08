@@ -101,7 +101,7 @@ export class StaffModalComponent implements OnInit {
   }
 
   dismiss() {
-    const staffToReturn = this.staffList$.getValue().find(staff => this.selectedStaff.id === staff.id);
+    const staffToReturn = this.selectedStaff ? this.staffList$.getValue().find(staff => this.selectedStaff.id === staff.id) : null;
 
     if (staffToReturn) {
       this.activeModal.close(staffToReturn);
