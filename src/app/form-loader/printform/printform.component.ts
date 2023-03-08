@@ -24,6 +24,10 @@ export class PrintformComponent implements OnInit {
   formattedPage: SafeHtml = "";
   isPrinting: boolean = false;
 
+  separateReports: boolean = false;
+  printHeaderOnSeparateReports = false;
+  printFooterOnSeparateReports = false;
+
   ngOnInit(): void {
     if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);

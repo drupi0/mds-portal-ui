@@ -55,6 +55,11 @@ export class BreadcrumbService {
 
   }
 
+  get current(): BreadcrumbItem {
+    const breadcrumbItems: BreadcrumbItem[] = this.breadCrumbs$.getValue();
+    return breadcrumbItems[breadcrumbItems.length - 1];
+  }
+
   initBreadcrumbs() {
     this.router.events.pipe(filter(event => event instanceof ActivationStart)).subscribe((event) => {
       const activationEvent: ActivationStart = event as ActivationStart;

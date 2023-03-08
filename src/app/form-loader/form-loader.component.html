@@ -78,11 +78,17 @@
                 </ng-container>
             </div>
             <div class="col-1 fw-bold d-flex align-items-end">
-                <button class="btn btn-danger circular-btn me-2" (click)="deleteRecord(form)" *ngIf="isAdmin">
+                <button class="btn btn-danger circular-btn me-2" ngbPopover="Delete this record" [openDelay]="500"
+                triggers="mouseenter:mouseleave" (click)="deleteRecord(form)" *ngIf="isAdmin">
                     <mds-icons icon="trash"></mds-icons>
                 </button>
-                <button class="btn btn-primary circular-btn" [routerLink]="[form.id]">
+                <button class="btn btn-primary circular-btn me-2" ngbPopover="Edit this record" [openDelay]="500"
+                triggers="mouseenter:mouseleave" [routerLink]="[form.id]">
                     <mds-icons icon="edit"></mds-icons>
+                </button>
+                <button class="btn btn-secondary circular-btn" ngbPopover="Duplicate this record" [openDelay]="500"
+                triggers="mouseenter:mouseleave" [routerLink]="[form.id]" [queryParams]="{ duplicate: true }">
+                    <mds-icons icon="copy"></mds-icons>
                 </button>
             </div>
         </div>

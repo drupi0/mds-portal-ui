@@ -43,10 +43,10 @@
                     <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
                         [(ngModel)]="template.group[index].defaults">
                     <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                        <mds-datetimepicker (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                        <mds-datetimepicker [date]="template.group[index].defaults" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                     </div>
                     <div *ngSwitchCase="'DATE'" class="d-flex">
-                        <mds-datetimepicker [showTime]="false" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                        <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                     </div>
                     <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Default, Option 1, Option 2"
                         ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"

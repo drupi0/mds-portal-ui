@@ -2,56 +2,7 @@
     <lib-ngx-notification></lib-ngx-notification>
     <div class="container bg-white shadow mt-3">
         <div #printArea class="p-5">
-            <div class="main-row row mt-4">
-                <div class="col-1">
-                    <img src="/assets/logo.png" style="height: 100px">
-                </div>
-                <div class="col d-flex flex-column align-items-center justify-content-center">
-                    <span class="fw-bold">MULTIHEALTH DYNAMIC SOLUTIONS INC.</span>
-                    <div class="d-flex">
-                        <span class="me-3">(056) 255-1277</span>
-                        <span class="me-3">www.mdsolutionsph.com</span>
-                        <span>info@mdsolutionsph.com</span>
-                    </div>
-                </div>
-            </div>
-            <div class="main-row border rounded p-3 mt-4">
-                <div class="row">
-                    <div class="col-2 fw-bold">Name:</div>
-                    <div class="col">{{ formData?.patient?.name }}</div>
-                    <div class="col-3 fw-bold">Age/Sex:</div>
-                    <div class="col-2">{{ calcAge(formData?.patient?.dateOfBirth)}} / {{ formData?.patient?.sex |
-                        uppercase }}</div>
-
-                </div>
-                <div class="row">
-                    <div class="col-2 fw-bold">Spec. #:</div>
-                    <div class="col">{{ formData?.specNo }}</div>
-                    <div class="col-3 fw-bold">Date of Birth:</div>
-                    <div class="col-1">{{ formData?.patient?.dateOfBirth }}</div>
-                    <div class="col-1"></div>
-                </div>
-                <div class="row">
-                    <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
-                    <div class="col">{{ formData?.orderingDoctor }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-2 fw-bold">Status:</div>
-                    <div class="col">{{ formData?.status | uppercase }}</div>
-                    <div class="col-3 fw-bold">Collection Date/Time:</div>
-                    <div class="col-2">{{ formData?.collectionDateTime }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-2 fw-bold">Specimen:</div>
-                    <div class="col">{{ formData?.specimen }}</div>
-                    <div class="col-3 fw-bold">Received Date/Time:</div>
-                    <div class="col-2">{{ formData?.receivedDateTime }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-2 fw-bold">Ordered:</div>
-                    <div class="col">{{ formData?.ordered }}</div>
-                </div>
-            </div>
+            <ng-container [ngTemplateOutlet]="reportHeader"></ng-container>
             <div class="main-row rounded p-3 mt-4" *ngFor="let field of reportField">
                 <div class="row">
                     <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
@@ -77,19 +28,7 @@
                 <div class="col-2 fw-bold">COMMENT:</div>
                 <div class="col">{{ formData?.comments }}</div>
             </div>
-            <div class="main-row row mt-4 border border-3 border-dark">
-                <div class="col fw-bold text-center">** END OF REPORT**</div>
-            </div>
-            <div class="main-row row mt-4">
-                <div class="col fw-bold">Performed by:</div>
-                <div class="col fw-bold">Verified by:</div>
-                <div class="col fw-bold">Pathologist:</div>
-            </div>
-            <div class="main-row row mt-4 mb-3">
-                <div class="col">{{ formData?.performedBy?.name }} / Lic No. {{ formData?.performedBy?.licNo }}</div>
-                <div class="col">{{ formData?.verifiedBy?.name }} / Lic No. {{ formData?.verifiedBy?.licNo }}</div>
-                <div class="col">{{ formData?.pathologist?.name }} / Lic No. {{ formData?.pathologist?.licNo }}</div>
-            </div>
+            <ng-container [ngTemplateOutlet]="reportFooter"></ng-container>
         </div>
         <div [innerHTML]="formattedPage" #formattedArea></div>
     </div>
@@ -128,3 +67,72 @@
         </button>
     </div>
 </div>
+
+<ng-template #reportHeader>
+    <div class="main-row row mt-4">
+        <div class="col-1">
+            <img src="/assets/logo.png" style="height: 100px">
+        </div>
+        <div class="col d-flex flex-column align-items-center justify-content-center">
+            <span class="fw-bold">MULTIHEALTH DYNAMIC SOLUTIONS INC.</span>
+            <div class="d-flex">
+                <span class="me-3">(056) 255-1277</span>
+                <span class="me-3">www.mdsolutionsph.com</span>
+                <span>info@mdsolutionsph.com</span>
+            </div>
+        </div>
+    </div>
+    <div class="main-row border rounded p-3 mt-4">
+        <div class="row">
+            <div class="col-2 fw-bold">Name:</div>
+            <div class="col">{{ formData?.patient?.name }}</div>
+            <div class="col-3 fw-bold">Age/Sex:</div>
+            <div class="col-2">{{ calcAge(formData?.patient?.dateOfBirth)}} / {{ formData?.patient?.sex |
+                uppercase }}</div>
+
+        </div>
+        <div class="row">
+            <div class="col-2 fw-bold">Spec. #:</div>
+            <div class="col">{{ formData?.specNo }}</div>
+            <div class="col-3 fw-bold">Date of Birth:</div>
+            <div class="col-1">{{ formData?.patient?.dateOfBirth }}</div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
+            <div class="col">{{ formData?.orderingDoctor }}</div>
+        </div>
+        <div class="row">
+            <div class="col-2 fw-bold">Status:</div>
+            <div class="col">{{ formData?.status | uppercase }}</div>
+            <div class="col-3 fw-bold">Collection Date/Time:</div>
+            <div class="col-2">{{ formData?.collectionDateTime }}</div>
+        </div>
+        <div class="row">
+            <div class="col-2 fw-bold">Specimen:</div>
+            <div class="col">{{ formData?.specimen }}</div>
+            <div class="col-3 fw-bold">Received Date/Time:</div>
+            <div class="col-2">{{ formData?.receivedDateTime }}</div>
+        </div>
+        <div class="row">
+            <div class="col-2 fw-bold">Ordered:</div>
+            <div class="col">{{ formData?.ordered }}</div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #reportFooter>
+    <div class="main-row row mt-4 border border-3 border-dark">
+        <div class="col fw-bold text-center">** END OF REPORT**</div>
+    </div>
+    <div class="main-row row mt-4">
+        <div class="col fw-bold">Performed by:</div>
+        <div class="col fw-bold">Verified by:</div>
+        <div class="col fw-bold">Pathologist:</div>
+    </div>
+    <div class="main-row row mt-4 mb-3">
+        <div class="col">{{ formData?.performedBy?.name }} / Lic No. {{ formData?.performedBy?.licNo }}</div>
+        <div class="col">{{ formData?.verifiedBy?.name }} / Lic No. {{ formData?.verifiedBy?.licNo }}</div>
+        <div class="col">{{ formData?.pathologist?.name }} / Lic No. {{ formData?.pathologist?.licNo }}</div>
+    </div>
+</ng-template>

@@ -1,6 +1,6 @@
 import { NgxNotificationService } from 'ngx-notification';
 import {
-  BehaviorSubject, catchError, debounceTime, EMPTY, forkJoin, interval, Observable, of, switchMap, take
+  BehaviorSubject, catchError, combineLatest, debounceTime, EMPTY, forkJoin, interval, map, Observable, of, switchMap, take
 } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
@@ -16,6 +16,7 @@ import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PrintformComponent } from '../printform/printform.component';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
+import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -55,20 +56,32 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   patientList: BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
   patientFormId: string = "";
   isAdmin = false;
+  isDuplicate = false;
 
   initFormBuilder() {
     this.api.getTemplates().subscribe((list: TemplateModel[]) => {
       this.templateOptions.next(list)
     });
 
-    this.route.params.subscribe(param => {
-      const { formId } = param;
+    combineLatest([this.route.params, this.route.queryParams]).pipe(map(([param, query]) => ({
+      ...param,
+      ...query
+    }))).subscribe(param => {
+      const { formId, duplicate } = param;
+
+      if(duplicate !== null) {
+        this.isDuplicate = duplicate;
+      }
+
+      if(this.isDuplicate) {
+        this.breadcrumbSvc.current.title = "New Patient Record";
+      }
 
       if (formId) {
         this.patientFormId = formId;
         this.initFormTemplate(formId);
       }
-    });
+    })
   }
 
   onPatientSearch(query: string) {
@@ -418,7 +431,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       }
 
       const formValues = {
-        id: record.id,
+        id: !this.isDuplicate ? record.id : null,
         name: record.patient.name,
         age: this.calcAge,
         sex: record.patient.sex,
@@ -457,6 +470,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
     private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService 
   ) { }
 }
