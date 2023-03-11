@@ -3,7 +3,7 @@
     <div class="container bg-white shadow mt-3">
         <div #printArea class="p-5">
             <ng-container [ngTemplateOutlet]="reportHeader"></ng-container>
-            <div class="main-row rounded p-3 mt-4" *ngFor="let field of reportField">
+            <div class="main-row rounded px-3 mt-2" *ngFor="let field of reportField">
                 <div class="row">
                     <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
                 </div>
@@ -24,7 +24,7 @@
                     </table>
                 </div>
             </div>
-            <div class="main-row row mt-4">
+            <div class="main-row row mt-2 pb-4">
                 <div class="col-2 fw-bold">COMMENT:</div>
                 <div class="col">{{ formData?.comments }}</div>
             </div>
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="main-row border rounded p-3 mt-4">
+    <div class="main-row border rounded p-3 mt-4 mb-4">
         <div class="row">
             <div class="col-2 fw-bold">Name:</div>
             <div class="col">{{ formData?.patient?.name }}</div>
@@ -122,17 +122,19 @@
 </ng-template>
 
 <ng-template #reportFooter>
-    <div class="main-row row mt-4 border border-3 border-dark">
-        <div class="col fw-bold text-center">** END OF REPORT**</div>
-    </div>
-    <div class="main-row row mt-4">
-        <div class="col fw-bold">Performed by:</div>
-        <div class="col fw-bold">Verified by:</div>
-        <div class="col fw-bold">Pathologist:</div>
-    </div>
-    <div class="main-row row mt-4 mb-3">
-        <div class="col">{{ formData?.performedBy?.name }} / Lic No. {{ formData?.performedBy?.licNo }}</div>
-        <div class="col">{{ formData?.verifiedBy?.name }} / Lic No. {{ formData?.verifiedBy?.licNo }}</div>
-        <div class="col">{{ formData?.pathologist?.name }} / Lic No. {{ formData?.pathologist?.licNo }}</div>
+    <div class="main-row">
+        <div class="row mt-2 border border-3 border-dark">
+            <div class="col fw-bold text-center">** END OF REPORT**</div>
+        </div>
+        <div class="row mt-4">
+            <div class="col fw-bold">Performed by:</div>
+            <div class="col fw-bold">Verified by:</div>
+            <div class="col fw-bold">Pathologist:</div>
+        </div>
+        <div class="row mt-4">
+            <div class="col">{{ formData?.performedBy?.name }}<br>Lic No. {{ formData?.performedBy?.licNo }}</div>
+            <div class="col">{{ formData?.verifiedBy?.name }}<br>Lic No. {{ formData?.verifiedBy?.licNo }}</div>
+            <div class="col">{{ formData?.pathologist?.name }}<br>Lic No. {{ formData?.pathologist?.licNo }}</div>
+        </div>
     </div>
 </ng-template>

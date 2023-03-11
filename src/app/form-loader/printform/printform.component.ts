@@ -7,6 +7,7 @@ import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@ang
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
+const PAPER_HEIGHT = 1700;
 @Component({
   selector: 'mds-printform',
   templateUrl: './printform.component.html',
@@ -47,7 +48,7 @@ export class PrintformComponent implements OnInit {
     let totalHeight = 0;
 
     Array.from(elements).forEach(row => {
-      if (totalHeight >= 1122.519685) {
+      if (totalHeight + row.getBoundingClientRect().height  >= PAPER_HEIGHT) {
         groups.push(pageGroup);
         pageGroup = [];
         totalHeight = 0;
@@ -63,14 +64,16 @@ export class PrintformComponent implements OnInit {
 
     groups.forEach(async (divGroups: HTMLElement[]) => {
       const group = document.createElement("div");
-      group.classList.add("p-5", "bg-white");
+      group.classList.add("p-4", "bg-white");
 
       divGroups.forEach(g => {
         this.renderer.appendChild(group, g.cloneNode(true));
       });
 
       this.renderer.appendChild(this.formattedArea?.nativeElement, group);
-      canvasElements.push(from(htmlToImage.toCanvas(group)))
+      canvasElements.push(from(htmlToImage.toCanvas(group, {
+        pixelRatio: 3,
+      })))
     });
 
     forkJoin(canvasElements).subscribe(canvasList => {

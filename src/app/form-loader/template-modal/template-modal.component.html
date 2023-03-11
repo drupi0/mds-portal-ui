@@ -49,7 +49,7 @@
                         <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                     </div>
                     <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Default, Option 1, Option 2"
-                        ngbPopover="Split dropdown items using a comma(',')." [openDelay]="500"
+                        ngbPopover="Split dropdown items using a comma(','). First item would be set as default." [openDelay]="500"
                         triggers="mouseenter:mouseleave" [(ngModel)]="template.group[index].defaults">
                     <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
                 </ng-container>
