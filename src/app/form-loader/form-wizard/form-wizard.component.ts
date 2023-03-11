@@ -56,6 +56,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   patientList: BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
   patientFormId: string = "";
   isAdmin = false;
+  isSuperAdmin = false;
   isDuplicate = false;
 
   initFormBuilder() {
@@ -100,8 +101,9 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      const { isAdmin } = data;
+      const { isAdmin, isSuperAdmin } = data;
       (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
+      (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
     });
 
     this.initFormBuilder();

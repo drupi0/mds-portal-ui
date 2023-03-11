@@ -19,6 +19,7 @@ export class FormLoaderComponent implements OnInit {
 
   searchString = "";
   isAdmin = false;
+  isSuperAdmin = false;
 
   patientRecords: PatientRecordModel[] = [];
   patientRecordFromSearch: PatientRecordModel[] = [];
@@ -32,8 +33,9 @@ export class FormLoaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
-      const { isAdmin } = data;
+      const { isAdmin, isSuperAdmin } = data;
       (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
+      (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
     });
 
     this.loadRecords();

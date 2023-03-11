@@ -79,7 +79,7 @@
             </div>
             <div class="col-1 fw-bold d-flex align-items-end">
                 <button class="btn btn-danger circular-btn me-2" ngbPopover="Delete this record" [openDelay]="500"
-                triggers="mouseenter:mouseleave" (click)="deleteRecord(form)" *ngIf="isAdmin">
+                triggers="mouseenter:mouseleave" (click)="deleteRecord(form)" *ngIf="isAdmin || isSuperAdmin">
                     <mds-icons icon="trash"></mds-icons>
                 </button>
                 <button class="btn btn-primary circular-btn me-2" ngbPopover="Edit this record" [openDelay]="500"

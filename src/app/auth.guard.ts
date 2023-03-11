@@ -27,7 +27,8 @@ export class AuthGuard extends KeycloakAuthGuard {
 
     route.data = {
       ...route.data,
-      isAdmin: this.breadCrumbSvc.isAdmin() 
+      isAdmin: this.breadCrumbSvc.isAdmin(),
+      isSuperAdmin: this.breadCrumbSvc.isSuperAdmin()
     }
 
     return this.authenticated;
