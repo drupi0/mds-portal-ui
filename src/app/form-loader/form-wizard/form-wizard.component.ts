@@ -357,7 +357,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.isAdmin = this.isAdmin;
+    modalRef.componentInstance.isAdmin = this.isAdmin || this.isSuperAdmin;
     modalRef.componentInstance.selectedStaff = control.value;
 
     modalRef.closed.subscribe(data => {
@@ -466,7 +466,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
       this.defaultForm.setValue(formValues);
 
-      if (this.patientFormId.length !== 0 && !this.isAdmin) {
+      if (this.patientFormId.length !== 0 && !(this.isAdmin || this.isSuperAdmin)) {
         this.defaultForm.controls.name.disable({
           onlySelf: true
         });

@@ -100,23 +100,32 @@ body {
 
 lib-ngx-notification {
     .success {
-        border: 1px solid #00b56a !important;
         border-radius: 10px !important;
         padding: 20px !important;
         font-size: 12pt !important;
+        background: rgba(#00b56a, 0.06) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(11.7px) !important;
+        -webkit-backdrop-filter: blur(11.7px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.42) !important;
     }
 
     .danger {
-        border: 1px solid #a10637 !important;
         border-radius: 10px !important;
         padding: 20px !important;
         font-size: 12pt !important;
+        background: rgba(#a10637, 0.06) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(11.7px) !important;
+        -webkit-backdrop-filter: blur(11.7px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.42) !important;
     }
 
     .success,
     .danger {
+        pointer-events: none !important;
         left: 50% !important;
-        top: 30px !important;
+        top: 80px !important;
         transform: translate(-50%, 0);
         min-width: 40vw;
         text-align: center;

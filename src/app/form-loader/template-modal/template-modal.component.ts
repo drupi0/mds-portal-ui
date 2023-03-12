@@ -51,6 +51,15 @@ export class TemplateModalComponent implements OnInit {
     });
   }
 
+  duplicateColumn(index: number) {
+    const duplicated: TemplateGroup = JSON.parse(JSON.stringify(this.template.group[index]));
+    duplicated.id = "";
+    duplicated.name = duplicated.name + " - Copy";
+    duplicated.priority = index + 1;
+
+    this.template.group.splice(index + 1, 0, duplicated);
+  }
+
   removeColumn(index: number) {
     if (this.template.group.length === 1) {
       return;

@@ -21,6 +21,9 @@
                 <button class="btn btn-outline-danger circular-btn" (click)="removeColumn(index)">
                     <mds-icons icon="minus"></mds-icons>
                 </button>
+                <button class="btn btn-outline-secondary circular-btn" (click)="duplicateColumn(index)">
+                    <mds-icons icon="copy"></mds-icons>
+                </button>
             </div>
             <input type="text" class="form-control me-2" placeholder="Name" [(ngModel)]="template.group[index].name">
             <div ngbDropdown class="d-inline-block me-2 col-3">

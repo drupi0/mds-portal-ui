@@ -222,24 +222,24 @@
 
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
     <div class="border rounded mb-3 overflow-auto">
-        <div class="py-2 px-3 d-flex bg-light">
+        <div class="py-3 px-3 d-flex bg-light">
             <div class="flex-fill d-flex align-items-center">
                 <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
             </div>
-            <button class="btn btn-outline-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            <button class="btn btn-primary rounded btn-sm rounded me-2 text-nowrap circular-btn"
                 ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave"  *ngIf="isSuperAdmin"
                 (click)="editTemplate(reportTemplate)">
                 <mds-icons icon="edit"></mds-icons>
             </button>
-            <button class="btn btn-outline-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            <button class="btn btn-success rounded btn-sm rounded me-2 text-nowrap circular-btn"
                 ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
                 triggers="mouseenter:mouseleave" (click)="saveTemplate(reportTemplate, tableData)"  *ngIf="isSuperAdmin">
                 <mds-icons icon="save"></mds-icons>
             </button>
-            <button class="btn btn-outline-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
+            <button class="btn btn-danger rounded btn-sm rounded me-2 text-nowrap circular-btn"
                 ngbPopover="Removes this template from the current form" [openDelay]="500" triggers="mouseenter:mouseleave"
                 (click)="removeFromTemplateField(reportTemplateIndex)">
-                <mds-icons icon="minus"></mds-icons>
+                <mds-icons icon="close"></mds-icons>
             </button>
         </div>
         <div class="border-top mb-2 overflow-x-auto">
@@ -266,11 +266,11 @@
                                         ngbPopover="First row must have a value before adding new row" [openDelay]="1000"
                                         triggers="mouseenter:mouseleave"
                                         [disablePopover]="!reportTemplate.group[0].values.length">
-                                        <mds-icons icon="plus"></mds-icons>
+                                        <mds-icons icon="plus-circle"></mds-icons>
                                     </button>
                                     <button class="btn btn-outline-danger circular-btn"
                                         (click)="removeRow(reportTemplate, rowIndex)">
-                                        <mds-icons icon="minus"></mds-icons>
+                                        <mds-icons icon="minus-circle"></mds-icons>
                                     </button>
                                 </div>
                             </td>
