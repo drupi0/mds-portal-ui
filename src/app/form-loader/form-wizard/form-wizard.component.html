@@ -1,4 +1,3 @@
-<lib-ngx-notification></lib-ngx-notification>
 <div class="spacer"></div>
 <div class="wizard-body pt-4 px-5">
     <div class="field-container px-5 border rounded">
@@ -62,9 +61,17 @@
             <div class="mb-3 col-2">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.specNo.value
-                }">Spec #</label>
+                }">MR No.</label>
                 <input type="text" class="form-control" formControlName="specNo" [ngClass]="{
                     error_input: !defaultForm.controls.specNo.value
+                }">
+            </div>
+            <div class="mb-3 col-2">
+                <label class="form-label" [ngClass]="{
+                    error: !defaultForm.controls.accessionNo.value
+                }">Accession No.</label>
+                <input type="text" class="form-control" formControlName="accessionNo" [ngClass]="{
+                    error_input: !defaultForm.controls.accessionNo.value
                 }">
             </div>
             <div class="mb-3 col">
@@ -205,9 +212,9 @@
     <span class="me-3 text-danger" *ngIf="saveDisabled" [ngbPopover]="formError" [openDelay]="500"
         triggers="mouseenter:mouseleave">
         <mds-icons icon="alert"></mds-icons></span>
-    <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm()" [disabled]="saveDisabled">
+    <button class="btn btn-primary me-2 d-flex align-items-center" [routerLink]="['','form']">
         <mds-icons icon="close"></mds-icons>
-        <span class="ms-2">Save & Exit</span>
+        <span class="ms-2">Exit</span>
     </button>
     <button class="btn btn-primary me-2 d-flex align-items-center" (click)="saveForm(false)" [disabled]="saveDisabled">
         <mds-icons icon="save"></mds-icons>
@@ -215,7 +222,7 @@
     </button>
     <button class="btn btn-primary d-flex align-items-center me-2" (click)="printForm()" [disabled]="saveDisabled">
         <mds-icons icon="file"></mds-icons>
-        <span class="ms-2">Save & Preview</span>
+        <span class="ms-2">Preview</span>
     </button>
 
 </div>

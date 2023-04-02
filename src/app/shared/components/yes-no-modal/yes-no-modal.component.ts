@@ -9,6 +9,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class YesNoModalComponent {
   @Input() title = "Do you agree?"
   @Input() modalBody = ""
+  @Input() yesLabel = "Yes"
+  @Input() noLabel = "Cancel"
 
   dismiss() {
     this.activeModal.dismiss();

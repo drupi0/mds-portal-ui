@@ -37,6 +37,7 @@ export interface PatientRecordModel {
     performedBy: StaffModel,
     verifiedBy: StaffModel,
     specNo: string,
+    accessionNo: string,
     orderingDoctor: string,
     status: string,
     specimen: string,

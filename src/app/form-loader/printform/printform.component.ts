@@ -3,7 +3,7 @@ import jsPDF, { jsPDFOptions } from 'jspdf';
 import { BehaviorSubject, debounceTime, forkJoin, from, Observable } from 'rxjs';
 import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
-import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,7 +13,7 @@ const PAPER_HEIGHT = 1700;
   templateUrl: './printform.component.html',
   styleUrls: ['./printform.component.scss']
 })
-export class PrintformComponent implements OnInit {
+export class PrintformComponent implements OnInit, AfterViewInit {
 
   constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitizer: DomSanitizer) { }
 
@@ -24,6 +24,7 @@ export class PrintformComponent implements OnInit {
 
   formattedPage: SafeHtml = "";
   isPrinting: boolean = false;
+  printNow: boolean = false;
 
   separateReports: boolean = false;
   printHeaderOnSeparateReports = false;
@@ -32,6 +33,14 @@ export class PrintformComponent implements OnInit {
   ngOnInit(): void {
     if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if(this.printNow) {
+      setTimeout(() => {
+        this.downloadAsPdf();
+      }, 100);
     }
   }
 

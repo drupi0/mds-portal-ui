@@ -29,6 +29,7 @@ import {
 import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
+import { DeactivateGuard } from './deactivate.guard';
 
 const appRoutes: Routes = [
   {
@@ -50,14 +51,16 @@ const appRoutes: Routes = [
         component: FormWizardComponent,
         data: {
           breadcrumb: "New Patient Record"
-        }
+        },
+        canDeactivate: [DeactivateGuard],
       },
       {
         path: ":formId",
         component: FormWizardComponent,
         data: {
           breadcrumb: "Edit Patient Record"
-        }
+        },
+        canDeactivate: [DeactivateGuard],
       }
     ]
   }, {

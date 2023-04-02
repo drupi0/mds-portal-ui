@@ -75,10 +75,11 @@
         </div>
         <div class="col d-flex flex-column align-items-center justify-content-center">
             <span class="fw-bold">MULTIHEALTH DYNAMIC SOLUTIONS INC.</span>
+            <span class="text-small">B5 2/Floor St. Matthew's Bldg. Magsaysay Street, Almendras Cogon, Sorsogon, Philippines</span>
             <div class="d-flex">
-                <span class="me-3">(056) 255-1277</span>
-                <span class="me-3">www.mdsolutionsph.com</span>
-                <span>info@mdsolutionsph.com</span>
+                <span class="me-3 text-small">(056) 255-1277</span>
+                <span class="me-3 text-small">www.mdsolutionsph.com</span>
+                <span class="text-small">info@mdsolutionsph.com</span>
             </div>
         </div>
     </div>
@@ -92,27 +93,31 @@
 
         </div>
         <div class="row">
-            <div class="col-2 fw-bold">Spec. #:</div>
+            <div class="col-2 fw-bold">MR No.:</div>
             <div class="col">{{ formData?.specNo }}</div>
             <div class="col-3 fw-bold">Date of Birth:</div>
             <div class="col-1">{{ formData?.patient?.dateOfBirth }}</div>
             <div class="col-1"></div>
         </div>
         <div class="row">
-            <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
-            <div class="col">{{ formData?.orderingDoctor }}</div>
+            <div class="col-2 fw-bold">Accession No.:</div>
+            <div class="col">{{ formData?.accessionNo }}</div>
         </div>
         <div class="row">
-            <div class="col-2 fw-bold">Status:</div>
-            <div class="col">{{ formData?.status | uppercase }}</div>
+            <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
+            <div class="col">{{ formData?.orderingDoctor }}</div>
             <div class="col-3 fw-bold">Collection Date/Time:</div>
             <div class="col-2">{{ formData?.collectionDateTime }}</div>
         </div>
         <div class="row">
-            <div class="col-2 fw-bold">Specimen:</div>
-            <div class="col">{{ formData?.specimen }}</div>
+            <div class="col-2 fw-bold">Status:</div>
+            <div class="col">{{ formData?.status | uppercase }}</div>
             <div class="col-3 fw-bold">Received Date/Time:</div>
             <div class="col-2">{{ formData?.receivedDateTime }}</div>
+        </div>
+        <div class="row">
+            <div class="col-2 fw-bold">Specimen:</div>
+            <div class="col">{{ formData?.specimen }}</div>
         </div>
         <div class="row">
             <div class="col-2 fw-bold">Ordered:</div>

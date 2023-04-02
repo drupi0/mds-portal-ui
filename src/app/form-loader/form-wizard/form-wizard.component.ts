@@ -1,6 +1,6 @@
 import { NgxNotificationService } from 'ngx-notification';
 import {
-  BehaviorSubject, catchError, combineLatest, debounceTime, EMPTY, forkJoin, interval, map, Observable, of, switchMap, take
+  BehaviorSubject, catchError, combineLatest, debounceTime, delay, EMPTY, finalize, forkJoin, from, interval, map, Observable, of, switchMap, take, tap
 } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
@@ -8,7 +8,7 @@ import {
   PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
-import { AfterViewChecked, ChangeDetectorRef, Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +17,7 @@ import { PrintformComponent } from '../printform/printform.component';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -38,6 +39,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     sex: new FormControl(),
     dateOfBirth: new FormControl(),
     specNo: new FormControl(),
+    accessionNo: new FormControl(),
     orderingDr: new FormControl(),
     status: new FormControl("routine"),
     specimen: new FormControl(),
@@ -58,6 +60,32 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   isAdmin = false;
   isSuperAdmin = false;
   isDuplicate = false;
+  hasChanges = false;
+
+  onExit() {
+    if(!this.defaultForm.dirty && !this.hasChanges) {
+      return of(true);
+    }
+
+    const modalRef = this.modalService.open(YesNoModalComponent, {
+      size: 'lg',
+      backdrop: 'static'
+    });
+
+    modalRef.componentInstance.title = `Unsaved changes on "${this.patientFormId}"?`;
+    modalRef.componentInstance.modalBody = `There are some unsaved changes on this form. Do you want to save them?`;
+    modalRef.componentInstance.noLabel = "No";
+
+    return modalRef.closed.pipe(switchMap(response => {
+      if(response) {
+        return this.callSaveApi().pipe(finalize(() => {
+          this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
+        }), switchMap(() => of(true)));
+      }
+
+      return of(false);
+    }));
+  }
 
   initFormBuilder() {
     this.api.getTemplates().subscribe((list: TemplateModel[]) => {
@@ -68,7 +96,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       ...param,
       ...query
     }))).subscribe(param => {
-      const { formId, duplicate } = param;
+      const { formId, duplicate, preview } = param;
 
       if(duplicate !== null) {
         this.isDuplicate = duplicate;
@@ -81,6 +109,10 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       if (formId) {
         this.patientFormId = formId;
         this.initFormTemplate(formId);
+      }
+
+      if(preview) {
+        this.printForm();
       }
     })
   }
@@ -111,6 +143,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   editTemplate(template: TemplateModel) {
     this.updateTemplate(template);
+    this.hasChanges = true;
   }
 
   private updateTemplate(template: TemplateModel) {
@@ -143,6 +176,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       this.templateOptions.next([...tempOptions, ...(!isDeleted ? [data] : [])]);
       this.templateList.next([...tempList, ...(!isDeleted ? [data] : [])]);
 
+      this.hasChanges = true;
+
     });
   }
 
@@ -150,6 +185,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     const groupIndex = template.group.findIndex(group => group.id === groupId);
     if(groupIndex !== -1) {
       template.group[groupIndex].values[row] = event;
+
+      this.hasChanges = true;
     }
   }
 
@@ -192,6 +229,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
     this.templateList.next(templateListValues);
 
+    this.hasChanges = true;
+
   }
 
   private prepareRecord(): Partial<PatientRecordModel> {
@@ -210,6 +249,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       performedBy: !formValue.performedBy || !formValue.performedBy.name.trim().length ? null : formValue.performedBy as StaffModel,
       verifiedBy: !formValue.verifiedBy || !formValue.verifiedBy.name.trim().length ? null : formValue.verifiedBy as StaffModel,
       specNo: formValue.specNo,
+      accessionNo: formValue.accessionNo,
       orderingDoctor: formValue.orderingDr,
       status: formValue.status,
       specimen: formValue.specimen,
@@ -242,16 +282,23 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     tempList[templateIndex].group[colIndex].values[rowIndex] = inputValue;
 
     this.templateList.next(tempList);
+
+    this.hasChanges = true;
+  }
+
+  private callSaveApi() {
+    return this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
+      this.showErrorToast(err);
+      return EMPTY;
+    }));
   }
 
   saveForm(navigateToHome: boolean = true) {
-    this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
-      this.showErrorToast(err);
-      return EMPTY;
-    })).subscribe((record: PatientRecordModel) => {
-
+    this.callSaveApi().subscribe((record: PatientRecordModel) => {
+      this.hasChanges = false;
+      this.defaultForm.markAsPristine();
+      
       this.defaultForm.controls.id.setValue(record.id);
-
       if (navigateToHome) {
         this.ngZone.run(() => {
           this.router.navigate(["form"]).then(() => {
@@ -269,15 +316,23 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     this.templateList.next([]);
   }
 
-  printForm() {
+  printForm(printNow: boolean = false) {
+    this.modalService.dismissAll();
+    
     const modalRef = this.modalService.open(PrintformComponent, {
       fullscreen: true,
       backdrop: 'static'
     });
 
-    this.saveForm(false);
-
     modalRef.componentInstance.formData = this.prepareRecord();
+    modalRef.componentInstance.printNow = printNow;
+  }
+
+  @HostListener('window:keydown.control.p', ['$event'])
+  @HostListener('window:keydown.Meta.p', ['$event'])
+  printNowHandler(event: KeyboardEvent) {
+    event.preventDefault();
+    this.printForm(true);
   }
 
   newTemplate() {
@@ -291,6 +346,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     })).subscribe((newTemplate: TemplateModel) => {
       this.showSuccessToast(`Template named '${newTemplate.name} has been saved.'`);
       this.templateOptions.next([...this.templateOptions.getValue(), newTemplate]);
+
+      this.hasChanges = true;
     });
   }
 
@@ -314,6 +371,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
     tempList.push(newTemplate);
     this.templateList.next(tempList);
+    this.hasChanges = true;
   }
 
   addRow(template: TemplateModel, rowIndex: number) {
@@ -343,12 +401,16 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     });
 
     template.group = groups;
+
+    this.hasChanges = true;
   }
 
   removeFromTemplateField(templateIndex: number) {
     const tempList = this.templateList.getValue();
     tempList.splice(templateIndex, 1);
-    this.templateList.next(tempList)
+    this.templateList.next(tempList);
+
+    this.hasChanges = true;
   }
 
   showStaffModal(control: FormControl) {
@@ -391,6 +453,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
 
     this.defaultForm.controls.sex.setValue(patientObj.sex);
+
+    this.hasChanges = true;
   }
 
   get todayDate() {
@@ -433,6 +497,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       this.showSuccessToast(`Template named '${newTemplate.name} has been saved.'`);
       this.templateOptions.next([...this.templateOptions.getValue(), newTemplate]);
     });
+
+    this.hasChanges = true;
   }
 
   private initFormTemplate(formId: string) {
@@ -452,6 +518,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         sex: record.patient.sex,
         dateOfBirth: record.patient.dateOfBirth,
         specNo: record.specNo,
+        accessionNo: record.accessionNo,
         orderingDr: record.orderingDoctor,
         status: record.status,
         specimen: record.specimen,

@@ -12,14 +12,14 @@
         <button type="button" class="btn btn-outline-secondary me-2" (click)="close(false)">
             <div class="d-flex">
                 <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">Cancel</span>
+                <span class="ms-2">{{ noLabel }}</span>
             </div>
 
         </button>
         <button type="button" class="btn btn-primary btn-glass" (click)="close(true)">
             <div class="d-flex">
                 <mds-icons icon="check" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">Yes</span>
+                <span class="ms-2">{{ yesLabel }}</span>
             </div>
         </button>
     </div>
