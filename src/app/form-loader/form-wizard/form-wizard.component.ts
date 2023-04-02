@@ -83,7 +83,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         }), switchMap(() => of(true)));
       }
 
-      return of(false);
+      return of(true);
     }));
   }
 
@@ -318,7 +318,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   printForm(printNow: boolean = false) {
     this.modalService.dismissAll();
-    
     const modalRef = this.modalService.open(PrintformComponent, {
       fullscreen: true,
       backdrop: 'static'
