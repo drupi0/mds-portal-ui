@@ -13,84 +13,95 @@
     <button class="btn btn-secondary btn-glass" [routerLink]="['new']">New Form</button>
 </div>
 <div class="v-100 p-4">
-    <div class="card p-3 field-container">
-        <div class="row p-3 border-bottom">
-            <div class="col-1 fw-bold">
-                Collection
-            </div>
-            <div class="col-1 fw-bold">
-                Received
-            </div>
-            <div class="col-1 fw-bold">
-                Form ID
-            </div>
-            <div class="col-2 fw-bold">
-                Ordered
-            </div>
-            <div class="col-2 fw-bold">
-                Specimen
-            </div>
-            <div class="col-3 fw-bold">
-                Patient Name
-            </div>
-            <div class="col-1 fw-bold">
-                Status
-            </div>
-            <div class="col-1 fw-bold">
-            </div>
-        </div>
-        <div class="row border-bottom hover p-3"
-            *ngFor="let form of (searchString.length ? patientRecordFromSearch : patientRecords)">
-            <div class="col-1">
-                <span class="d-block text-nowrap text-truncate">
-                    {{ form.collectionDateTime }}
-                </span>
-            </div>
-            <div class="col-1">
-                <span class="d-block text-nowrap text-truncate">
-                    {{ form.receivedDateTime }}
-                </span>
-            </div>
-            <div class="col-1">
-                <a [routerLink]="[form.id]">{{ (form.id || '').split('-')[0] }}</a>
-            </div>
-            <div class="col-2">
-                <span class="d-block text-nowrap text-truncate">
-                    {{ form.ordered }}
-                </span>
-            </div>
-            <div class="col-2">
-                <span class="d-block text-nowrap text-truncate">
-                    {{ form.specimen }}
-                </span>
-            </div>
-            <div class="col-3">
-                <span class="d-block text-nowrap text-truncate">
-                    {{ form.patient.name }}
-                </span>
-            </div>
-            <div class="col-1 fw-bold">
-                <ng-container [ngSwitch]="form.status | lowercase">
-                    <span *ngSwitchCase="'routine'" class="badge bg-primary btn-glass"> {{ form.status | titlecase }}</span>
-                    <span *ngSwitchCase="'stat'" class="badge bg-secondary btn-glass"> {{ form.status | titlecase }}</span>
-                    <span *ngSwitchCase="'urgent'" class="badge bg-danger btn-glass"> {{ form.status | titlecase }}</span>
-                </ng-container>
-            </div>
-            <div class="col-1 fw-bold d-flex align-items-end">
-                <button class="btn btn-danger circular-btn me-2" ngbPopover="Delete this record" [openDelay]="500"
-                triggers="mouseenter:mouseleave" (click)="deleteRecord(form)" *ngIf="isAdmin || isSuperAdmin">
-                    <mds-icons icon="trash"></mds-icons>
-                </button>
-                <button class="btn btn-primary circular-btn me-2" ngbPopover="Edit this record" [openDelay]="500"
-                triggers="mouseenter:mouseleave" [routerLink]="[form.id]">
-                    <mds-icons icon="edit"></mds-icons>
-                </button>
-                <button class="btn btn-secondary circular-btn" ngbPopover="Duplicate this record" [openDelay]="500"
-                triggers="mouseenter:mouseleave" [routerLink]="[form.id]" [queryParams]="{ duplicate: true }">
-                    <mds-icons icon="copy"></mds-icons>
-                </button>
-            </div>
-        </div>
+    <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="!searchString.trim().length">
+        <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
+            [collectionSize]="pagination.totalElements"></ngb-pagination>
+    </div>
+    <div class="card overflow-auto p-3 field-container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="fw-bold">Collection Datetime</th>
+                    <th class="fw-bold">Received Datetime</th>
+                    <th class="fw-bold">Form ID</th>
+                    <th class="fw-bold">MR No.</th>
+                    <th class="fw-bold">Ordered</th>
+                    <th class="fw-bold">Specimen</th>
+                    <th class="fw-bold">Patient's Name</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let form of (searchString.length ? patientRecordFromSearch : patientRecords)">
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.collectionDateTime }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.receivedDateTime }}
+                        </span>
+                    </td>
+                    <td>
+                        <div  class="py-3">
+                            <a [routerLink]="[form.id]">{{ (form.id || '').split('-')[0] }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.specNo }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.ordered }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.specimen }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="py-3 d-block text-nowrap text-truncate">
+                            {{ form.patient.name }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="py-3">
+                            <ng-container [ngSwitch]="form.status | lowercase">
+                                <span *ngSwitchCase="'routine'" class="badge bg-primary btn-glass"> {{ form.status |
+                                    titlecase }}</span>
+                                <span *ngSwitchCase="'stat'" class="badge bg-secondary btn-glass"> {{ form.status |
+                                    titlecase }}</span>
+                                <span *ngSwitchCase="'urgent'" class="badge bg-danger btn-glass"> {{ form.status |
+                                    titlecase }}</span>
+                            </ng-container>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="py-3 d-flex">
+                            <button class="btn btn-danger circular-btn me-2" ngbPopover="Delete this record"
+                                [openDelay]="500" triggers="mouseenter:mouseleave" (click)="deleteRecord(form)"
+                                *ngIf="isAdmin || isSuperAdmin">
+                                <mds-icons icon="trash"></mds-icons>
+                            </button>
+                            <button class="btn btn-primary circular-btn me-2" ngbPopover="Edit this record"
+                                [openDelay]="500" triggers="mouseenter:mouseleave" [routerLink]="[form.id]">
+                                <mds-icons icon="edit"></mds-icons>
+                            </button>
+                            <button class="btn btn-secondary circular-btn" ngbPopover="Duplicate this record"
+                                [openDelay]="500" triggers="mouseenter:mouseleave" [routerLink]="[form.id]"
+                                [queryParams]="{ duplicate: true }">
+                                <mds-icons icon="copy"></mds-icons>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <div class="row my-4 mx-3"
             *ngIf="searchString.length ? !patientRecordFromSearch.length : !patientRecords.length">
             <ng-container [ngTemplateOutlet]="emptyState" [ngTemplateOutletContext]="{ searchString }"></ng-container>

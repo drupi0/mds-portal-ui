@@ -86,7 +86,9 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
-    NgbModule, RouterModule.forRoot(appRoutes),
+    NgbModule, RouterModule.forRoot(appRoutes, {
+      scrollPositionRestoration: 'enabled'
+    }),
     NgbDropdownModule,
     NgbDatepickerModule,
     FormsModule,

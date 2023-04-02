@@ -38,11 +38,15 @@ export class FormLoaderComponent implements OnInit {
       (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
     });
 
+    const savedPagination = sessionStorage.getItem("pagination");
+    if(savedPagination) {
+      this.pagination = JSON.parse(savedPagination);
+    }
+
     this.loadRecords();
   }
 
   loadRecords() {
-
     this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size).subscribe((data: Pagination<PatientRecordModel>) => {
 
       this.patientRecords = data.content || [];
@@ -52,6 +56,8 @@ export class FormLoaderComponent implements OnInit {
         offset: this.pagination.currentPage * this.pagination.size,
         totalElements: data.totalElements
       }
+
+      sessionStorage.setItem("pagination", JSON.stringify(this.pagination));
     });
   }
 
