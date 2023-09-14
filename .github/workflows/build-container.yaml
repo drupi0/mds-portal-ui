@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/macroscode/mds-ui:latest
+          tags: ghcr.io/drupi0/mds-ui:latest
