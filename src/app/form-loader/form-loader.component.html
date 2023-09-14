@@ -15,7 +15,7 @@
 <div class="v-100 p-4">
     <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="!searchString.trim().length">
         <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
-            [collectionSize]="pagination.totalElements"></ngb-pagination>
+            [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
     </div>
     <div class="card overflow-auto p-3 field-container">
         <table class="table table-hover">
@@ -109,7 +109,7 @@
     </div>
     <div class="col-12 d-flex pt-3 justify-content-end align-items-end" *ngIf="!searchString.trim().length">
         <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
-            [collectionSize]="pagination.totalElements"></ngb-pagination>
+            [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
     </div>
 </div>
 
