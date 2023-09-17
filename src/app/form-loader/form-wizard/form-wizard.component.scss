@@ -76,6 +76,11 @@ tbody {
 }
 
 :host ::ng-deep {
+    .dropdown-menu {
+        max-height: 300px;
+        overflow: auto;
+    }
+
     mds-datetimepicker {
         max-width: 200px;
     }

@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 
 $white: #ffffff;
@@ -36,10 +41,6 @@ $body-bg: #ffffff;
 
 .cursor-pointer {
     cursor: pointer;
-}
-
-body {
-    background: #fcfbfc;
 }
 
 * {
@@ -177,4 +178,14 @@ input, textarea {
 .modal-content {
     border: none;
     border-radius: 3px !important;
+}
+
+@layer base {
+    html {
+      font-family: Poppins, system-ui, sans-serif;
+    }
+}
+
+body {
+    @apply bg-gray-50;
 }

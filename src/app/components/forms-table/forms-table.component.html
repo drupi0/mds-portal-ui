@@ -1,0 +1,122 @@
+<div class="relative overflow-x-auto m-4">
+    <div class="flex items-center px-3 py-1">
+        <div class="flex items-center w-1/12">
+            <span class="text-sm font-bold">MR No.</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-2/12 flex items-center">
+            <span class="text-sm font-bold">Patient's Name</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-2/12 flex items-center">
+            <span class="text-sm font-bold">Ordered</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-2/12 flex items-center">
+            <span class="text-sm font-bold">Requested By</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-1/12 flex items-center"><span class="text-sm font-bold">Specimen</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-1/12 flex items-center"><span class="text-sm font-bold">Recieved</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-1/12 flex items-center"><span class="text-sm font-bold">Collected</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="ml-2 text-gray-900 w-1/12 flex items-center"><span class="text-sm font-bold">Status</span>
+            <button class="ml-2 hover:text-blue-500">
+                <ng-container [ngTemplateOutlet]="sort" [ngTemplateOutletContext]="{
+                    direction: 'asc'
+                }"></ng-container>
+            </button>
+        </div>
+        <div class="flex-grow"></div>
+    </div>
+    <div class="flex items-center p-3 rounded my-2 bg-white hover:!bg-slate-100 transition ease-in-out" *ngFor="let row of patientRecordData()">
+        <div class="font-bold w-1/12 text-blue-800 hover:text-blue-900 cursor-pointer" (click)="edit(row)">{{ row.specNo }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-2/12 truncate">{{ row.patient.name }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-2/12 truncate">{{ row.ordered }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-2/12 truncate">{{ row.orderingDoctor.trim() || "-" }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-1/12 truncate">{{ row.specimen }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-1/12 truncate">{{ row.receivedDateTime }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-1/12 truncate">{{ row.collectionDateTime }}</div>
+        <div class="ml-2 text-neutral-800 font-medium w-20 truncate">
+            <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
+                'status': row.status
+            }"></ng-container>
+        </div>
+        <div class="flex-grow"></div>
+        <div class="flex">
+            <button class="text-blue-800 p-2 rounded hover:text-blue-900" (click)="edit(row)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                    <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                    <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                  </svg>                  
+            </button>
+            <button class="ml-1 text-blue-800 p-2 rounded hover:text-blue-900">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template let-direction="direction" #sort>
+    <svg *ngIf="direction === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+        class="w-5 h-5">
+        <path fill-rule="evenodd"
+            d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
+            clip-rule="evenodd" />
+    </svg>
+    <svg *ngIf="direction === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+        class="w-5 h-5">
+        <path fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd" />
+    </svg>
+</ng-template>
+
+<ng-template let-status="status" #status>
+    <div *ngIf="status === 'routine'" class="text-center bg-blue-800 rounded text-sm p-1 text-white">
+        Routine
+    </div>
+    <div *ngIf="status === 'stat'" class="text-center bg-yellow-500 p-1 rounded text-sm">
+        Stat
+    </div>
+    <div *ngIf="status === 'urgent'" class="text-center bg-red-800 p-1 text-white rounded text-sm">
+        Urgent
+    </div>
+</ng-template>

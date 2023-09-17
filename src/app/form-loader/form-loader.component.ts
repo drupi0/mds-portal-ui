@@ -2,7 +2,7 @@ import { NgxNotificationService } from 'ngx-notification';
 import { Observable } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ApiService } from '../services/api.service';
@@ -15,7 +15,8 @@ import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
   styleUrls: ['./form-loader.component.scss']
 })
 export class FormLoaderComponent implements OnInit {
-  constructor(public api: ApiService, public route: ActivatedRoute, private modalService: NgbModal, private notifSvc: NgxNotificationService) { }
+  constructor(public api: ApiService, public route: ActivatedRoute, private modalService: NgbModal, private notifSvc: NgxNotificationService,
+    private router: Router) { }
 
   searchString = "";
   isAdmin = false;
@@ -87,5 +88,11 @@ export class FormLoaderComponent implements OnInit {
         this.patientRecordFromSearch = searchResult.content;
       }
     })
+  }
+
+  editRecord(data: PatientRecordModel) {
+    this.router.navigate([data.id], {
+      relativeTo: this.route
+    });
   }
 }

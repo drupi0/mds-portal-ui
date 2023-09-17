@@ -30,6 +30,9 @@ import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
 import { DeactivateGuard } from './deactivate.guard';
+import { FormsTableComponent } from './components/forms-table/forms-table.component';
+
+const standaloneComponents = [FormsTableComponent]
 
 const appRoutes: Routes = [
   {
@@ -100,7 +103,8 @@ const appRoutes: Routes = [
     NgxNotificationModule,
     KeycloakAngularModule,
     NgScrollbarModule,
-    DragDropModule
+    DragDropModule,
+    ...standaloneComponents
   ],
   providers: [
     provideHttpClient(
