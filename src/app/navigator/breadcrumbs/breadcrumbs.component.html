@@ -1,8 +1,8 @@
-<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="d-flex align-items-center">
+<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="flex content-center m-3">
     <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
-        <span class="btn btn-outline-primary cursor-pointer" routerLink="{{ crumb.href }}"
+        <span class="text-sm hover:bg-blue-50 p-2 rounded cursor-pointer text-blue-800" routerLink="{{ crumb.href }}"
         [ngClass]="{
-            'border-0': !last
+            '!bg-blue-50': last
         }">{{ crumb.title }}</span>
         <span *ngIf="!last" class="mx-2 text-primary"></span>
     </ng-container>

@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, KeyValue } from '@angular/common';
 import { PatientModel, PatientRecordModel } from 'src/app/shared/interfaces/template';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'mds-forms-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgbDropdownModule, RouterModule],
   templateUrl: './forms-table.component.html',
   styleUrls: ['./forms-table.component.scss']
 })
@@ -18,9 +20,6 @@ export class FormsTableComponent {
 
   @Output()
   onEdit: EventEmitter<PatientRecordModel> = new EventEmitter();
-
-  @Output()
-  onDuplicate: EventEmitter<PatientRecordModel> = new EventEmitter();
 
   columns: KeyValue<string, string>[] = [{
     key: "collectionDateTime",
@@ -80,9 +79,5 @@ export class FormsTableComponent {
 
   edit(data: PatientRecordModel) {
     this.onEdit.emit(data);
-  }
-
-  duplicate(data: PatientRecordModel) {
-    this.onDuplicate.emit(data);
   }
 }

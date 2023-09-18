@@ -6,3 +6,9 @@
         }
     }
 }
+
+:host ::ng-deep {
+    .dropdown-toggle::after {
+        display:none;
+    }
+}

@@ -16,3 +16,10 @@
     left: 0px;
     z-index: 1000;
 }
+
+
+:host ::ng-deep {
+    .dropdown-toggle::after {
+        display:none;
+    }
+}
