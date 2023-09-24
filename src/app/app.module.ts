@@ -21,8 +21,7 @@ import { PrintformComponent } from './form-loader/printform/printform.component'
 import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.component';
 import { TemplateModalComponent } from './form-loader/template-modal/template-modal.component';
 import { initializeKeycloak } from './keycloak-init.factory';
-import { BreadcrumbsComponent } from './navigator/breadcrumbs/breadcrumbs.component';
-import { NavigatorComponent } from './navigator/navigator.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import {
   DatetimepickerComponent
 } from './shared/components/datetimepicker/datetimepicker.component';
@@ -39,21 +38,21 @@ const appRoutes: Routes = [
     path: "form",
     canActivate: [AuthGuard],
     data: {
-      breadcrumb: "Patient's Records Home"
+      breadcrumb: "Home"
     },
     children: [
       {
         path: "",
         component: FormLoaderComponent,
         data: {
-          breadcrumb: "Patient's Records Home"
+          breadcrumb: "Home"
         }
       },
       {
         path: "new",
         component: FormWizardComponent,
         data: {
-          breadcrumb: "New Patient Record"
+          breadcrumb: "New Record"
         },
         canDeactivate: [DeactivateGuard],
       },
@@ -61,7 +60,7 @@ const appRoutes: Routes = [
         path: ":formId",
         component: FormWizardComponent,
         data: {
-          breadcrumb: "Edit Patient Record"
+          breadcrumb: "Edit Record"
         },
         canDeactivate: [DeactivateGuard],
       }
@@ -77,7 +76,6 @@ const appRoutes: Routes = [
     AppComponent,
     TemplateCreatorComponent,
     FormLoaderComponent,
-    NavigatorComponent,
     BreadcrumbsComponent,
     FormWizardComponent,
     TemplateModalComponent,

@@ -1,5 +1,5 @@
 import { NgxNotificationService } from 'ngx-notification';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, debounceTime, finalize } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,9 +18,10 @@ export class FormLoaderComponent implements OnInit {
   constructor(public api: ApiService, public route: ActivatedRoute, private modalService: NgbModal, private notifSvc: NgxNotificationService,
     private router: Router) { }
 
-  searchString = "";
+  searchString: BehaviorSubject<string> = new BehaviorSubject("");
   isAdmin = false;
   isSuperAdmin = false;
+  isLoading = false;
 
   patientRecords: PatientRecordModel[] = [];
   patientRecordFromSearch: PatientRecordModel[] = [];
@@ -29,7 +30,9 @@ export class FormLoaderComponent implements OnInit {
     currentPage: 1,
     offset: 0,
     size: 10,
-    totalElements: 10
+    totalElements: 10,
+    sortKeys: ["receivedDateTime", "collectionDateTime"],
+    sortOrder: "desc"
   }
 
   ngOnInit(): void {
@@ -40,15 +43,23 @@ export class FormLoaderComponent implements OnInit {
     });
 
     const savedPagination = sessionStorage.getItem("pagination");
-    if(savedPagination) {
+    if (savedPagination) {
       this.pagination = JSON.parse(savedPagination);
     }
+
+    this.searchString.subscribe((term => {
+      this.api.searchRecords(0, 10, term, this.pagination.sortKeys, this.pagination.sortOrder).pipe(finalize(() => {
+        this.isLoading = false;
+      })).subscribe((searchResult: Pagination<PatientRecordModel>) => {
+        this.patientRecordFromSearch = searchResult.content;
+      });
+    }));
 
     this.loadRecords();
   }
 
   loadRecords() {
-    this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size).subscribe((data: Pagination<PatientRecordModel>) => {
+    this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size, this.pagination.sortKeys, this.pagination.sortOrder).subscribe((data: Pagination<PatientRecordModel>) => {
 
       this.patientRecords = data.content || [];
 
@@ -82,12 +93,11 @@ export class FormLoaderComponent implements OnInit {
   }
 
   onSearch(searchTerm: string): void {
-    this.searchString = searchTerm;
-    this.api.searchRecords(0, 10, searchTerm).subscribe((searchResult: Pagination<PatientRecordModel>) => {
-      if (searchResult.content?.length) {
-        this.patientRecordFromSearch = searchResult.content;
-      }
-    })
+    if(searchTerm.length) {
+      this.isLoading = true;
+    }
+
+    this.searchString.next(searchTerm);
   }
 
   editRecord(data: PatientRecordModel) {

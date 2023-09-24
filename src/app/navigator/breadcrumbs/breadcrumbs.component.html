@@ -1,9 +1,0 @@
-<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="flex content-center m-3">
-    <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
-        <span class="text-sm hover:bg-blue-50 p-2 rounded cursor-pointer text-blue-800" routerLink="{{ crumb.href }}"
-        [ngClass]="{
-            '!bg-blue-50': last
-        }">{{ crumb.title }}</span>
-        <span *ngIf="!last" class="mx-2 text-primary"></span>
-    </ng-container>
-</div>

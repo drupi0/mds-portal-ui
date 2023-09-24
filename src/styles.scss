@@ -1,6 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +7,7 @@
 $white: #ffffff;
 
 /* change the colors */
-$primary: #2258cd;
+$primary: #1e40af;
 $secondary: #2490d8;
 $danger: #dc4d4d;
 $success: #00b56a;
@@ -155,10 +153,10 @@ lib-ngx-notification {
     font-weight: 300 !important;
 }
 
-input, textarea {
-    border-radius: 3px !important;
-    border: 1px solid rgba(0, 0, 0, 0.017);
-}
+// input, textarea {
+//     border-radius: 3px !important;
+//     border: 1px solid rgba(0, 0, 0, 0.017);
+// }
 
 .modal-header {
     border: none !important;
