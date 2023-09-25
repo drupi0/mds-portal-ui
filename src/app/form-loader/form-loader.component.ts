@@ -1,5 +1,5 @@
 import { NgxNotificationService } from 'ngx-notification';
-import { BehaviorSubject, Observable, debounceTime, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, debounceTime, finalize, zip } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,6 +23,7 @@ export class FormLoaderComponent implements OnInit {
   isSuperAdmin = false;
   isLoading = false;
 
+  accessLevel = "user";
   patientRecords: PatientRecordModel[] = [];
   patientRecordFromSearch: PatientRecordModel[] = [];
 
@@ -35,11 +36,48 @@ export class FormLoaderComponent implements OnInit {
     sortOrder: "desc"
   }
 
+  saveSort(sortColumns: string[]) {
+    const cols = sortColumns.filter(key => !key.startsWith("asc") && !key.startsWith("desc"));
+
+    if(JSON.stringify(cols) === JSON.stringify(this.pagination.sortKeys) && sortColumns.find(key => key === this.pagination.sortOrder)) {
+      return;
+    }
+
+    this.pagination.sortKeys = cols;
+
+    if (sortColumns.find(key => key.startsWith("asc"))) {
+      this.pagination.sortOrder = "asc"
+    }
+
+    if (sortColumns.find(key => key.startsWith("desc"))) {
+      this.pagination.sortOrder = "desc"
+    }
+
+    if (this.searchString.getValue().trim().length) {
+      this.searchString.next(this.searchString.getValue());
+      return;
+    }
+
+    this.loadRecords();
+  }
+
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       const { isAdmin, isSuperAdmin } = data;
-      (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
-      (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
+
+      zip((isAdmin as Observable<boolean>), (isSuperAdmin as Observable<boolean>)).subscribe(access => {
+        const [isAdmin, isSuperAdmin] = access;
+
+        if(isSuperAdmin) {
+          this.accessLevel = "superAdmin";
+          return;
+        }
+
+        if(isAdmin) {
+          this.accessLevel = "admin";
+        }
+
+      });
     });
 
     const savedPagination = sessionStorage.getItem("pagination");
@@ -58,19 +96,25 @@ export class FormLoaderComponent implements OnInit {
     this.loadRecords();
   }
 
+  get sortColumns() {
+    return [...this.pagination.sortKeys, (this.pagination.sortOrder || "desc")];
+  }
+
   loadRecords() {
-    this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size, this.pagination.sortKeys, this.pagination.sortOrder).subscribe((data: Pagination<PatientRecordModel>) => {
+    this.isLoading = true;
+    this.api.getRecords(this.pagination.currentPage - 1, this.pagination.size, this.pagination.sortKeys, this.pagination.sortOrder)
+      .pipe(finalize(() => { this.isLoading = false; })).subscribe((data: Pagination<PatientRecordModel>) => {
 
-      this.patientRecords = data.content || [];
+        this.patientRecords = data.content || [];
 
-      this.pagination = {
-        ...this.pagination,
-        offset: this.pagination.currentPage * this.pagination.size,
-        totalElements: data.totalElements
-      }
+        this.pagination = {
+          ...this.pagination,
+          offset: this.pagination.currentPage * this.pagination.size,
+          totalElements: data.totalElements
+        }
 
-      sessionStorage.setItem("pagination", JSON.stringify(this.pagination));
-    });
+        sessionStorage.setItem("pagination", JSON.stringify(this.pagination));
+      });
   }
 
   deleteRecord(form: PatientRecordModel) {
@@ -93,7 +137,7 @@ export class FormLoaderComponent implements OnInit {
   }
 
   onSearch(searchTerm: string): void {
-    if(searchTerm.length) {
+    if (searchTerm.length) {
       this.isLoading = true;
     }
 

@@ -1,4 +1,4 @@
-<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="flex items-center p-2 bg-blue-800 shadow-sm">
+<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="flex items-center p-2 bg-gradient-to-r from-blue-600 to-blue-900 shadow-sm">
     <img src="assets/logo_no_text.png" [routerLink]="['']" width="60" class="cursor-pointer mr-3 p-1 bg-white rounded-sm">
     <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
         <span class="cursor-default hover:text-blue-800 px-2 py-1 rounded text-white transition-all"

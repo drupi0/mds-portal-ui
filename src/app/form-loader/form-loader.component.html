@@ -29,11 +29,12 @@
         ]>
         <mds-forms-table *ngIf="!isLoading"
             [patientRecords]="((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords"
-            (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)"></mds-forms-table>
+            (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)" [sortColumns]="sortColumns" 
+            (onSort)="saveSort($event)" [accessLevel]="accessLevel"></mds-forms-table>
     </ng-container>
 
 </div>
-<div class="px-4 flex justify-end" *ngIf="!((searchString | async) || '').trim().length && !isLoading">
+<div class="px-4 flex justify-end mb-4" *ngIf="!((searchString | async) || '').trim().length && !isLoading">
     <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
         [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
 </div>
@@ -46,7 +47,7 @@
 
 
 <ng-template #skeletonLoader>
-    <div class="flex items-center px-3 py-4 rounded my-2 mx-4 bg-white" *ngFor="let dummy of [1,2,3,4,5]">
+    <div class="flex items-center px-3 py-4 rounded my-2 mx-4 bg-white" *ngFor="let dummy of [1,2,3,4,5,6,7,8,9,10]">
         <div class="w-3/12 md:w-1/12 text-neutral-800 font-bold cursor-pointer animate-pulse">
             <div class="w-full h-7 bg-slate-200 rounded"></div>
         </div>

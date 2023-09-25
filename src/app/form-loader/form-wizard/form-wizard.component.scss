@@ -5,10 +5,7 @@ table {
 }
 
 .field-container {
-    background-color: #fff;
-    border: none !important;
-    padding: 10px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+    @apply bg-white rounded-lg px-5 py-3;
     min-width: 1190px;
 }
 
