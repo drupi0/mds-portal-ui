@@ -24,7 +24,7 @@
                     error: !defaultForm.controls.sex.value
                 }">Gender</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input rounded" ngbDropdownToggle
                         [ngClass]="{
                         error_input: !defaultForm.controls.sex.value
                     }">
@@ -41,9 +41,10 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.dateOfBirth.value
                 }">Date of Birth</label>
+                {{ defaultForm.controls.dateOfBirth.value }}
                 <mds-datetimepicker [showTime]="false" [minDate]="{year: 1900, month: 1, day: 1}"
                     [date]="defaultForm.controls.dateOfBirth.value"
-                    (onChange)="defaultForm.controls.dateOfBirth.setValue($event)" [ngClass]="{
+                    (onChange)="dateOfBirthChange($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.dateOfBirth.value
                     }"></mds-datetimepicker>
             </div>
@@ -85,7 +86,7 @@
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label">Status</label>
                 <div ngbDropdown class="d-inline-block">
-                    <button type="button" class="btn btn-block btn-outline-primary dp-input" ngbDropdownToggle
+                    <button type="button" class="btn btn-block btn-outline-primary dp-input rounded" ngbDropdownToggle
                         [ngClass]="{
                         error_input: !defaultForm.controls.status.value
                     }">
@@ -119,20 +120,20 @@
             </div>
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.collectionDateTime.value
-                }">Collection Date/Time</label>
-                <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
-                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
-                        error_dt: !defaultForm.controls.collectionDateTime.value
-                    }"></mds-datetimepicker>
-            </div>
-            <div class="mb-3 col-2 d-flex flex-column">
-                <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.receivedDateTime.value
                 }">Received Date/Time</label>
                 <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
                     (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.receivedDateTime.value
+                    }"></mds-datetimepicker>
+            </div>
+            <div class="mb-3 col-2 d-flex flex-column">
+                <label class="form-label" [ngClass]="{
+                    error: !defaultForm.controls.collectionDateTime.value
+                }">Collection Date/Time</label>
+                <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
+                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
+                        error_dt: !defaultForm.controls.collectionDateTime.value
                     }"></mds-datetimepicker>
             </div>
         </div>
