@@ -311,7 +311,7 @@
                                             error_input: !reportTemplate.group[colIndex].values[rowIndex]
                                         }">
 
-                                    <div *ngSwitchCase="'DATETIME'" class="d-flex">
+                                    <div *ngSwitchCase="'DATETIME'">
                                         <input type="text" class="tbl-data"
                                             [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                             [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden />
@@ -321,7 +321,7 @@
                                         error_dt: !reportTemplate.group[colIndex].values[rowIndex]
                                     }" #dp></mds-datetimepicker>
                                     </div>
-                                    <div *ngSwitchCase="'DATE'" class="d-flex">
+                                    <div *ngSwitchCase="'DATE'">
                                         <input type="text" class="tbl-data"
                                             [id]="reportTemplate.group[colIndex].id + ':' + rowIndex"
                                             [ngModel]="reportTemplate.group[colIndex].values[rowIndex]" hidden />

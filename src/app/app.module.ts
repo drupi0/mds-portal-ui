@@ -31,6 +31,9 @@ import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
 
+
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 const standaloneComponents = [FormsTableComponent]
 
 const appRoutes: Routes = [
@@ -151,9 +154,11 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     NgbPaginationModule,
     NgxNotificationModule,
     KeycloakAngularModule,
+    PdfViewerModule,
     NgScrollbarModule,
     DragDropModule,
-    ...standaloneComponents
+    ...standaloneComponents,
+    PdfViewerModule
   ],
   providers: [
     provideHttpClient(

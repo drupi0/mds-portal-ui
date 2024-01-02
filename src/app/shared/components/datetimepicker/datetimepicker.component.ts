@@ -32,19 +32,24 @@ export class DatetimepickerComponent implements OnChanges {
       return;
     }
 
-    this.setDate(dateStr[0]);
     this.setTime(dateStr[1]);
+    this.setDate(dateStr[0]);
 
     this.updateValue(false);
   }
 
-  onDateSet(dateObj: NgbDateStruct) {
+  onDateSet(dateObj: string) {
     if (!dateObj) {
       this.onChange.emit("");
       return;
     }
 
-    this.setDate(`${dateObj.month}/${dateObj.day}/${dateObj.year}`);
+    const dateSplit = dateObj.split("/");
+    if(dateSplit.length < 3 || dateSplit[2].startsWith("0")) {
+      return;
+    }
+
+    this.setDate(dateObj);
   }
 
   onTimeSet(timeObj: NgbTimeStruct) {
@@ -61,6 +66,10 @@ export class DatetimepickerComponent implements OnChanges {
       return;
     }
 
+    if(this.showTime && !this.timeModel.hour && !this.timeModel.minute) {
+      return;
+    }
+
     this.dateTimeModel = `${this.dateModel} ${String(this.timeModel.hour).padStart(2, "0")}:${String(this.timeModel.minute).padStart(2, "0")}`;
   }
 
@@ -71,12 +80,14 @@ export class DatetimepickerComponent implements OnChanges {
       return;
     }
 
-    this.setDate(dtSplit[0]);
     this.setTime(dtSplit[1]);
+    this.setDate(dtSplit[0]);
   }
 
   private setDate(dateStr: string) {
+    console.log(dateStr)
     if(isNaN(Date.parse(dateStr))) {
+     
       return;
     }
     

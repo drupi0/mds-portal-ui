@@ -34,15 +34,21 @@
     </div>
     <div class="row mt-5 mb-5"></div>
 </ng-template>
-
-<div class="modal-header align-items-center">
-    <h4 class="modal-title fw-bold">Print Preview</h4>
-    <span class="ms-3 text-secondary"><mds-icons icon="alert"
-            ngbPopover="Preview might differ from actual printed report." [openDelay]="500"
-            triggers="mouseenter:mouseleave"></mds-icons></span>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
-</div>
-<div class="modal-body overflow-auto">
+<div class="modal-body overflow-hidden">
+    <pdf-viewer [src]="pdfSrc"
+      [original-size]="true"
+      [show-all]="true"
+      [fit-to-page]="true"
+      [zoom]="0.9"
+      [zoom-scale]="'page-width'"
+      [render-text]="true"
+      [render-text-mode]="2"
+      [external-link-target]="'blank'"
+      [autoresize]="true"
+      [show-borders]="false"
+      style="width: 100%; height: 100%;"
+      (after-load-complete)="reportLoaded($event)"
+      ></pdf-viewer>
     <ng-container [ngTemplateOutlet]="printPreview"></ng-container>
 </div>
 <div class="modal-footer d-flex position-sticky">

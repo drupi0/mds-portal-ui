@@ -1,11 +1,12 @@
 import * as htmlToImage from 'html-to-image';
 import jsPDF, { jsPDFOptions } from 'jspdf';
-import { BehaviorSubject, debounceTime, forkJoin, from, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
 const PAPER_HEIGHT = 1700;
 @Component({
@@ -15,7 +16,7 @@ const PAPER_HEIGHT = 1700;
 })
 export class PrintformComponent implements OnInit, AfterViewInit {
 
-  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitizer: DomSanitizer) { }
+  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2) { }
 
   @ViewChild('printArea', { static: false }) dataToExport: ElementRef | undefined;
   @ViewChild('formattedArea', { static: false }) formattedArea: ElementRef | undefined;
@@ -30,14 +31,19 @@ export class PrintformComponent implements OnInit, AfterViewInit {
   printHeaderOnSeparateReports = false;
   printFooterOnSeparateReports = false;
 
+  pdfSrc: any;
+
   ngOnInit(): void {
     if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);
+      setTimeout(() => {
+        this.downloadAsPdf();
+      }, 100);
     }
   }
 
   ngAfterViewInit(): void {
-    if(this.printNow) {
+    if (this.printNow) {
       setTimeout(() => {
         this.downloadAsPdf();
       }, 100);
@@ -57,7 +63,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     let totalHeight = 0;
 
     Array.from(elements).forEach(row => {
-      if (totalHeight + row.getBoundingClientRect().height  >= PAPER_HEIGHT) {
+      if (totalHeight + row.getBoundingClientRect().height >= PAPER_HEIGHT) {
         groups.push(pageGroup);
         pageGroup = [];
         totalHeight = 0;
@@ -111,9 +117,8 @@ export class PrintformComponent implements OnInit, AfterViewInit {
         }
       });
 
-      window.open(pdf.output('bloburl'), '_blank');
+      this.pdfSrc = pdf.output("bloburl");
       this.isPrinting = false;
-      this.activeModal.dismiss();
     });
   }
 
@@ -138,6 +143,10 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     }
 
     return `${age}`;
+  }
+
+  reportLoaded(pdf: PDFDocumentProxy) {
+    this.isPrinting = false;
   }
 
 }

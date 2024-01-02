@@ -457,8 +457,9 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   dateOfBirthChange(dateStr: string) {
-    console.log(dateStr);
     this.defaultForm.controls.dateOfBirth.setValue(dateStr);
+    console.log(this.defaultForm.getRawValue());
+    // this.defaultForm.getRawValue();
   }
 
   get todayDate() {
