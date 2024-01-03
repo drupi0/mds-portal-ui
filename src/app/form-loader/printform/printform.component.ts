@@ -25,11 +25,13 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
   formattedPage: SafeHtml = "";
   isPrinting: boolean = false;
+  isDocumentLoaded = false;
   printNow: boolean = false;
 
   separateReports: boolean = false;
   printHeaderOnSeparateReports = false;
   printFooterOnSeparateReports = false;
+  reportZoom = 1.5;
 
   pdfSrc: any;
 
@@ -37,7 +39,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);
       setTimeout(() => {
-        this.downloadAsPdf();
+        this.previewAsPDF();
       }, 100);
     }
   }
@@ -45,12 +47,17 @@ export class PrintformComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.printNow) {
       setTimeout(() => {
-        this.downloadAsPdf();
+        this.previewAsPDF();
       }, 100);
     }
   }
 
-  downloadAsPdf(): void {
+  previewAsPDF(): void {
+    if(this.isDocumentLoaded) {
+      this.printDocument();
+      return;
+    }
+
     if (!this.dataToExport) {
       return;
     }
@@ -79,7 +86,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
     groups.forEach(async (divGroups: HTMLElement[]) => {
       const group = document.createElement("div");
-      group.classList.add("p-4", "bg-white");
+      group.classList.add("p-4", "border-0", "bg-white");
 
       divGroups.forEach(g => {
         this.renderer.appendChild(group, g.cloneNode(true));
@@ -99,7 +106,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       let jsPdfOptions: jsPDFOptions = {
         orientation: "p",
         unit: "mm",
-        format: [297, 210]
+        format: [297, 210],
       };
 
       const pdf = new jsPDF(jsPdfOptions);
@@ -118,8 +125,23 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       });
 
       this.pdfSrc = pdf.output("bloburl");
-      this.isPrinting = false;
     });
+  }
+
+
+  printDocument() {
+    if(navigator.userAgent.includes("Chrome")) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = this.pdfSrc;
+      document.body.appendChild(iframe);
+      iframe?.contentWindow?.print();
+
+      return;
+    }
+
+    window.open(this.pdfSrc, "_blank");
+    
   }
 
   dismiss() {
@@ -147,6 +169,15 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
   reportLoaded(pdf: PDFDocumentProxy) {
     this.isPrinting = false;
+    this.isDocumentLoaded = true;
+  }
+
+  zoomReport(zoom: number) {
+    this.reportZoom += zoom;
+    
+    if(this.reportZoom < 0) {
+      this.reportZoom = 0;
+    }
   }
 
 }

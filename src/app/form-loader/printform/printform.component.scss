@@ -1,17 +1,18 @@
 .modal-body {
     height: calc(100vh - 62px);
-    overflow: auto;
+    overflow: hidden;
     background-color: #d5d5d5;
     * {
         font-family: 'Century Gothic', sans-serif !important;
         font-size: 20px;
         font-weight: 400;
-    }   
+    }
+    padding: 0px !important;
 }
 
 .container {
     min-width: 1320px;
-    height: 3508px;
+    height: 3508px;;
 }
 
 .modal-footer {

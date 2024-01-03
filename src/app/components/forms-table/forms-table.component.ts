@@ -164,4 +164,9 @@ export class FormsTableComponent implements OnInit {
   get canDelete() {
     return this.accessLevel === "admin" || this.accessLevel === "superAdmin";
   }
+
+  convertDate(timeMillisStr: string) {
+    return timeMillisStr;
+    // return new Date(parseFloat(timeMillisStr)).toISOString();
+  }
 }

@@ -86,11 +86,11 @@
             "-" }}</div>
         <div class="ml-2 text-neutral-800 w-1/12 truncate hidden md:block">{{ row.specimen }}</div>
         <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
-            triggers="mouseenter:mouseleave" [ngbPopover]=" row.receivedDateTime" [openDelay]="500">{{
-            row.receivedDateTime }}</div>
+            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.receivedDateTime)" [openDelay]="500">{{
+            convertDate(row.receivedDateTime) }}</div>
         <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
-            triggers="mouseenter:mouseleave" [ngbPopover]="row.collectionDateTime" [openDelay]="500">{{
-            row.collectionDateTime }}
+            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.collectionDateTime)" [openDelay]="500">{{
+            convertDate(row.collectionDateTime) }}
         </div>
         <div class="ml-2 text-neutral-800 w-20 truncate hidden md:block">
             <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
