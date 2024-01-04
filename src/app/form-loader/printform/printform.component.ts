@@ -4,7 +4,7 @@ import { forkJoin, from, Observable } from 'rxjs';
 import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
 import { AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
@@ -16,7 +16,7 @@ const PAPER_HEIGHT = 1700;
 })
 export class PrintformComponent implements OnInit, AfterViewInit {
 
-  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2) { }
+  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitize: DomSanitizer) { }
 
   @ViewChild('printArea', { static: false }) dataToExport: ElementRef | undefined;
   @ViewChild('formattedArea', { static: false }) formattedArea: ElementRef | undefined;
@@ -178,6 +178,10 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     if(this.reportZoom < 0) {
       this.reportZoom = 0;
     }
+  }
+
+  sanitizeHtml(rawHtml: string): SafeHtml {
+    return this.sanitize.bypassSecurityTrustHtml(rawHtml);
   }
 
 }

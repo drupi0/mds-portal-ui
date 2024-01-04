@@ -26,7 +26,7 @@
             </div>
             <div class="main-row row mt-2 pb-4 !border-0">
                 <div class="col-2 fw-bold">COMMENT:</div>
-                <div class="col">{{ formData?.comments }}</div>
+                <div class="col" [innerHTML]="sanitizeHtml(formData?.comments || '')"></div>
             </div>
             <ng-container [ngTemplateOutlet]="reportFooter"></ng-container>
         </div>

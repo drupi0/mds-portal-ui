@@ -1,4 +1,3 @@
-import { NgxNotificationService } from 'ngx-notification';
 import { BehaviorSubject, catchError, EMPTY, map, Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
@@ -7,6 +6,7 @@ import { StaffModel } from 'src/app/shared/interfaces/template';
 
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-staff-modal',
@@ -16,7 +16,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class StaffModalComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private api: ApiService, private modalService: NgbModal,
-    private notifSvc: NgxNotificationService) { }
+    private notifSvc: ToastrService) { }
 
   searchQuery: string = "";
   newStaff: StaffModel = {
@@ -49,9 +49,9 @@ export class StaffModalComponent implements OnInit {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
       if (this.newStaff.id?.length === 0) {
-        this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} to staff list`, 'success', 'top-left');
+        this.notifSvc.info(`Successfully added ${addedStaff.name} to staff list`);
       } else {
-        this.notifSvc.sendMessage(`Successfully updated ${addedStaff.name} record from staff list`, 'success', 'top-left');
+        this.notifSvc.info(`Successfully updated ${addedStaff.name} record from staff list`);
       }
       this.resetForm();
     });
@@ -80,13 +80,13 @@ export class StaffModalComponent implements OnInit {
       if (response) {
         this.api.deleteStaff(staff).pipe(catchError((err) => {
           if (err) {
-            this.notifSvc.sendMessage(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`, 'danger', 'top-left')
+            this.notifSvc.warning(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`)
           }
 
           return EMPTY;
         })).subscribe(() => {
           this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
-          this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'top-left');
+          this.notifSvc.info(`Successfully deleted ${staff.name} from the staff list`);
         });
       }
     })

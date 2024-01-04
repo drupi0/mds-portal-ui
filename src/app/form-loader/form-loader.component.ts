@@ -1,4 +1,3 @@
-import { NgxNotificationService } from 'ngx-notification';
 import { BehaviorSubject, Observable, debounceTime, finalize, zip } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
@@ -8,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from '../services/api.service';
 import { YesNoModalComponent } from '../shared/components/yes-no-modal/yes-no-modal.component';
 import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-form-loader',
@@ -15,7 +15,7 @@ import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
   styleUrls: ['./form-loader.component.scss']
 })
 export class FormLoaderComponent implements OnInit {
-  constructor(public api: ApiService, public route: ActivatedRoute, private modalService: NgbModal, private notifSvc: NgxNotificationService,
+  constructor(public api: ApiService, public route: ActivatedRoute, private modalService: NgbModal, private notifSvc: ToastrService,
     private router: Router) { }
 
   searchString: BehaviorSubject<string> = new BehaviorSubject("");
@@ -130,7 +130,7 @@ export class FormLoaderComponent implements OnInit {
       if (response) {
         this.api.deleteRecord(form.id as string).subscribe(() => {
           this.patientRecords = this.patientRecords.filter(record => record.id !== form.id);
-          this.notifSvc.sendMessage(`Successfully deleted ${form.id}`, 'success', 'top-left');
+          this.notifSvc.info(`Successfully deleted ${form.id}`);
         })
       }
     });

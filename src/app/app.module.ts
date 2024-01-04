@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { NgxNotificationModule } from 'ngx-notification';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
@@ -31,8 +30,12 @@ import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
 
+import { provideAnimations } from '@angular/platform-browser/animations';
+
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxEditorModule } from 'ngx-editor';
+import { ToastrModule, provideToastr } from 'ngx-toastr';
 
 const standaloneComponents = [FormsTableComponent]
 
@@ -152,13 +155,14 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     NgbAlertModule,
     NgbPopoverModule,
     NgbPaginationModule,
-    NgxNotificationModule,
     KeycloakAngularModule,
     PdfViewerModule,
     NgScrollbarModule,
     DragDropModule,
     ...standaloneComponents,
-    PdfViewerModule
+    PdfViewerModule,
+    NgxEditorModule.forRoot(),
+    ToastrModule.forRoot()
   ],
   providers: [
     provideHttpClient(
@@ -177,6 +181,8 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     },
     { provide: NgbDateAdapter, useClass: CustomAdapter },
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter },
+    provideAnimations(), // required animations providers
+    provideToastr(), // Toastr providers
   ],
   bootstrap: [AppComponent]
 })

@@ -1,7 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-
-
-
 $white: #ffffff;
 
 /* change the colors */
@@ -24,29 +21,30 @@ $body-bg: #ffffff;
 
 @import 'typography';
 
-.btn-danger,
-.btn-success,
-.btn-secondary,
-.btn-outline-secondary,
-.btn-outline-danger {
-    &:hover {
-        color: #ffffff !important;
-    }
-}
+// .btn-danger,
+// .btn-success,
+// .btn-secondary,
+// .btn-outline-secondary,
+// .btn-outline-danger {
+//     &:hover {
+//         color: #ffffff !important;
+//     }
+// }
 
-.btn-danger,
-.btn-success,
-.btn-secondary {
-    color: #ffffff !important;
-}
+// .btn-danger,
+// .btn-success,
+// .btn-secondary {
+//     color: #ffffff !important;
+// }
+
+
+
 
 .cursor-pointer {
     cursor: pointer;
 }
 
 * {
-    font-size: 14px;
-    font-weight: 300;
     font-family: 'Golos Text';
 }
 
@@ -79,13 +77,6 @@ $body-bg: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.ngx-notification {
-    padding: 10px;
-    background-color: #2d2d30;
-    border-color: #272729;
-    color: #c9c9c9;
-}
-
 .modal-fullscreen {
     overflow: hidden !important;
 }
@@ -97,40 +88,6 @@ $body-bg: #ffffff;
         to {
             transform: rotate(360deg);
         }
-    }
-}
-
-lib-ngx-notification {
-    .success {
-        border-radius: 10px !important;
-        padding: 20px !important;
-        font-size: 12pt !important;
-        background: rgba(#00b56a, 0.06) !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(11.7px) !important;
-        -webkit-backdrop-filter: blur(11.7px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.42) !important;
-    }
-
-    .danger {
-        border-radius: 10px !important;
-        padding: 20px !important;
-        font-size: 12pt !important;
-        background: rgba(#a10637, 0.06) !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(11.7px) !important;
-        -webkit-backdrop-filter: blur(11.7px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.42) !important;
-    }
-
-    .success,
-    .danger {
-        pointer-events: none !important;
-        left: 50% !important;
-        top: 80px !important;
-        transform: translate(-50%, 0);
-        min-width: 40vw;
-        text-align: center;
     }
 }
 
@@ -183,7 +140,7 @@ lib-ngx-notification {
 
 @layer base {
     html {
-      font-family: Poppins, system-ui, sans-serif;
+        font-family: Poppins, system-ui, sans-serif;
     }
 }
 

@@ -1,4 +1,3 @@
-import { NgxNotificationService } from 'ngx-notification';
 import {
   BehaviorSubject, catchError, combineLatest, debounceTime, delay, EMPTY, finalize, forkJoin, from, interval, map, Observable, of, switchMap, take, tap
 } from 'rxjs';
@@ -18,6 +17,8 @@ import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
+import { Editor, Toolbar } from 'ngx-editor';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -61,6 +62,15 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   isSuperAdmin = false;
   isDuplicate = false;
   hasChanges = false;
+
+  editor: Editor = new Editor({
+    content: '',
+    plugins: [],
+    nodeViews: {},
+    history: true,
+    keyboardShortcuts: true,
+    inputRules: true,
+  } as any);
 
   onExit() {
     if(!this.defaultForm.dirty && !this.hasChanges) {
@@ -547,16 +557,16 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   private showErrorToast(err: Error) {
-    this.notifSvc.sendMessage(err.message, 'danger', 'top-left');
+    this.notifSvc.error(err.message, "Error");
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.sendMessage(content, 'success', 'top-left');
+    this.notifSvc.info(content, "Success");
   }
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
-    private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
+    private notifSvc: ToastrService, private ngZone: NgZone, private router: Router,
     private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService 
   ) { }
 }
