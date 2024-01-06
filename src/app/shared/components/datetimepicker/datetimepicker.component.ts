@@ -39,13 +39,19 @@ export class DatetimepickerComponent implements OnChanges {
   }
 
   onDateSet(dateObj: string) {
-    if (!dateObj) {
-      this.onChange.emit("");
+    if(!dateObj) {
+      this.onChange.emit("");  
+      return;
+    }
+
+    if(!dateObj.length) {
+      this.onChange.emit("");  
       return;
     }
 
     const dateSplit = dateObj.split("/");
     if(dateSplit.length < 3 || dateSplit[2].startsWith("0")) {
+      this.onChange.emit("");
       return;
     }
 
@@ -53,11 +59,6 @@ export class DatetimepickerComponent implements OnChanges {
   }
 
   onTimeSet(timeObj: NgbTimeStruct) {
-    if (!timeObj) {
-      this.onChange.emit("");
-      return;
-    }
-
     this.setTime(`${String(timeObj.hour).padStart(2, "0")}:${String(timeObj.minute).padStart(2, "0")}`);
   }
 
@@ -71,23 +72,39 @@ export class DatetimepickerComponent implements OnChanges {
     }
 
     this.dateTimeModel = `${this.dateModel} ${String(this.timeModel.hour).padStart(2, "0")}:${String(this.timeModel.minute).padStart(2, "0")}`;
+
+    this.onChange.emit(this.dateTimeModel);
   }
 
   validateDateTime(dateTimeStr: string) {
     const dtSplit = dateTimeStr.split(" ");
 
     if (dtSplit.length <= 1) {
+      this.onChange.emit("");
       return;
     }
 
-    this.setTime(dtSplit[1]);
+    const timeSplit = dtSplit[1].split(":"); 
+
+    if(timeSplit.length <= 1) {
+      this.onChange.emit("");
+      return;
+    }
+
+    if(timeSplit[0].length !== 2 || timeSplit[1].length !== 2) {
+      this.onChange.emit("");
+      return;
+    }
+
     this.setDate(dtSplit[0]);
+    this.setTime(dtSplit[1]);
+   
+    this.updateValue(false);
   }
 
   private setDate(dateStr: string) {
     console.log(dateStr)
     if(isNaN(Date.parse(dateStr))) {
-     
       return;
     }
     

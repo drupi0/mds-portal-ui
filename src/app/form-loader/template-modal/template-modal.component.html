@@ -17,20 +17,20 @@
                 <mds-icons icon="menu" [height]="15" [width]="15"></mds-icons>
             </div>
             <div class="d-flex me-2">
-                <button class="btn btn-outline-success circular-btn" (click)="addNewColumn(index)">
-                    <mds-icons icon="plus"></mds-icons>
-                </button>
                 <button class="btn btn-outline-danger circular-btn" (click)="removeColumn(index)">
                     <mds-icons icon="minus"></mds-icons>
                 </button>
-                <button class="btn btn-outline-secondary circular-btn" (click)="duplicateColumn(index)">
+                <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="addNewColumn(index)">
+                    <mds-icons icon="plus"></mds-icons>
+                </button>
+                <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="duplicateColumn(index)">
                     <mds-icons icon="copy"></mds-icons>
                 </button>
             </div>
             <input type="text" class="form-control me-2" placeholder="Name" [(ngModel)]="template.group[index].name">
-            <div ngbDropdown class="d-inline-block me-2 col-3">
+            <div ngbDropdown class="d-inline-block me-2">
                 <input [(ngModel)]="template.group[index].type" hidden>
-                <button type="button" class="btn btn-outline-primary w-100" ngbDropdownToggle>
+                <button type="button" class="btn-primary-tw w-40" ngbDropdownToggle>
                     {{template.group[index].type || 'Select Type' }}
                 </button>
                 <div ngbDropdownMenu>
@@ -41,7 +41,7 @@
                     </ng-container>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="w-100">
                 <ng-container [ngSwitch]="template.group[index].type">
                     <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value"
                         [(ngModel)]="template.group[index].defaults">
@@ -65,7 +65,7 @@
         </div>
     </div>
 </div>
-<div class="modal-footer d-flex">
+<div class="modal-footer shadow-none d-flex">
     <div class="flex-fill">
         <button type="button" class="btn-danger-tw flex items-center" (click)="delete()" *ngIf="!isNew">
             <mds-icons icon="trash" [width]="20" [height]="20"></mds-icons>

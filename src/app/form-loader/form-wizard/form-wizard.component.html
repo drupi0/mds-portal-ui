@@ -41,11 +41,8 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.dateOfBirth.value
                 }">Date of Birth</label>
-                {{ defaultForm.controls.dateOfBirth.value }}
-                <!-- <input type="text" formControlName="dateOfBirth" /> -->
                 <mds-datetimepicker [showTime]="false" [minDate]="{year: 1900, month: 1, day: 1}"
-                    [date]="defaultForm.controls.dateOfBirth.value"
-                    (onChange)="dateOfBirthChange($event)" [ngClass]="{
+                    [date]="defaultForm.controls.dateOfBirth.value" (onChange)="dateOfBirthChange($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.dateOfBirth.value
                     }"></mds-datetimepicker>
             </div>
@@ -75,7 +72,7 @@
                     error_input: !defaultForm.controls.accessionNo.value
                 }">
             </div>
-            <div class="mb-3 col">
+            <div class="mb-3 col-5">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.orderingDr.value
                 }">Ordering Dr.</label>
@@ -84,7 +81,7 @@
                 }">
             </div>
 
-            <div class="mb-3 col-2 d-flex flex-column">
+            <div class="mb-3 col-1 d-flex flex-column">
                 <label class="form-label">Status</label>
                 <div ngbDropdown class="d-inline-block">
                     <button type="button" class="btn btn-block btn-outline-primary dp-input rounded" ngbDropdownToggle
@@ -111,7 +108,7 @@
                     error_input: !defaultForm.controls.specimen.value
                 }">
             </div>
-            <div class="mb-3 col-6">
+            <div class="mb-3 col-4">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.ordered.value
                 }">Ordered</label>
@@ -119,25 +116,26 @@
                     error_input: !defaultForm.controls.ordered.value
                 }">
             </div>
-            <div class="mb-3 col-2 d-flex flex-column">
-                <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.receivedDateTime.value
-                }">Received Date/Time</label>
-                <!-- <input type="text" formControlName="receivedDateTime" /> -->
-                <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
-                    (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
-                        error_dt: !defaultForm.controls.receivedDateTime.value
-                    }"></mds-datetimepicker>
-            </div>
-            <div class="mb-3 col-2 d-flex flex-column">
-                <label class="form-label" [ngClass]="{
-                    error: !defaultForm.controls.collectionDateTime.value
-                }">Collection Date/Time</label>
-                <!-- <input type="text" formControlName="collectionDateTime" /> -->
-                <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
-                    (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
-                        error_dt: !defaultForm.controls.collectionDateTime.value
-                    }"></mds-datetimepicker>
+            <div class="mb-3 col-6 flex">
+                <div class="flex flex-col">
+                    <label class="form-label" [ngClass]="{
+                        error: !defaultForm.controls.receivedDateTime.value
+                    }">Received Date/Time</label>
+                    <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
+                        (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
+                            error_dt: !defaultForm.controls.receivedDateTime.value
+                        }"></mds-datetimepicker>
+                </div>
+                <div class="flex flex-col ms-10">
+                    <label class="form-label" [ngClass]="{
+                        error: !defaultForm.controls.collectionDateTime.value
+                    }">Collection Date/Time</label>
+                    <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value"
+                        [id]="'collectionDateTime'"
+                        (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
+                            error_dt: !defaultForm.controls.collectionDateTime.value
+                        }"></mds-datetimepicker>
+                </div>
             </div>
         </div>
     </div>
@@ -145,23 +143,24 @@
         <div class="d-flex justify-content-end">
             <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
                 <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
-                    <button type="button" class="btn btn-sm btn-outline-primary" ngbDropdownToggle>
+                    <button type="button" class="btn-primary-tw text-sm font-bold" ngbDropdownToggle>
                         Load Template
                     </button>
                     <div ngbDropdownMenu>
                         <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                            class="d-flex align-items-center p-0">
-                            <span class="flex-fill my-2 ms-2" (click)="addToTemplateField(templateItem)">{{
-                                templateItem.name.trim() }} </span>
+                            class="flex items-center">
                             <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
-                                triggers="mouseenter:mouseleave" class="btn btn-secondary circular-btn my-2 me-2"
+                                triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
                                 (click)="duplicateTemplate(templateItem)">
                                 <mds-icons icon="copy"></mds-icons>
                             </button>
+                            <span class="flex-fill my-2 ms-2 w-80 truncate"
+                                (click)="addToTemplateField(templateItem)">{{
+                                templateItem.name.trim() }} </span>
                         </button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" *ngIf="isSuperAdmin"
+                <button type="button" class="btn-primary-tw text-sm font-bold ms-2" *ngIf="isSuperAdmin"
                     (click)="newTemplate()">
                     New
                 </button>
@@ -221,17 +220,14 @@
                 d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
         </svg>
     </span>
-    <button class="mr-2 flex content-center btn-primary-tw !px-3"
-        [routerLink]="['','form']">
+    <button class="mr-2 flex content-center btn-primary-tw !px-3" [routerLink]="['','form']">
         <span class="font-bold">Exit</span>
     </button>
-    <button class="flex content-center btn-primary-tw !px-3"
-        (click)="saveForm(false)" [disabled]="saveDisabled">
+    <button class="flex content-center btn-primary-tw !px-3" (click)="saveForm(false)" [disabled]="saveDisabled">
         <span class="font-bold">Save</span>
     </button>
     <div class="h-8 w-1 border-l border-blue-50 mx-2"></div>
-    <button class="flex content-center btn-primary-tw !px-3 me-2"
-        (click)="printForm()" [disabled]="saveDisabled">
+    <button class="flex content-center btn-primary-tw !px-3 me-2" (click)="printForm()" [disabled]="saveDisabled">
         <span class="font-bold">Preview</span>
     </button>
 </div>
@@ -275,7 +271,7 @@
         </div>
         <div class="border-top mb-2 overflow-x-auto">
             <div>
-                <table class="table table-hover">
+                <table class="table">
                     <thead>
                         <tr>
                             <th></th>
@@ -290,17 +286,17 @@
                     </thead>
                     <tbody #tableData>
                         <tr *ngFor="let row of reportTemplate.group[0].values; let rowIndex = index; trackBy: trackByFn;"
-                            [id]="row">
-                            <td class="menu">
-                                <div class="d-flex">
-                                    <button class="btn btn-outline-success circular-btn"
+                            [id]="row" class="hover:bg-gray-100">
+                            <td class="menu align-middle">
+                                <div class="flex items-center">
+                                    <button class="circular-btn text-blue-800 hover:bg-blue-200"
                                         (click)="addRow(reportTemplate, rowIndex)"
                                         ngbPopover="First row must have a value before adding new row"
                                         [openDelay]="1000" triggers="mouseenter:mouseleave"
                                         [disablePopover]="!reportTemplate.group[0].values.length">
                                         <mds-icons icon="plus-circle"></mds-icons>
                                     </button>
-                                    <button class="btn btn-outline-danger circular-btn"
+                                    <button class="circular-btn text-red-800 hover:bg-red-200"
                                         (click)="removeRow(reportTemplate, rowIndex)">
                                         <mds-icons icon="minus-circle"></mds-icons>
                                     </button>
