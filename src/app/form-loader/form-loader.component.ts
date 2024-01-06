@@ -130,7 +130,7 @@ export class FormLoaderComponent implements OnInit {
       if (response) {
         this.api.deleteRecord(form.id as string).subscribe(() => {
           this.patientRecords = this.patientRecords.filter(record => record.id !== form.id);
-          this.notifSvc.info(`Successfully deleted ${form.id}`);
+          this.notifSvc.success(`Successfully deleted ${form.id}`);
         })
       }
     });

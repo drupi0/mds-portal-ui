@@ -21,23 +21,25 @@ $body-bg: #ffffff;
 
 @import 'typography';
 
-// .btn-danger,
-// .btn-success,
-// .btn-secondary,
-// .btn-outline-secondary,
-// .btn-outline-danger {
-//     &:hover {
-//         color: #ffffff !important;
-//     }
-// }
+.btn-sm-danger-tw {
+    @apply text-sm rounded-lg p-2 bg-white font-bold text-red-600 hover:bg-red-50 cursor-pointer;
+}
 
-// .btn-danger,
-// .btn-success,
-// .btn-secondary {
-//     color: #ffffff !important;
-// }
+.btn-sm-primary-tw {
+    @apply text-sm rounded-lg p-2 bg-white font-bold hover:bg-gray-100 cursor-pointer text-gray-600;
+}
 
+.btn-close-tw {
+    @apply text-gray-800 rounded p-2 hover:bg-gray-200;
+}
 
+.btn-danger-tw {
+    @apply p-2 rounded hover:bg-red-50 text-red-800;
+}
+
+.btn-primary-tw {
+    @apply p-2 rounded hover:bg-blue-200 bg-blue-50 text-blue-800;
+}
 
 
 .cursor-pointer {
@@ -58,10 +60,6 @@ $body-bg: #ffffff;
     svg {
         width: 15px;
         height: 15px;
-    }
-
-    &:hover {
-        color: #fff !important;
     }
 }
 

@@ -24,7 +24,7 @@
                     </table>
                 </div>
             </div>
-            <div class="main-row row mt-2 pb-4 !border-0">
+            <div class="main-row row mt-2 pb-4 !border-0" *ngIf="formData?.comments">
                 <div class="col-2 fw-bold">COMMENT:</div>
                 <div class="col" [innerHTML]="sanitizeHtml(formData?.comments || '')"></div>
             </div>
@@ -61,14 +61,14 @@
             </div>
         </button>
         <button type="button" class="content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800 ms-2"
-            (click)="previewAsPDF()">
+            (click)="previewAsPDF()" [disabled]="isPrinting">
             <div class="d-flex" *ngIf="!isPrinting">
                 <mds-icons icon="print" [width]="20" [height]="20"></mds-icons>
                 <span class="ms-2 font-bold">Print</span>
             </div>
-            <div class="d-flex" *ngIf="isPrinting">
+            <div class="flex items-center text" *ngIf="isPrinting">
                 <mds-icons icon="loading" class="animated" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2 font-bold">Rendering</span>
+                <span class="ms-2 font-bold">Loading</span>
             </div>
         </button>
     </div>

@@ -161,7 +161,14 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     DragDropModule,
     ...standaloneComponents,
     PdfViewerModule,
-    NgxEditorModule.forRoot(),
+    NgxEditorModule.forRoot({
+      locals: {
+        bold: 'Bold',
+        italic: 'Italic',
+        code: 'Code',
+        underline: 'Underline',
+      },
+    }),
     ToastrModule.forRoot()
   ],
   providers: [

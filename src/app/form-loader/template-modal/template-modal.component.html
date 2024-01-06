@@ -1,14 +1,17 @@
-<div class="modal-header">
+<div class="modal-header shadow-none bg-gray-100">
     <h4 class="modal-title fw-bold">{{ isNew ? 'Create New Template' : 'Edit Template' }}</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+    <button type="button" class="btn-close-tw" aria-label="Close" (click)="dismiss()">
+        <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
+    </button>
 </div>
-<div class="modal-body">
+<div class="modal-body shadow-none">
     <div class="mb-3 col">
         <label class="form-label">Template Name</label>
         <input type="text" class="form-control" [(ngModel)]="template.name">
     </div>
     <div cdkDropList (cdkDropListDropped)="sort($event)">
-        <div class="d-flex align-items-center mb-2 bg-white py-2 px-3" *ngFor="let col of template.group; let index = index" cdkDrag>
+        <div class="d-flex align-items-center mb-2 bg-white py-2 px-3"
+            *ngFor="let col of template.group; let index = index" cdkDrag>
             <div class="w-100 py-4 px-3 bg-light" *cdkDragPlaceholder></div>
             <div class="text-muted me-3" cdkDragHandle>
                 <mds-icons icon="menu" [height]="15" [width]="15"></mds-icons>
@@ -45,14 +48,17 @@
                     <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
                         [(ngModel)]="template.group[index].defaults">
                     <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                        <mds-datetimepicker [date]="template.group[index].defaults" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                        <mds-datetimepicker [date]="template.group[index].defaults"
+                            (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                     </div>
                     <div *ngSwitchCase="'DATE'" class="d-flex">
-                        <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false" (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                        <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false"
+                            (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
                     </div>
-                    <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control" placeholder="Default, Option 1, Option 2"
-                        ngbPopover="Split dropdown items using a comma(','). First item would be set as default." [openDelay]="500"
-                        triggers="mouseenter:mouseleave" [(ngModel)]="template.group[index].defaults">
+                    <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control"
+                        placeholder="Default, Option 1, Option 2"
+                        ngbPopover="Split dropdown items using a comma(','). First item would be set as default."
+                        [openDelay]="500" triggers="mouseenter:mouseleave" [(ngModel)]="template.group[index].defaults">
                     <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
                 </ng-container>
             </div>
@@ -61,20 +67,15 @@
 </div>
 <div class="modal-footer d-flex">
     <div class="flex-fill">
-        <button type="button" class="btn btn-outline-danger" (click)="delete()" *ngIf="!isNew">
-            <div class="d-flex">
-                <mds-icons icon="trash" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">Delete</span>
-            </div>
-
+        <button type="button" class="btn-danger-tw flex items-center" (click)="delete()" *ngIf="!isNew">
+            <mds-icons icon="trash" [width]="20" [height]="20"></mds-icons>
+            <span class="ms-2 font-bold">Delete</span>
         </button>
     </div>
     <div>
-        <button type="button" class="btn btn-primary btn-glass" (click)="save()" [disabled]="saveDisabled">
-            <div class="d-flex">
-                <mds-icons icon="save" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">Save</span>
-            </div>
+        <button type="button" class="btn-primary-tw flex items-center" (click)="save()" [disabled]="saveDisabled">
+            <mds-icons icon="save" [width]="20" [height]="20"></mds-icons>
+            <span class="ms-2 font-bold">Save</span>
         </button>
     </div>
 

@@ -17,7 +17,7 @@ import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
-import { Editor, Toolbar } from 'ngx-editor';
+import { Editor, toDoc, toHTML, Toolbar } from 'ngx-editor';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -70,7 +70,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     history: true,
     keyboardShortcuts: true,
     inputRules: true,
-  } as any);
+  });
 
   onExit() {
     if(!this.defaultForm.dirty && !this.hasChanges) {
@@ -82,7 +82,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Unsaved changes on "${this.patientFormId}"?`;
+    modalRef.componentInstance.title = `Modify form "${this.patientFormId}"?`;
     modalRef.componentInstance.modalBody = `There are some unsaved changes on this form. Do you want to save them?`;
     modalRef.componentInstance.noLabel = "No";
 
@@ -267,7 +267,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       collectionDateTime: formValue.collectionDateTime,
       receivedDateTime: formValue.receivedDateTime,
       data: JSON.stringify(this.templateList.getValue()),
-      comments: formValue.comment
+      comments: !!formValue.comment ? toHTML(formValue.comment) : ""
     } as PatientRecordModel;
 
     const patientFormJson: {} = {
@@ -540,7 +540,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         ordered: record.ordered,
         collectionDateTime: record.collectionDateTime,
         receivedDateTime: record.receivedDateTime,
-        comment: record.comments,
+        comment: toDoc(record.comments),
         performedBy: record.performedBy,
         verifiedBy: record.verifiedBy,
         pathologist: record.pathologist
@@ -561,7 +561,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.info(content, "Success");
+    this.notifSvc.success(content, "Success");
   }
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal,

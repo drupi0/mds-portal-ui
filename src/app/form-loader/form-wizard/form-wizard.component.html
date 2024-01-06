@@ -42,12 +42,12 @@
                     error: !defaultForm.controls.dateOfBirth.value
                 }">Date of Birth</label>
                 {{ defaultForm.controls.dateOfBirth.value }}
-                <input type="text" formControlName="dateOfBirth" />
-                <!-- <mds-datetimepicker [showTime]="false" [minDate]="{year: 1900, month: 1, day: 1}"
+                <!-- <input type="text" formControlName="dateOfBirth" /> -->
+                <mds-datetimepicker [showTime]="false" [minDate]="{year: 1900, month: 1, day: 1}"
                     [date]="defaultForm.controls.dateOfBirth.value"
                     (onChange)="dateOfBirthChange($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.dateOfBirth.value
-                    }"></mds-datetimepicker> -->
+                    }"></mds-datetimepicker>
             </div>
             <div class="mb-3 col-1">
                 <label class="form-label" [ngClass]="{
@@ -123,21 +123,21 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.receivedDateTime.value
                 }">Received Date/Time</label>
-                <input type="text" formControlName="receivedDateTime" />
-                <!-- <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
+                <!-- <input type="text" formControlName="receivedDateTime" /> -->
+                <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
                     (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.receivedDateTime.value
-                    }"></mds-datetimepicker> -->
+                    }"></mds-datetimepicker>
             </div>
             <div class="mb-3 col-2 d-flex flex-column">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.collectionDateTime.value
                 }">Collection Date/Time</label>
-                <input type="text" formControlName="collectionDateTime" />
-                <!-- <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
+                <!-- <input type="text" formControlName="collectionDateTime" /> -->
+                <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value" [id]="'collectionDateTime'"
                     (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
                         error_dt: !defaultForm.controls.collectionDateTime.value
-                    }"></mds-datetimepicker> -->
+                    }"></mds-datetimepicker>
             </div>
         </div>
     </div>
@@ -177,7 +177,6 @@
         </div>
     </div>
     <div class="field-container mt-3 py-3 flex flex-column" [formGroup]="defaultForm">
-
         <label class="form-label mt-2">Comment</label>
         <div class="d-inline-block">
             <div class="NgxEditor__Wrapper min-h-7">
@@ -209,7 +208,7 @@
 <div class="spacer"></div>
 <div class="flex px-4 py-3 items-center w-full footer bg-white border-t border-blue-100">
     <div class="flex-grow">
-        <button class="flex content-center p-2 rounded hover:!bg-red-50 text-red-800" (click)="clearForm()">
+        <button class="flex content-center btn-danger-tw" (click)="clearForm()">
             <span class="font-bold">Reset</span>
         </button>
     </div>
@@ -222,20 +221,19 @@
                 d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
         </svg>
     </span>
-    <button class="mr-2 flex content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800"
+    <button class="mr-2 flex content-center btn-primary-tw !px-3"
         [routerLink]="['','form']">
         <span class="font-bold">Exit</span>
     </button>
-    <button class="flex content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800"
+    <button class="flex content-center btn-primary-tw !px-3"
         (click)="saveForm(false)" [disabled]="saveDisabled">
         <span class="font-bold">Save</span>
     </button>
     <div class="h-8 w-1 border-l border-blue-50 mx-2"></div>
-    <button class="flex content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800 me-2"
+    <button class="flex content-center btn-primary-tw !px-3 me-2"
         (click)="printForm()" [disabled]="saveDisabled">
         <span class="font-bold">Preview</span>
     </button>
-
 </div>
 
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">

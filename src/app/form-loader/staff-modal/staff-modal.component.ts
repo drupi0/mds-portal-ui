@@ -39,6 +39,7 @@ export class StaffModalComponent implements OnInit {
 
   get staffList(): Observable<StaffModel[]> {
     return this.staffList$.pipe(map((staffArray: StaffModel[]) => {
+      const sortedStaff = staffArray.sort((a, b) => a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()))
       return this.searchQuery.trim().length ? staffArray.filter(item =>
         item.name.toLocaleLowerCase().includes(this.searchQuery.trim().toLowerCase())
         || item.licNo === this.searchQuery.trim().toLowerCase()) : staffArray;
@@ -49,9 +50,9 @@ export class StaffModalComponent implements OnInit {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
       if (this.newStaff.id?.length === 0) {
-        this.notifSvc.info(`Successfully added ${addedStaff.name} to staff list`);
+        this.notifSvc.success(`Successfully added ${addedStaff.name} to staff list`);
       } else {
-        this.notifSvc.info(`Successfully updated ${addedStaff.name} record from staff list`);
+        this.notifSvc.success(`Successfully updated ${addedStaff.name} record from staff list`);
       }
       this.resetForm();
     });
@@ -73,8 +74,8 @@ export class StaffModalComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Delete "${staff.name}"?`
-    modalRef.componentInstance.modalBody = `Delete ${staff.name} with license no. ${staff.licNo} from the list of staff?`
+    modalRef.componentInstance.title = `Delete "${staff.name}" data?`
+    modalRef.componentInstance.modalBody = `Do you want to remove ${staff.name} with license no. ${staff.licNo} from the list of staff?`
 
     modalRef.closed.subscribe((response) => {
       if (response) {
@@ -86,7 +87,7 @@ export class StaffModalComponent implements OnInit {
           return EMPTY;
         })).subscribe(() => {
           this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
-          this.notifSvc.info(`Successfully deleted ${staff.name} from the staff list`);
+          this.notifSvc.success(`Successfully deleted ${staff.name} from the staff list`);
         });
       }
     })
