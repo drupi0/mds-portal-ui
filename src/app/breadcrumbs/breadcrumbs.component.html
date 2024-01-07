@@ -1,0 +1,54 @@
+<div *ngIf="(breadcrumbSvc.breadcrumbs | async) as breadcrumbs;" class="flex items-center p-2 bg-gradient-to-r from-blue-600 to-blue-900 shadow-sm w-full">
+    <img src="assets/logo_no_text.png" [routerLink]="['']" width="60" class="cursor-pointer mr-3 p-1 bg-white rounded-sm">
+    <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
+        <span class="cursor-default hover:text-blue-800 px-2 py-1 rounded text-white transition-all"
+            routerLink="{{ crumb.href }}" [ngClass]="{
+                'hover:bg-blue-700 !cursor-pointer': !last
+            }">{{ crumb.title }}</span>
+        <span *ngIf="!last" class="mx-1 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+              </svg>              
+        </span>
+    </ng-container>
+    <div class="flex-grow-1"></div>
+    <div ngbDropdown class="d-inline-block">
+        <button type="button" class="flex text-white p-2 rounded hover:!text-blue-100" ngbDropdownToggle>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span class="ml-1 text-sm">{{ userName }}</span>
+        </button>
+        <div ngbDropdownMenu class="border-0 shadow-md rounded overflow-hidden">
+            <button ngbDropdownItem routerLink="/auth/realms/mds-auth/account/">
+                <div class="flex flex-row content-center py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <label class="ml-2">
+                        Account Settings
+                    </label>
+                </div>
+            </button>
+            <button ngbDropdownItem (click)="logout()">
+                <div class="flex flex-row content-center py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                            d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
+                            clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114l-1.048-.943h9.546A.75.75 0 0019 10z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <label class="ml-2">
+                        Log Out
+                    </label>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>

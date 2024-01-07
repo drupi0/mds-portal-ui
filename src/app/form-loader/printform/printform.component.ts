@@ -1,11 +1,12 @@
 import * as htmlToImage from 'html-to-image';
 import jsPDF, { jsPDFOptions } from 'jspdf';
-import { BehaviorSubject, debounceTime, forkJoin, from, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import { PatientRecordModel, TemplateModel } from 'src/app/shared/interfaces/template';
 
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgbActiveModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
 const PAPER_HEIGHT = 1700;
 @Component({
@@ -15,7 +16,7 @@ const PAPER_HEIGHT = 1700;
 })
 export class PrintformComponent implements OnInit, AfterViewInit {
 
-  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitizer: DomSanitizer) { }
+  constructor(public activeModal: NgbActiveModal, private calendar: NgbCalendar, private renderer: Renderer2, private sanitize: DomSanitizer) { }
 
   @ViewChild('printArea', { static: false }) dataToExport: ElementRef | undefined;
   @ViewChild('formattedArea', { static: false }) formattedArea: ElementRef | undefined;
@@ -24,27 +25,39 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
   formattedPage: SafeHtml = "";
   isPrinting: boolean = false;
+  isDocumentLoaded = false;
   printNow: boolean = false;
 
   separateReports: boolean = false;
   printHeaderOnSeparateReports = false;
   printFooterOnSeparateReports = false;
+  reportZoom = 1.5;
+
+  pdfSrc: any;
 
   ngOnInit(): void {
     if (this.formData?.data) {
       this.reportField = JSON.parse(this.formData?.data);
-    }
-  }
-
-  ngAfterViewInit(): void {
-    if(this.printNow) {
       setTimeout(() => {
-        this.downloadAsPdf();
+        this.previewAsPDF();
       }, 100);
     }
   }
 
-  downloadAsPdf(): void {
+  ngAfterViewInit(): void {
+    if (this.printNow) {
+      setTimeout(() => {
+        this.previewAsPDF();
+      }, 100);
+    }
+  }
+
+  previewAsPDF(): void {
+    if(this.isDocumentLoaded) {
+      this.printDocument();
+      return;
+    }
+
     if (!this.dataToExport) {
       return;
     }
@@ -57,7 +70,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     let totalHeight = 0;
 
     Array.from(elements).forEach(row => {
-      if (totalHeight + row.getBoundingClientRect().height  >= PAPER_HEIGHT) {
+      if (totalHeight + row.getBoundingClientRect().height >= PAPER_HEIGHT) {
         groups.push(pageGroup);
         pageGroup = [];
         totalHeight = 0;
@@ -73,7 +86,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
     groups.forEach(async (divGroups: HTMLElement[]) => {
       const group = document.createElement("div");
-      group.classList.add("p-4", "bg-white");
+      group.classList.add("p-4", "border-0", "bg-white");
 
       divGroups.forEach(g => {
         this.renderer.appendChild(group, g.cloneNode(true));
@@ -93,7 +106,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       let jsPdfOptions: jsPDFOptions = {
         orientation: "p",
         unit: "mm",
-        format: [297, 210]
+        format: [297, 210],
       };
 
       const pdf = new jsPDF(jsPdfOptions);
@@ -111,10 +124,24 @@ export class PrintformComponent implements OnInit, AfterViewInit {
         }
       });
 
-      window.open(pdf.output('bloburl'), '_blank');
-      this.isPrinting = false;
-      this.activeModal.dismiss();
+      this.pdfSrc = pdf.output("bloburl");
     });
+  }
+
+
+  printDocument() {
+    if(navigator.userAgent.includes("Chrome")) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = this.pdfSrc;
+      document.body.appendChild(iframe);
+      iframe?.contentWindow?.print();
+
+      return;
+    }
+
+    window.open(this.pdfSrc, "_blank");
+    
   }
 
   dismiss() {
@@ -138,6 +165,23 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     }
 
     return `${age}`;
+  }
+
+  reportLoaded(pdf: PDFDocumentProxy) {
+    this.isPrinting = false;
+    this.isDocumentLoaded = true;
+  }
+
+  zoomReport(zoom: number) {
+    this.reportZoom += zoom;
+    
+    if(this.reportZoom < 0) {
+      this.reportZoom = 0;
+    }
+  }
+
+  sanitizeHtml(rawHtml: string): SafeHtml {
+    return this.sanitize.bypassSecurityTrustHtml(rawHtml);
   }
 
 }

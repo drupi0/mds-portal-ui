@@ -1,50 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
-
-
 $white: #ffffff;
 
 /* change the colors */
-$primary: #2258cd;
+$primary: #1e40af;
 $secondary: #2490d8;
 $danger: #dc4d4d;
 $success: #00b56a;
 $warning: #e6d000;
-$info: #00bca5;
+// $info: #00bca5;
+$info: #1e40af;
 
 $body-bg: #ffffff;
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import 'typography';
 
-.btn-danger,
-.btn-success,
-.btn-secondary,
-.btn-outline-secondary,
-.btn-outline-danger {
-    &:hover {
-        color: #ffffff !important;
-    }
+.btn-sm-danger-tw {
+    @apply text-sm rounded-lg p-2 bg-white font-bold text-red-600 hover:bg-red-50 cursor-pointer;
 }
 
-.btn-danger,
-.btn-success,
-.btn-secondary {
-    color: #ffffff !important;
+.btn-sm-primary-tw {
+    @apply text-sm rounded-lg p-2 bg-white font-bold hover:bg-gray-100 cursor-pointer text-gray-600;
 }
+
+.btn-close-tw {
+    @apply text-gray-800 rounded p-2 hover:bg-gray-200;
+}
+
+.btn-danger-tw {
+    @apply p-2 rounded hover:bg-red-50 text-red-800;
+}
+
+.btn-primary-tw {
+    @apply p-2 rounded hover:bg-blue-200 bg-blue-50 text-blue-800;
+}
+
 
 .cursor-pointer {
     cursor: pointer;
 }
 
-body {
-    background: #fcfbfc;
-}
-
 * {
-    font-size: 14px;
-    font-weight: 300;
     font-family: 'Golos Text';
 }
 
@@ -58,10 +60,6 @@ body {
     svg {
         width: 15px;
         height: 15px;
-    }
-
-    &:hover {
-        color: #fff !important;
     }
 }
 
@@ -77,13 +75,6 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.ngx-notification {
-    padding: 10px;
-    background-color: #2d2d30;
-    border-color: #272729;
-    color: #c9c9c9;
-}
-
 .modal-fullscreen {
     overflow: hidden !important;
 }
@@ -95,40 +86,6 @@ body {
         to {
             transform: rotate(360deg);
         }
-    }
-}
-
-lib-ngx-notification {
-    .success {
-        border-radius: 10px !important;
-        padding: 20px !important;
-        font-size: 12pt !important;
-        background: rgba(#00b56a, 0.06) !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(11.7px) !important;
-        -webkit-backdrop-filter: blur(11.7px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.42) !important;
-    }
-
-    .danger {
-        border-radius: 10px !important;
-        padding: 20px !important;
-        font-size: 12pt !important;
-        background: rgba(#a10637, 0.06) !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(11.7px) !important;
-        -webkit-backdrop-filter: blur(11.7px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.42) !important;
-    }
-
-    .success,
-    .danger {
-        pointer-events: none !important;
-        left: 50% !important;
-        top: 80px !important;
-        transform: translate(-50%, 0);
-        min-width: 40vw;
-        text-align: center;
     }
 }
 
@@ -154,10 +111,10 @@ lib-ngx-notification {
     font-weight: 300 !important;
 }
 
-input, textarea {
-    border-radius: 3px !important;
-    border: 1px solid rgba(0, 0, 0, 0.017);
-}
+// input, textarea {
+//     border-radius: 3px !important;
+//     border: 1px solid rgba(0, 0, 0, 0.017);
+// }
 
 .modal-header {
     border: none !important;
@@ -177,4 +134,14 @@ input, textarea {
 .modal-content {
     border: none;
     border-radius: 3px !important;
+}
+
+@layer base {
+    html {
+        font-family: Poppins, system-ui, sans-serif;
+    }
+}
+
+body {
+    @apply bg-slate-200;
 }

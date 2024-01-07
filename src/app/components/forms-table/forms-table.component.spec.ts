@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NavigatorComponent } from './navigator.component';
+import { FormsTableComponent } from './forms-table.component';
 
-describe('NavigatorComponent', () => {
-  let component: NavigatorComponent;
-  let fixture: ComponentFixture<NavigatorComponent>;
+describe('FormsTableComponent', () => {
+  let component: FormsTableComponent;
+  let fixture: ComponentFixture<FormsTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NavigatorComponent ]
+      imports: [ FormsTableComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NavigatorComponent);
+    fixture = TestBed.createComponent(FormsTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

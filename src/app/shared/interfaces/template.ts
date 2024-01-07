@@ -60,7 +60,9 @@ export interface Pagination<T> {
         offset: number,
         pageNumber: number,
         pageSize: number
-    }
+    },
+    sortKeys?: string[],
+    sortOrder?: "asc" | "desc"
 }
 
 export interface AuthModel {

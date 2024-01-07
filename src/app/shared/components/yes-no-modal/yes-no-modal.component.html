@@ -1,26 +1,23 @@
-<div class="modal-header">
+<div class="modal-header shadow-none bg-gray-100">
     <h4 class="modal-title fw-bold">{{ title }}</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+    <button type="button" class="btn-close-tw" aria-label="Close" (click)="dismiss()">
+        <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
+    </button>
 </div>
 <div class="modal-body">
     {{ modalBody }}
 </div>
-<div class="modal-footer d-flex">
+<div class="modal-footer d-flex shadow-none">
     <div class="flex-fill">
     </div>
-    <div>
-        <button type="button" class="btn btn-outline-secondary me-2" (click)="close(false)">
-            <div class="d-flex">
-                <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">{{ noLabel }}</span>
-            </div>
-
+    <div class="flex">
+        <button type="button" class="btn-danger-tw me-2 px-3 flex items-center" (click)="close(false)">
+            <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
+            <span class="ms-2 font-bold">{{ noLabel }}</span>
         </button>
-        <button type="button" class="btn btn-primary btn-glass" (click)="close(true)">
-            <div class="d-flex">
-                <mds-icons icon="check" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2">{{ yesLabel }}</span>
-            </div>
+        <button type="button" class="btn-primary-tw px-3 flex items-center" (click)="close(true)">
+            <mds-icons icon="check" [width]="20" [height]="20"></mds-icons>
+            <span class="ms-2 font-bold">{{ yesLabel }}</span>
         </button>
     </div>
 

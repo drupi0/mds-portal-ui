@@ -1,16 +1,18 @@
 .modal-body {
-    height: calc(100vh - 120px);
-    overflow: auto;
+    height: calc(100vh - 70px);
+    overflow: hidden;
     background-color: #d5d5d5;
     * {
         font-family: 'Century Gothic', sans-serif !important;
         font-size: 20px;
         font-weight: 400;
-    }   
+    }
+    padding: 0px !important;
 }
 
 .container {
     min-width: 1320px;
+    height: 3508px;;
 }
 
 .modal-footer {
@@ -27,4 +29,30 @@
 
 .brand-logo {
     width: 200px;
+}
+
+:host ::ng-deep {
+    h1 {
+        font-size: 2em !important;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    h3 {
+        font-size: 1.3em;
+    }
+
+    h4 {
+        font-size: 1em;
+    }
+
+    h5 {
+        font-size: 0.8em;
+    }
+
+    h6 {
+        font-size: 0.7em;
+    }
 }

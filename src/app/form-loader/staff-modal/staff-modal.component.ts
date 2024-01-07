@@ -1,4 +1,3 @@
-import { NgxNotificationService } from 'ngx-notification';
 import { BehaviorSubject, catchError, EMPTY, map, Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
@@ -7,6 +6,7 @@ import { StaffModel } from 'src/app/shared/interfaces/template';
 
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-staff-modal',
@@ -16,7 +16,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class StaffModalComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private api: ApiService, private modalService: NgbModal,
-    private notifSvc: NgxNotificationService) { }
+    private notifSvc: ToastrService) { }
 
   searchQuery: string = "";
   newStaff: StaffModel = {
@@ -39,6 +39,7 @@ export class StaffModalComponent implements OnInit {
 
   get staffList(): Observable<StaffModel[]> {
     return this.staffList$.pipe(map((staffArray: StaffModel[]) => {
+      const sortedStaff = staffArray.sort((a, b) => a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()))
       return this.searchQuery.trim().length ? staffArray.filter(item =>
         item.name.toLocaleLowerCase().includes(this.searchQuery.trim().toLowerCase())
         || item.licNo === this.searchQuery.trim().toLowerCase()) : staffArray;
@@ -49,9 +50,9 @@ export class StaffModalComponent implements OnInit {
     this.api.saveStaff(this.newStaff).subscribe((addedStaff: StaffModel) => {
       this.staffList$.next([...this.staffList$.getValue(), addedStaff]);
       if (this.newStaff.id?.length === 0) {
-        this.notifSvc.sendMessage(`Successfully added ${addedStaff.name} to staff list`, 'success', 'top-left');
+        this.notifSvc.success(`Successfully added ${addedStaff.name} to staff list`);
       } else {
-        this.notifSvc.sendMessage(`Successfully updated ${addedStaff.name} record from staff list`, 'success', 'top-left');
+        this.notifSvc.success(`Successfully updated ${addedStaff.name} record from staff list`);
       }
       this.resetForm();
     });
@@ -73,20 +74,20 @@ export class StaffModalComponent implements OnInit {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Delete "${staff.name}"?`
-    modalRef.componentInstance.modalBody = `Delete ${staff.name} with license no. ${staff.licNo} from the list of staff?`
+    modalRef.componentInstance.title = `Delete "${staff.name}" data?`
+    modalRef.componentInstance.modalBody = `Do you want to remove ${staff.name} with license no. ${staff.licNo} from the list of staff?`
 
     modalRef.closed.subscribe((response) => {
       if (response) {
         this.api.deleteStaff(staff).pipe(catchError((err) => {
           if (err) {
-            this.notifSvc.sendMessage(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`, 'danger', 'top-left')
+            this.notifSvc.warning(`Could not delete record for ${staff.name} from the database. Remove the data from the other records first.`)
           }
 
           return EMPTY;
         })).subscribe(() => {
           this.staffList$.next(this.staffList$.getValue().filter(staffItem => staffItem.id !== staff.id));
-          this.notifSvc.sendMessage(`Successfully deleted ${staff.name} from the staff list`, 'success', 'top-left');
+          this.notifSvc.success(`Successfully deleted ${staff.name} from the staff list`);
         });
       }
     })

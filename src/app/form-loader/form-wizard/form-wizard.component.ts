@@ -1,4 +1,3 @@
-import { NgxNotificationService } from 'ngx-notification';
 import {
   BehaviorSubject, catchError, combineLatest, debounceTime, delay, EMPTY, finalize, forkJoin, from, interval, map, Observable, of, switchMap, take, tap
 } from 'rxjs';
@@ -18,6 +17,8 @@ import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
+import { Editor, toDoc, toHTML, Toolbar } from 'ngx-editor';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -62,6 +63,15 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   isDuplicate = false;
   hasChanges = false;
 
+  editor: Editor = new Editor({
+    content: '',
+    plugins: [],
+    nodeViews: {},
+    history: true,
+    keyboardShortcuts: true,
+    inputRules: true,
+  });
+
   onExit() {
     if(!this.defaultForm.dirty && !this.hasChanges) {
       return of(true);
@@ -72,7 +82,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       backdrop: 'static'
     });
 
-    modalRef.componentInstance.title = `Unsaved changes on "${this.patientFormId}"?`;
+    modalRef.componentInstance.title = `Modify form "${this.patientFormId}"?`;
     modalRef.componentInstance.modalBody = `There are some unsaved changes on this form. Do you want to save them?`;
     modalRef.componentInstance.noLabel = "No";
 
@@ -257,7 +267,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       collectionDateTime: formValue.collectionDateTime,
       receivedDateTime: formValue.receivedDateTime,
       data: JSON.stringify(this.templateList.getValue()),
-      comments: formValue.comment
+      comments: !!formValue.comment ? toHTML(formValue.comment) : ""
     } as PatientRecordModel;
 
     const patientFormJson: {} = {
@@ -456,6 +466,12 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     this.hasChanges = true;
   }
 
+  dateOfBirthChange(dateStr: string) {
+    this.defaultForm.controls.dateOfBirth.setValue(dateStr);
+    console.log(this.defaultForm.getRawValue());
+    // this.defaultForm.getRawValue();
+  }
+
   get todayDate() {
     return this.calendar.getToday();
   }
@@ -524,7 +540,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         ordered: record.ordered,
         collectionDateTime: record.collectionDateTime,
         receivedDateTime: record.receivedDateTime,
-        comment: record.comments,
+        comment: toDoc(record.comments),
         performedBy: record.performedBy,
         verifiedBy: record.verifiedBy,
         pathologist: record.pathologist
@@ -541,16 +557,16 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   private showErrorToast(err: Error) {
-    this.notifSvc.sendMessage(err.message, 'danger', 'top-left');
+    this.notifSvc.error(err.message, "Error");
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.sendMessage(content, 'success', 'top-left');
+    this.notifSvc.success(content, "Success");
   }
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
-    private notifSvc: NgxNotificationService, private ngZone: NgZone, private router: Router,
+    private notifSvc: ToastrService, private ngZone: NgZone, private router: Router,
     private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService 
   ) { }
 }

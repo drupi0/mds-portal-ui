@@ -9,6 +9,7 @@ export class IconsComponent implements OnChanges {
   @Input() icon: string = ""
   @Input() width: number = 25;
   @Input() height: number = 25;
+  @Input() classList: string = "";
 
   iconWidth: number = 0;
   iconHeight: number = 0;

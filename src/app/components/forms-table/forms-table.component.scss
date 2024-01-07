@@ -1,0 +1,14 @@
+.form-table {
+    @apply w-full;
+    thead {
+        th {
+            @apply pb-3 font-semibold border-b;
+        }
+    }
+}
+
+:host ::ng-deep {
+    .dropdown-toggle::after {
+        display:none;
+    }
+}

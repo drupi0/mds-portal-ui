@@ -1,34 +1,39 @@
-<div class="d-block">
-    <div ngbDropdown #dp="ngbDropdown" container="body">
-        <button type="button" class="btn btn-outline-primary dp-input" [id]="id" ngbDropdownToggle>
-            <ng-container *ngIf="(currentDateTime | async) as dtValue">
-                <span [ngClass]="{
-                    'text-muted': dtValue.includes('MM/DD/YYYY')
-                }">{{ currentDateTime | async }}</span>
-            </ng-container>
-        </button>
-        <div ngbDropdownMenu >
-            <div class="d-flex">
-                <div class="border-bottom" [ngClass]="{
-                    'border-end': showTime
-                }">
-                    <ngb-datepicker class="border-0" [minDate]="minDate" (ngModelChange)="onDateSet($event)" [ngModel]="dateObj"></ngb-datepicker>
-                </div>
-                <div class="d-flex align-items-center border-bottom" *ngIf="showTime">
-                    <div class="d-flex flex-column align-items-center p-2">
-                        <ngb-timepicker [meridian]="true" [ngModel]="timeObj" (ngModelChange)="onTimeSet($event)"></ngb-timepicker>
+<div class="flex items-center" *ngIf="!showTime; else showTimeTemplate">
+    <input class="form-control flex-grow" placeholder="mm/dd/yyyy" [ngModel]="dateModel"
+        (ngModelChange)="onDateSet($event)" ngbDatepicker #d="ngbDatepicker" [minDate]="minDate"/>
+    <button class="ml-1 bg-blue-50 hover:bg-blue-100 text-blue-800 p-2 rounded" (click)="d.toggle()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+        </svg>
+    </button>
+</div>
+<ng-template #showTimeTemplate>
+    <div ngbDropdown class="d-inline-block" container="body" (openChange)="updateValue($event)">
+        <div class="flex items-center">
+            <input class="form-control flex-grow w-44 datetime-textbox" placeholder="mm/dd/yyyy hh:mm" [ngModel]="dateTimeModel"
+                (ngModelChange)="validateDateTime($event)" />
+            <button class="ml-1 bg-blue-50 hover:bg-blue-100 text-blue-800 p-2 rounded" ngbDropdownToggle>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                </svg>
+            </button>
+        </div>
+        <div ngbDropdownMenu class="shadow-sm">
+            <div class="flex rounded">
+                <div class="flex flex-col bg-blue-50 p-2">
+                    <div class="ml-2 mx-auto">
+                        <ngb-timepicker [ngModel]="timeModel" (ngModelChange)="onTimeSet($event)"></ngb-timepicker>
                     </div>
                 </div>
-            </div>
-            <div class="d-flex p-2 bg-light">
-                <div class="flex-fill">
-                    <button type="button" class="btn btn-sm btn-danger" (click)="set(false, true)">Reset</button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-sm btn-secondary btn-glass" (click)="set(true)">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-primary btn-glass ms-2" (click)="set()">Set</button>
+                <div class="flex flex-col p-2">
+                    <ngb-datepicker [ngModel]="dateTimeModel" [classList]="['border-0']"
+                        (ngModelChange)="onDateSet($event)"></ngb-datepicker>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</ng-template>

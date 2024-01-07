@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
@@ -56,9 +56,14 @@ export class ApiService {
     return this.httpClient.post<PatientRecordModel>(`${this.API_URL}/record`, record);
   }
 
-  getRecords(pageNumber: number, pageSize: number) {
+  getRecords(pageNumber: number, pageSize: number, sortKeys?: string[], sortBy?: string) {
     return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record`, {
-      params: { pageNumber, pageSize },
+      params:  {
+        pageNumber,
+        pageSize,
+        sortKeys: (sortKeys || []).join(","),
+        sortBy: sortBy || "desc"
+      },
       ...this.HTTP_OPTIONS
     });
   }
@@ -70,9 +75,15 @@ export class ApiService {
     })
   }
 
-  searchRecords(pageNumber: number, pageSize: number, searchString: string) {
+  searchRecords(pageNumber: number, pageSize: number, searchString: string, sortKeys?: string[], sortBy?: string) {
     return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record/search`, {
-      params: { pageNumber, pageSize, query: searchString },
+      params:  {
+        query: searchString,
+        pageNumber,
+        pageSize,
+        sortKeys: (sortKeys || []).join(","),
+        sortBy: sortBy || "desc"
+      },
       ...this.HTTP_OPTIONS
     });
   }

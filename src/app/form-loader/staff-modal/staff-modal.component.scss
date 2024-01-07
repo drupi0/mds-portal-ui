@@ -3,6 +3,7 @@
 }
 
 .scrollbars {
-    height: 500px;
-    padding-right: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
