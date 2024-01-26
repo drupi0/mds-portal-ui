@@ -140,41 +140,62 @@
         </div>
     </div>
     <div class="field-container mt-3">
-        <div class="d-flex justify-content-end">
-            <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
-                <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
-                    <button type="button" class="btn-primary-tw text-sm font-bold" ngbDropdownToggle>
-                        Load Template
-                    </button>
-                    <div ngbDropdownMenu>
-                        <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                            class="flex items-center">
-                            <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
-                                triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
-                                (click)="duplicateTemplate(templateItem)">
-                                <mds-icons icon="copy"></mds-icons>
-                            </button>
-                            <span class="flex-fill my-2 ms-2 w-80 truncate"
-                                (click)="addToTemplateField(templateItem)">{{
-                                templateItem.name.trim() }} </span>
-                        </button>
-                    </div>
-                </div>
-                <button type="button" class="btn-primary-tw text-sm font-bold ms-2" *ngIf="isSuperAdmin"
-                    (click)="newTemplate()">
-                    New
+        <ul ngbNav #nav="ngbNav" [(activeId)]="recordMode" class="nav-tabs">
+            <li [ngbNavItem]="templateModes.TEMPLATE_MODE">
+                <button class="flex content-center btn-primary-tw" (click)="recordMode = templateModes.TEMPLATE_MODE">
+                    <span class="font-bold">Template Mode</span>
                 </button>
-            </div>
-        </div>
-        <!-- template containers -->
-        <div class="card pb-3" *ngIf="(templateList | async) as tempList" #formData>
-            <ng-container *ngIf="tempList.length !== 0 else emptyState;">
-                <ng-container [ngTemplateOutlet]="fieldInput"
-                    *ngFor="let template of tempList; let templateIndex = index;"
-                    [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
-            </ng-container>
-        </div>
+                <ng-template ngbNavContent *ngIf="recordMode === templateModes.TEMPLATE_MODE">
+                    <ng-container [ngTemplateOutlet]="templateMode"></ng-container>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="templateModes.RICH_TEXT_MODE">
+                <button class="flex content-center btn-primary-tw" (click)="recordMode = templateModes.RICH_TEXT_MODE">
+                    <span class="font-bold">Rich Text Mode</span>
+                </button>
+                <ng-template ngbNavContent>
+                    <p>
+                        Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four
+                        loko
+                        farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk
+                        aliquip jean shorts
+                        ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus
+                        mollit. Keytar
+                        helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio
+                        cillum wes anderson
+                        8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party
+                        scenester
+                        stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+                    </p>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="templateModes.SPREADSHEET_MODE">
+                <button class="flex content-center btn-primary-tw"
+                    (click)="recordMode = templateModes.SPREADSHEET_MODE">
+                    <span class="font-bold">Spreadsheet Mode</span>
+                </button>
+                <ng-template ngbNavContent>
+                    <p>
+                        Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
+                        Nulla facilisi.
+                        Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
+                        congue et odio.
+                        Duis pharetra et nisl at faucibus. Quisque luctus pulvinar arcu, et molestie lectus ultrices et.
+                        Sed diam urna,
+                        egestas ut ipsum vel, volutpat volutpat neque. Praesent fringilla tortor arcu. Vivamus faucibus
+                        nisl enim, nec
+                        tristique ipsum euismod facilisis. Morbi ut bibendum est, eu tincidunt odio. Orci varius natoque
+                        penatibus et
+                        magnis dis parturient montes, nascetur ridiculus mus. Mauris aliquet odio ac lorem aliquet
+                        ultricies in eget
+                        neque. Phasellus nec tortor vel tellus pulvinar feugiat.
+                    </p>
+                </ng-template>
+            </li>
+        </ul>
+        <div [ngbNavOutlet]="nav"></div>
     </div>
+
     <div class="field-container mt-3 py-3 flex flex-column" [formGroup]="defaultForm">
         <label class="form-label mt-2">Comment</label>
         <div class="d-inline-block">
@@ -385,5 +406,41 @@
             </svg>
             <span class="mt-2">Load template from the dropdown above</span>
         </div>
+    </div>
+</ng-template>
+
+
+<ng-template #templateMode>
+    <div class="d-flex justify-content-end">
+        <div class="mt-3 mb-3" *ngIf="(templateOptions | async) as tempOptions">
+            <div ngbDropdown class="d-inline-block" *ngIf="tempOptions.length">
+                <button type="button" class="btn-primary-tw text-sm font-bold" ngbDropdownToggle>
+                    Load Template
+                </button>
+                <div ngbDropdownMenu>
+                    <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
+                        class="flex items-center">
+                        <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
+                            triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
+                            (click)="duplicateTemplate(templateItem)">
+                            <mds-icons icon="copy"></mds-icons>
+                        </button>
+                        <span class="flex-fill my-2 ms-2 w-80 truncate" (click)="addToTemplateField(templateItem)">{{
+                            templateItem.name.trim() }} </span>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn-primary-tw text-sm font-bold ms-2" *ngIf="isSuperAdmin"
+                (click)="newTemplate()">
+                New
+            </button>
+        </div>
+    </div>
+    <!-- template containers -->
+    <div class="card pb-3" *ngIf="(templateList | async) as tempList" #formData>
+        <ng-container *ngIf="tempList.length !== 0 else emptyState;">
+            <ng-container [ngTemplateOutlet]="fieldInput" *ngFor="let template of tempList; let templateIndex = index;"
+                [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+        </ng-container>
     </div>
 </ng-template>

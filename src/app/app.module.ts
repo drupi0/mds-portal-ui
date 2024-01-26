@@ -9,6 +9,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import {
   NgbAlertModule, NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct, NgbDatepickerModule, NgbDropdownModule, NgbModalModule, NgbModule,
+  NgbNavModule,
   NgbPaginationModule, NgbPopoverModule
 } from '@ng-bootstrap/ng-bootstrap';
 
@@ -158,6 +159,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     KeycloakAngularModule,
     PdfViewerModule,
     NgScrollbarModule,
+    NgbNavModule,
     DragDropModule,
     ...standaloneComponents,
     PdfViewerModule,

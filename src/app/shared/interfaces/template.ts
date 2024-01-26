@@ -46,6 +46,13 @@ export interface PatientRecordModel {
     receivedDateTime: string,
     comments: string
     data: string
+    mode: TemplateMode
+}
+
+export enum TemplateMode {
+    TEMPLATE_MODE = "TEMPLATE_MODE",
+    RICH_TEXT_MODE = "RICH_TEXT_MODE",
+    SPREADSHEET_MODE = "SPREADSHEET_MODE",
 }
 
 export interface Pagination<T> {
