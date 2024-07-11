@@ -3,6 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { AuthModel } from 'src/app/shared/interfaces/template';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'mds-breadcrumbs',
@@ -28,5 +29,11 @@ export class BreadcrumbsComponent implements OnInit {
 
   logout() {
     this.breadcrumbSvc.logout();
+  }
+
+  accountSettings() {
+    const { AUTH_REALM, AUTH_URL } = environment;
+    window.location.replace(`${AUTH_URL}/realms/${AUTH_REALM}/account`);
+    // window.location.replace("/auth/realms/mds-auth/account/");
   }
 }

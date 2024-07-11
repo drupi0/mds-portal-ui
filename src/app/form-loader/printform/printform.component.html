@@ -1,6 +1,6 @@
 <ng-template #printPreview>
     <div class="container bg-white mt-3">
-        <div #printArea class="p-5">
+        <div #printArea class="p-5 border-0">
             <ng-container [ngTemplateOutlet]="reportHeader"></ng-container>
             <div class="main-row rounded px-3 mt-2 !border-0" *ngFor="let field of reportField">
                 <div class="row">
@@ -24,9 +24,13 @@
                     </table>
                 </div>
             </div>
-            <div class="main-row row mt-2 pb-4 !border-0" *ngIf="formData?.comments">
-                <div class="col-2 fw-bold">COMMENT:</div>
-                <div class="col" [innerHTML]="sanitizeHtml(formData?.comments || '')"></div>
+            <div class="main-row mt-2 pb-4 !border-0" *ngIf="formData?.comments">
+                <div class="row">
+                    <div class="col-2 fw-bold">COMMENT/S:</div>
+                </div>
+                <div class="row">
+                    <div class="col" [innerHTML]="sanitizeHtml(formData?.comments || '')"></div>
+                </div>
             </div>
             <ng-container [ngTemplateOutlet]="reportFooter"></ng-container>
         </div>

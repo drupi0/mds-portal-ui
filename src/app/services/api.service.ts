@@ -52,7 +52,11 @@ export class ApiService {
     return this.httpClient.patch<TemplateModel>(`${this.API_URL}/template`, template);
   }
 
-  saveRecord(record: {}): Observable<PatientRecordModel> {
+  saveRecord(record: Partial<PatientRecordModel>): Observable<PatientRecordModel> {
+    if(record.id) {
+      return this.httpClient.put<PatientRecordModel>(`${this.API_URL}/record`, record);
+    }
+
     return this.httpClient.post<PatientRecordModel>(`${this.API_URL}/record`, record);
   }
 

@@ -81,9 +81,9 @@ table {
         font-size: 0.7em;
     }
 
-    .dropdown-menu {
-        max-height: 300px;
-        overflow: auto;
+    .template-dropdown-menu {
+        width: 300px;
+        overflow: hidden;
     }
 
     mds-datetimepicker {
@@ -118,6 +118,10 @@ table {
             }
         }
     }
+
+    .comment-field .ProseMirror {
+        min-height: 200px !important;
+    }
 }
 
 .footer {
@@ -125,4 +129,9 @@ table {
     position: fixed;
     bottom: 0px;
     left: 0px;
+}
+
+.template-container {
+    height: 250px; 
+    overflow-y: scroll;
 }

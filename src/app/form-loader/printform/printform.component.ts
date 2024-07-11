@@ -40,7 +40,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       this.reportField = JSON.parse(this.formData?.data);
       setTimeout(() => {
         this.previewAsPDF();
-      }, 100);
+      }, 500);
     }
   }
 
@@ -48,7 +48,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     if (this.printNow) {
       setTimeout(() => {
         this.previewAsPDF();
-      }, 100);
+      }, 500);
     }
   }
 

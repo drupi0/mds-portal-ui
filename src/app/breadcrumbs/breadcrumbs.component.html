@@ -22,7 +22,7 @@
             <span class="ml-1 text-sm">{{ userName }}</span>
         </button>
         <div ngbDropdownMenu class="border-0 shadow-md rounded overflow-hidden">
-            <button ngbDropdownItem routerLink="/auth/realms/mds-auth/account/">
+            <button ngbDropdownItem (click)="accountSettings()">
                 <div class="flex flex-row content-center py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
                         <path fill-rule="evenodd"

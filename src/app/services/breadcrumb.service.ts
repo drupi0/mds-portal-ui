@@ -37,11 +37,11 @@ export class BreadcrumbService {
   }
 
   isAdmin() {
-    return this.getToken().pipe(map(token => token.realm_access.roles.includes("admin")));
+    return this.getToken().pipe(map(token => token.realm_access ? token.realm_access.roles.includes("admin") : false));
   }
 
   isSuperAdmin() {
-    return this.getToken().pipe(map(token => token.realm_access.roles.includes("super_admin")));
+    return this.getToken().pipe(map(token => token.realm_access ? token.realm_access.roles.includes("super_admin") : false));
   }
 
   get breadcrumbs(): Observable<BreadcrumbItem[]> {

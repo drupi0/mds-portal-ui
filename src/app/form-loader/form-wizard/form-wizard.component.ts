@@ -19,6 +19,7 @@ import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { Editor, toDoc, toHTML, Toolbar } from 'ngx-editor';
 import { ToastrService } from 'ngx-toastr';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -54,6 +55,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   });
 
 
+  templateSearch: string = "";
   templateOptions: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   templateList: BehaviorSubject<TemplateModel[]> = new BehaviorSubject([] as TemplateModel[]);
   patientList: BehaviorSubject<PatientModel[]> = new BehaviorSubject([] as PatientModel[]);
@@ -74,8 +76,19 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     inputRules: true,
   });
 
+  toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+  ];
+
   onExit() {
-    if(!this.defaultForm.dirty && !this.hasChanges) {
+    if (!this.defaultForm.dirty && !this.hasChanges) {
       return of(true);
     }
 
@@ -89,7 +102,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     modalRef.componentInstance.noLabel = "No";
 
     return modalRef.closed.pipe(switchMap(response => {
-      if(response) {
+      if (response) {
         return this.callSaveApi().pipe(finalize(() => {
           this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
         }), switchMap(() => of(true)));
@@ -110,11 +123,11 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     }))).subscribe(param => {
       const { formId, duplicate, preview } = param;
 
-      if(duplicate !== null) {
+      if (duplicate !== null) {
         this.isDuplicate = duplicate;
       }
 
-      if(this.isDuplicate) {
+      if (this.isDuplicate) {
         this.breadcrumbSvc.current.title = "New Patient Record";
       }
 
@@ -123,7 +136,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         this.initFormTemplate(formId);
       }
 
-      if(preview) {
+      if (preview) {
         this.printForm();
       }
     })
@@ -195,7 +208,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   onDtChange(template: TemplateModel, groupId: string, row: number, event: string) {
     const groupIndex = template.group.findIndex(group => group.id === groupId);
-    if(groupIndex !== -1) {
+    if (groupIndex !== -1) {
       template.group[groupIndex].values[row] = event;
 
       this.hasChanges = true;
@@ -215,7 +228,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         const { id, value } = (data as HTMLInputElement);
         const itemIndex = updateTemplate.group.findIndex(data => data.id === id.split(":")[0])
 
-        if(itemIndex != -1) {
+        if (itemIndex != -1) {
           updateTemplate.group[itemIndex].values.push(!value ? '' : value.trim());
         }
       });
@@ -310,7 +323,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     this.callSaveApi().subscribe((record: PatientRecordModel) => {
       this.hasChanges = false;
       this.defaultForm.markAsPristine();
-      
+
       this.defaultForm.controls.id.setValue(record.id);
       if (navigateToHome) {
         this.ngZone.run(() => {
@@ -396,15 +409,15 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
       switch (group.type) {
         case FieldType.DROPDOWN:
-          if(!group.values.length) {
+          if (!group.values.length) {
             group.values = Array(2).fill(group.defaults.split(",")[0]);
             break;
           }
-          
+
           group.values.splice(rowIndex + 1, 0, group.defaults.split(",")[0]);
           break;
         default:
-          if(!group.values.length) {
+          if (!group.values.length) {
             group.values = Array(2).fill(group.defaults);
             break;
           }
@@ -471,8 +484,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   dateOfBirthChange(dateStr: string) {
     this.defaultForm.controls.dateOfBirth.setValue(dateStr);
-    console.log(this.defaultForm.getRawValue());
-    // this.defaultForm.getRawValue();
   }
 
   get todayDate() {
@@ -519,13 +530,21 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     this.hasChanges = true;
   }
 
+  filterTemplates(templates: TemplateModel[]): TemplateModel[] {
+    if (this.templateSearch.trim().length) {
+      return templates.filter(template => template.name.toLowerCase().includes(this.templateSearch.toLowerCase()))
+    }
+
+    return templates;
+  }
+
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {
         ...patientRecord
       } as PatientRecordModel;
 
-      if(record.data.trim().length !== 0) {
+      if (record.data.trim().length !== 0) {
         this.templateList.next(JSON.parse(record.data));
       }
 
@@ -560,8 +579,15 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     })
   }
 
-  private showErrorToast(err: Error) {
-    this.notifSvc.error(err.message, "Error");
+  private showErrorToast(err: Error | any) {
+    if(err.error) {
+      this.notifSvc.error(err?.error?.message || err, "Error");
+      return;
+    }
+
+    if(err.status === HttpStatusCode.Forbidden) {
+      this.notifSvc.error("Account doesn't have admin access.");
+    }
   }
 
   private showSuccessToast(content: string) {
@@ -571,6 +597,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
     private notifSvc: ToastrService, private ngZone: NgZone, private router: Router,
-    private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService 
+    private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService
   ) { }
 }
