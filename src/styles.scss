@@ -45,6 +45,33 @@ $body-bg: #ffffff;
     border-width: 1px;
 }
 
+.toast-success {
+    background-image: none !important;
+    background-color: rgba(212, 237, 218, 0.85) !important; /* Semi-transparent light green background */
+    color: #155724 !important; /* Dark green text color */
+    border: 1px solid rgba(25, 135, 84, 0.3) !important; /* Lighter green border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow */
+    padding: 12px 15px !important; /* Slightly larger padding */
+    border-radius: 8px !important; /* Rounded corners */
+    font-size: 14px !important; /* Standard font size */
+    line-height: 1.5 !important; /* Improved line height for readability */
+    position: relative; /* Ensure relative positioning for absolute positioning of ::before */
+    overflow: hidden; /* Ensure content stays within bounds */
+}
+
+.toast-error {
+    background-image: none !important;
+    background-color: rgba(248, 215, 218, 0.85) !important; /* Semi-transparent light red background */
+    color: #721C24 !important; /* Dark red text color */
+    border: 1px solid rgba(150, 40, 27, 0.6) !important; /* Lighter red border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow */
+    padding: 12px 15px !important; /* Slightly larger padding */
+    border-radius: 8px !important; /* Rounded corners */
+    font-size: 14px !important; /* Standard font size */
+    line-height: 1.5 !important; /* Improved line height for readability */
+    position: relative; /* Ensure relative positioning for absolute positioning of ::before */
+    overflow: hidden; /* Ensure content stays within bounds */
+}
 
 .cursor-pointer {
     cursor: pointer;
