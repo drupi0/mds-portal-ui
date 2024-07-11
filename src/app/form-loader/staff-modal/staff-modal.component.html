@@ -52,15 +52,18 @@
                 </div>
                 <div class="col-2 d-flex justify-content-end">
                     <ng-container *ngIf="isAdmin">
-                        <button class="circular-btn text-red-600 hover:bg-red-200" (click)="deleteStaff(staff)">
+                        <button class="!border border-red-100 circular-btn text-red-600 hover:bg-red-50" (click)="deleteStaff(staff)">
                             <mds-icons icon="trash"></mds-icons>
                         </button>
-                        <button class="circular-btn ms-2 text-blue-800 hover:bg-blue-200" (click)="editStaff(staff)">
+                        <button class="!border border-blue-100 circular-btn ms-2 text-blue-800 hover:bg-blue-50" (click)="editStaff(staff)">
                             <mds-icons icon="edit"></mds-icons>
                         </button>
                     </ng-container>
-                    <button class="circular-btn ms-2 text-green-800 hover:bg-green-200" (click)="selectStaff(staff)">
-                        <mds-icons icon="check"></mds-icons>
+                    <button class="!border border-green-100 circular-btn ms-2 text-green-600 hover:bg-green-50" (click)="selectStaff(staff)">
+                        <div class="flex align-items-center px-2">
+                            <mds-icons icon="check"></mds-icons>
+                            <label class="mx-2 text-xs">Assign</label>
+                        </div>
                     </button>
                 </div>
             </div>

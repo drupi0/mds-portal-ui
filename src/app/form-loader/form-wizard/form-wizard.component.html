@@ -140,7 +140,7 @@
         </div>
     </div>
     <div class="field-container mt-3">
-        <ul ngbNav #nav="ngbNav" [(activeId)]="recordMode" class="nav-tabs">
+        <!-- <ul ngbNav #nav="ngbNav" [(activeId)]="recordMode" class="nav-tabs">
             <li [ngbNavItem]="templateModes.TEMPLATE_MODE">
                 <button class="flex content-center btn-primary-tw" (click)="recordMode = templateModes.TEMPLATE_MODE">
                     <span class="font-bold">Template Mode</span>
@@ -170,14 +170,15 @@
                 </ng-template>
             </li>
         </ul>
-        <div [ngbNavOutlet]="nav"></div>
+        <div [ngbNavOutlet]="nav"></div> -->
+        <ng-container [ngTemplateOutlet]="templateMode"></ng-container>
     </div>
 
     <div class="field-container mt-3 py-3 flex flex-column" [formGroup]="defaultForm">
-        <label class="form-label mt-2">Comment</label>
-        <div class="d-inline-block">
-            <div class="NgxEditor__Wrapper min-h-7">
-                <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+        <label class="form-label mt-2">Comment/s</label>
+        <div class="d-inline-block comment-field">
+            <div class="NgxEditor__Wrapper">
+                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
                 <ngx-editor [editor]="editor" formControlName="comment"></ngx-editor>
             </div>
         </div>
@@ -222,7 +223,7 @@
         <span class="font-bold">Exit</span>
     </button>
     <button class="flex content-center btn-primary-tw !px-3" (click)="saveForm(false)" [disabled]="saveDisabled">
-        <span class="font-bold">Save</span>
+        <span class="font-bold">{{ defaultForm.get("id")?.getRawValue() ? "Update" : "Save"}}</span>
     </button>
     <div class="h-8 w-1 border-l border-blue-50 mx-2"></div>
     <button class="flex content-center btn-primary-tw !px-3 me-2" (click)="printForm()" [disabled]="saveDisabled">
@@ -394,17 +395,23 @@
                 <button type="button" class="btn-primary-tw text-sm font-bold" ngbDropdownToggle>
                     Load Template
                 </button>
-                <div ngbDropdownMenu>
-                    <button ngbDropdownItem *ngFor="let templateItem of tempOptions; let templateIndex = index"
-                        class="flex items-center">
-                        <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
-                            triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
-                            (click)="duplicateTemplate(templateItem)">
-                            <mds-icons icon="copy"></mds-icons>
+                <div ngbDropdownMenu class="p-0 template-dropdown-menu">
+                    <div class="bg-blue-50 px-1 py-3">
+                        <input type="search" placeholder="Search Template" class="form-control" [(ngModel)]="templateSearch">
+                    </div>
+                    <div class="template-container">
+                        <button ngbDropdownItem *ngFor="let templateItem of filterTemplates(tempOptions); let templateIndex = index"
+                            class="flex items-center">
+                            <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
+                                triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
+                                (click)="duplicateTemplate(templateItem)">
+                                <mds-icons icon="copy"></mds-icons>
+                            </button>
+                            <span class="flex-fill my-2 ms-2 w-80 truncate" (click)="addToTemplateField(templateItem)"
+                                [ngbTooltip]="templateItem.name.trim()">{{
+                                templateItem.name.trim() }} </span>
                         </button>
-                        <span class="flex-fill my-2 ms-2 w-80 truncate" (click)="addToTemplateField(templateItem)">{{
-                            templateItem.name.trim() }} </span>
-                    </button>
+                    </div>
                 </div>
             </div>
             <button type="button" class="btn-primary-tw text-sm font-bold ms-2" *ngIf="isSuperAdmin"

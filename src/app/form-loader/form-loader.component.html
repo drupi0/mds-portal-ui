@@ -39,7 +39,7 @@
         [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
 </div>
 <ng-template #emptyState>
-    <div class="bg-white px-3 py-4 mt-4 mx-4 rounded h-96 flex flex-col items-center justify-center">
+    <div *ngIf="!isLoading" class="bg-white px-3 py-4 mt-4 mx-4 rounded h-96 flex flex-col items-center justify-center">
         <img src="assets/empty-box.png" width="100">
         <span class="mt-2 text-gray-600 pointer-events-none">No Records Found</span>
     </div>
