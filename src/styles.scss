@@ -141,14 +141,12 @@ $body-bg: #ffffff;
     font-weight: 300 !important;
 }
 
-// input, textarea {
-//     border-radius: 3px !important;
-//     border: 1px solid rgba(0, 0, 0, 0.017);
-// }
-
 .modal-header {
     border: none !important;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    .btn-close-tw {
+        margin-left: auto;
+    }
 }
 
 .modal-footer {
