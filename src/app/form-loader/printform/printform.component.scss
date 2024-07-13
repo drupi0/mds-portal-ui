@@ -24,11 +24,20 @@
 }
 
 .text-small {
-    font-size: medium !important;
+    font-size: 13px !important;
+}
+
+.text-lg {
+    font-size: 25px !important;
 }
 
 .brand-logo {
-    width: 200px;
+    width: 200px !important;
+    background-image: url("/assets/logo.png");
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
 :host ::ng-deep {
@@ -54,5 +63,10 @@
 
     h6 {
         font-size: 0.7em;
+    }
+
+    .ng2-pdf-viewer-container .pdfViewer {
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
     }
 }

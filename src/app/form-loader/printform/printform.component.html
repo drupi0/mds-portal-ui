@@ -47,24 +47,24 @@
 <div class="modal-footer d-flex position-sticky">
     <div class="flex-fill">
         <div class="flex">
-            <button type="button" (click)="zoomReport(0.5)" class="content-center p-2 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800">
+            <button type="button" (click)="zoomReport(0.5)" class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
                 <mds-icons icon="plus" [width]="15" [height]="15"></mds-icons>
             </button>
             <input type="text" class="form-control text-sm w-12 mx-2" [(ngModel)]="reportZoom" />
-            <button type="button" (click)="zoomReport(-0.5)" class="content-center p-2 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800">
+            <button type="button" (click)="zoomReport(-0.5)" class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
                 <mds-icons icon="minus" [width]="15" [height]="15"></mds-icons>
             </button>
         </div>
     </div>
     <div>
-        <button type="button" class="content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800"
+        <button type="button" class="content-center btn-primary-tw"
             (click)="dismiss()">
             <div class="d-flex">
                 <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
                 <span class="ms-2 font-bold">Close</span>
             </div>
         </button>
-        <button type="button" class="content-center py-2 px-4 rounded hover:bg-blue-200 bg-blue-50 text-blue-800 ms-2"
+        <button type="button" class="content-center btn-primary-tw ms-2"
             (click)="previewAsPDF()" [disabled]="isPrinting">
             <div class="d-flex" *ngIf="!isPrinting">
                 <mds-icons icon="print" [width]="20" [height]="20"></mds-icons>
@@ -81,12 +81,12 @@
 <ng-template #reportHeader>
     <div class="main-row row mt-4">
         <div class="col-1">
-            <img src="/assets/logo.png" class="brand-logo">
+            <div class="brand-logo"></div>
         </div>
         <div class="col d-flex flex-column align-items-center justify-content-center">
-            <span class="fw-bold">MULTIHEALTH DYNAMIC SOLUTIONS INC.</span>
-            <span class="text-small">B5 2/Floor St. Matthew's Bldg. Magsaysay Street, Almendras Cogon, Sorsogon,
-                Philippines</span>
+            <span class="fw-bold text-lg text-blue-800">MDS DIAGNOSTIC CENTER</span>
+            <span class="text-small">Diagnostic Laboratory | Imaging | Medical CLinic | Pharmacy</span>
+            <span class="text-small">B5 2/Floor St. Matthew's Bldg. Magsaysay Street, Almendras Cogon, Sorsogon, Philippines</span>
             <div class="d-flex">
                 <span class="me-3 text-small">(056) 255-1277</span>
                 <span class="me-3 text-small">www.mdsolutionsph.com</span>
@@ -143,14 +143,14 @@
             <div class="col fw-bold text-center">** END OF REPORT**</div>
         </div>
         <div class="row mt-4">
-            <div class="col fw-bold">Performed by:</div>
-            <div class="col fw-bold">Verified by:</div>
-            <div class="col fw-bold">Pathologist:</div>
+            <div class="col fw-bold" *ngIf="formData?.performedBy">Performed by:</div>
+            <div class="col fw-bold" *ngIf="formData?.verifiedBy">Verified by:</div>
+            <div class="col fw-bold" *ngIf="formData?.pathologist">Pathologist:</div>
         </div>
         <div class="row mt-4">
-            <div class="col">{{ formData?.performedBy?.name }}<br>Lic No. {{ formData?.performedBy?.licNo }}</div>
-            <div class="col">{{ formData?.verifiedBy?.name }}<br>Lic No. {{ formData?.verifiedBy?.licNo }}</div>
-            <div class="col">{{ formData?.pathologist?.name }}<br>Lic No. {{ formData?.pathologist?.licNo }}</div>
+            <div class="col" *ngIf="formData?.performedBy">{{ formData?.performedBy?.name }}<br>Lic No. {{ formData?.performedBy?.licNo }}</div>
+            <div class="col" *ngIf="formData?.verifiedBy">{{ formData?.verifiedBy?.name }}<br>Lic No. {{ formData?.verifiedBy?.licNo }}</div>
+            <div class="col" *ngIf="formData?.pathologist">{{ formData?.pathologist?.name }}<br>Lic No. {{ formData?.pathologist?.licNo }}</div>
         </div>
     </div>
 </ng-template>

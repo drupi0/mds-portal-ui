@@ -7,8 +7,7 @@
                 <span class="text-sm text-gray-400">Press Enter</span>
             </div>
         </div>
-        <button class="!py-2 !bg-blue-800 hover:!bg-blue-900 text-white btn ml-2 !rounded-md"
-            [routerLink]="['new']">
+        <button class="!py-2 !bg-blue-800 hover:!bg-blue-900 text-white btn ml-2 !rounded-md" [routerLink]="['new']">
             <div class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
                     <path fill-rule="evenodd"
@@ -29,15 +28,22 @@
         ]>
         <mds-forms-table *ngIf="!isLoading"
             [patientRecords]="((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords"
-            (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)" [sortColumns]="sortColumns" 
+            (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)" [sortColumns]="sortColumns"
             (onSort)="saveSort($event)" [accessLevel]="accessLevel"></mds-forms-table>
     </ng-container>
 
 </div>
+
 <div class="px-4 flex justify-end mb-4" *ngIf="!((searchString | async) || '').trim().length && !isLoading">
     <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
         [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
 </div>
+<div class="px-4 flex justify-end mb-4" *ngIf="((searchString | async) || '').trim().length && !isLoading">
+    <ngb-pagination [(page)]="searchPagination.currentPage" (pageChange)="loadSearchRecords()"
+        [pageSize]="searchPagination.size" [collectionSize]="searchPagination.totalElements"
+        [maxSize]="10"></ngb-pagination>
+</div>
+
 <ng-template #emptyState>
     <div *ngIf="!isLoading" class="bg-white px-3 py-4 mt-4 mx-4 rounded h-96 flex flex-col items-center justify-center">
         <img src="assets/empty-box.png" width="100">

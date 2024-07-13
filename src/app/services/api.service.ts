@@ -52,8 +52,9 @@ export class ApiService {
     return this.httpClient.patch<TemplateModel>(`${this.API_URL}/template`, template);
   }
 
-  saveRecord(record: Partial<PatientRecordModel>): Observable<PatientRecordModel> {
-    if(record.id) {
+  saveRecord(record: Partial<PatientRecordModel>, isAdmin: boolean): Observable<PatientRecordModel> {
+
+    if(isAdmin && record.id) {
       return this.httpClient.put<PatientRecordModel>(`${this.API_URL}/record`, record);
     }
 

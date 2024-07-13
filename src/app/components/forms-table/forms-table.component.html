@@ -10,7 +10,7 @@
         <div class="ml-2 text-blue-800 font-bold w-20 truncate hidden md:block">Status</div>
         <div class="flex-grow"></div>
         <div class="flex justify-end content-center text-blue-800 font-bold w-24">
-            <div ngbDropdown [autoClose]="false" #filterDropdown="ngbDropdown">
+            <div ngbDropdown [autoClose]="false" #filterDropdown="ngbDropdown" [container]="'body'">
                 <button type="button"
                     class="flex text-blue-800 p-2 rounded hover:text-blue-900 hover:bg-blue-100 items-center"
                     ngbDropdownToggle>

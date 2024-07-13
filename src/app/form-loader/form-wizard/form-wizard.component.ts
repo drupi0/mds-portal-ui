@@ -101,11 +101,16 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     modalRef.componentInstance.modalBody = `There are some unsaved changes on this form. Do you want to save them?`;
     modalRef.componentInstance.noLabel = "No";
 
+
     return modalRef.closed.pipe(switchMap(response => {
       if (response) {
-        return this.callSaveApi().pipe(finalize(() => {
-          this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
-        }), switchMap(() => of(true)));
+        return this.callSaveApi().pipe(switchMap(value => {
+          if(value !== null) {
+            this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
+          }
+          
+          return of(value !== null);
+        }));
       }
 
       return of(true);
@@ -313,14 +318,18 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   private callSaveApi() {
-    return this.api.saveRecord(this.prepareRecord()).pipe(catchError((err: Error) => {
+    return this.api.saveRecord(this.prepareRecord(), this.isAdmin || this.isSuperAdmin).pipe(catchError((err: Error) => {
       this.showErrorToast(err);
-      return EMPTY;
+      return of(null);
     }));
   }
 
   saveForm(navigateToHome: boolean = true) {
-    this.callSaveApi().subscribe((record: PatientRecordModel) => {
+    this.callSaveApi().subscribe((record: PatientRecordModel | null) => {
+      if(record === null) {
+        return;
+      }
+
       this.hasChanges = false;
       this.defaultForm.markAsPristine();
 

@@ -187,18 +187,33 @@
         <div class="row mt-3">
             <div class="mb-3 col">
                 <label class="form-label">Performed by</label>
-                <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
+                <div class="flex">
+                    <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
+                        (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.performedBy.reset()">
+                        <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
+                    </button>
+                </div>
             </div>
             <div class="mb-3 col">
                 <label class="form-label">Verified by</label>
-                <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
+                <div class="flex">
+                    <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
+                        (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.verifiedBy.reset()">
+                        <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
+                    </button>
+                </div>
             </div>
             <div class="mb-3 col">
                 <label class="form-label">Pathologist</label>
-                <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
-                    (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
+                <div class="flex">
+                    <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
+                        (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.pathologist.reset()">
+                        <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -397,10 +412,12 @@
                 </button>
                 <div ngbDropdownMenu class="p-0 template-dropdown-menu">
                     <div class="bg-blue-50 px-1 py-3">
-                        <input type="search" placeholder="Search Template" class="form-control" [(ngModel)]="templateSearch">
+                        <input type="search" placeholder="Search Template" class="form-control"
+                            [(ngModel)]="templateSearch">
                     </div>
                     <div class="template-container">
-                        <button ngbDropdownItem *ngFor="let templateItem of filterTemplates(tempOptions); let templateIndex = index"
+                        <button ngbDropdownItem
+                            *ngFor="let templateItem of filterTemplates(tempOptions); let templateIndex = index"
                             class="flex items-center">
                             <button *ngIf="isSuperAdmin" ngbPopover="Duplicate this template" [openDelay]="500"
                                 triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"

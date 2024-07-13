@@ -36,6 +36,15 @@ export class FormLoaderComponent implements OnInit {
     sortOrder: "desc"
   }
 
+  searchPagination = {
+    currentPage: 1,
+    offset: 0,
+    size: 10,
+    totalElements: 10,
+    sortKeys: ["receivedDateTime", "collectionDateTime"],
+    sortOrder: "desc"
+  }
+
   saveSort(sortColumns: string[]) {
     const cols = sortColumns.filter(key => !key.startsWith("asc") && !key.startsWith("desc"));
 
@@ -53,11 +62,17 @@ export class FormLoaderComponent implements OnInit {
       this.pagination.sortOrder = "desc"
     }
 
-    if (this.searchString.getValue().trim().length) {
-      this.searchString.next(this.searchString.getValue());
+    this.pagination.currentPage = 1;
+    this.pagination.size = 10;
+
+    this.searchPagination.currentPage = 1;
+    this.searchPagination.size = 10;
+    
+    if(this.searchString.getValue().trim().length) {
+      this.loadSearchRecords();
       return;
     }
-
+    
     this.loadRecords();
   }
 
@@ -86,10 +101,24 @@ export class FormLoaderComponent implements OnInit {
     }
 
     this.searchString.subscribe((term => {
+      if(!term.length) {
+        this.patientRecordFromSearch = [];
+        this.searchPagination.currentPage = 1;
+        this.searchPagination.size = 10;
+        return;
+      }
+      
       this.api.searchRecords(0, 10, term, this.pagination.sortKeys, this.pagination.sortOrder).pipe(finalize(() => {
         this.isLoading = false;
       })).subscribe((searchResult: Pagination<PatientRecordModel>) => {
         this.patientRecordFromSearch = searchResult.content;
+
+        this.searchPagination = {
+          ...this.searchPagination,
+          offset: this.searchPagination.currentPage * this.searchPagination.size,
+          totalElements: searchResult.totalElements
+        }
+
       });
     }));
 
@@ -98,6 +127,24 @@ export class FormLoaderComponent implements OnInit {
 
   get sortColumns() {
     return [...this.pagination.sortKeys, (this.pagination.sortOrder || "desc")];
+  }
+
+  loadSearchRecords() {
+    this.isLoading = true;
+
+    this.api.searchRecords(this.searchPagination.currentPage -1, this.searchPagination.size, 
+      this.searchString.getValue(), this.pagination.sortKeys, this.pagination.sortOrder).pipe(finalize(() => {
+      this.isLoading = false;
+    })).subscribe((searchResult: Pagination<PatientRecordModel>) => {
+      this.patientRecordFromSearch = searchResult.content;
+
+      this.searchPagination = {
+        ...this.searchPagination,
+        offset: this.searchPagination.currentPage * this.searchPagination.size,
+        totalElements: searchResult.totalElements
+      }
+
+    });
   }
 
   loadRecords() {
