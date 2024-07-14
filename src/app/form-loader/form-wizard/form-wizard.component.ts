@@ -1,5 +1,9 @@
 import {
-  BehaviorSubject, catchError, combineLatest, debounceTime, delay, EMPTY, finalize, forkJoin, from, interval, map, Observable, of, switchMap, take, tap
+  BehaviorSubject, catchError, combineLatest, debounceTime,
+  EMPTY,
+  finalize,
+  forkJoin,
+  map, Observable, of, switchMap, take
 } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
@@ -7,19 +11,20 @@ import {
   PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
-import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, NgZone, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { HttpStatusCode } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Editor, toDoc, toHTML, Toolbar } from 'ngx-editor';
+import { ToastrService } from 'ngx-toastr';
+import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { PrintformComponent } from '../printform/printform.component';
 import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
-import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
-import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
-import { Editor, toDoc, toHTML, Toolbar } from 'ngx-editor';
-import { ToastrService } from 'ngx-toastr';
-import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'mds-form-wizard',
@@ -64,6 +69,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   isSuperAdmin = false;
   isDuplicate = false;
   hasChanges = false;
+  isSaving = false;
+  editorInstances: Record<string, { editor: Editor, toolbar: Toolbar }> = {};
 
   editor: Editor = new Editor({
     content: '',
@@ -103,7 +110,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     return modalRef.closed.pipe(switchMap(response => {
       if (response) {
         return this.callSaveApi().pipe(switchMap(value => {
-          if(value !== null) {
+          if (value !== null) {
             this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
           }
 
@@ -171,6 +178,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   editTemplate(template: TemplateModel) {
     this.updateTemplate(template);
+    this.rebuildEditorInstances();
     this.hasChanges = true;
   }
 
@@ -193,10 +201,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
       const { data, isDeleted } = returnValue as { data: TemplateModel, isDeleted: boolean };
 
-      if (isDeleted) {
-        this.showSuccessToast(`Template ${data.name} has been deleted`);
-      }
-
       const tempOptions = this.templateOptions.getValue().filter(templateField => templateField.id !== data.id);
       const tempList = this.templateList.getValue().filter(templateItem => templateItem.id !== data.id);
 
@@ -204,7 +208,10 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       this.templateOptions.next([...tempOptions, ...(!isDeleted ? [data] : [])]);
       this.templateList.next([...tempList, ...(!isDeleted ? [data] : [])]);
 
+      this.rebuildEditorInstances();
       this.hasChanges = true;
+
+      this.showSuccessToast(`Template ${data.name} has been ${isDeleted ? "deleted" : "updated"}`);
 
     });
   }
@@ -322,8 +329,11 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   saveForm(navigateToHome: boolean = true) {
-    this.callSaveApi().subscribe((record: PatientRecordModel | null) => {
-      if(record === null) {
+    this.isSaving = true;
+    this.callSaveApi().pipe(finalize(() => {
+      this.isSaving = false;
+    })).subscribe((record: PatientRecordModel | null) => {
+      if (record === null) {
         return;
       }
 
@@ -396,12 +406,14 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     const tempList = this.templateList.getValue() || [];
     const newTemplate = JSON.parse(JSON.stringify(template));
 
-    if (template.group[0].values.join(",").trim().length === 0) {
+    if (template.group[0].values.every(val => val === "")) {
       this.addRow(newTemplate, template.group[0].values.length - 1);
     }
 
     tempList.push(newTemplate);
     this.templateList.next(tempList);
+
+    this.rebuildEditorInstances();
     this.hasChanges = true;
   }
 
@@ -409,14 +421,16 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     const groups: TemplateGroup[] = JSON.parse(JSON.stringify(template.group));
 
     groups.forEach((group) => {
-      if (group.values.join(",").trim().length === 0) {
+      if (group.values.every(val => val === "")) {
         group.values = [];
       }
+
+      const arrayLength = template.isFormMode ? 1 : 2;
 
       switch (group.type) {
         case FieldType.DROPDOWN:
           if (!group.values.length) {
-            group.values = Array(2).fill(group.defaults.split(",")[0]);
+            group.values = Array(arrayLength).fill(group.defaults.split(",")[0]);
             break;
           }
 
@@ -424,7 +438,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
           break;
         default:
           if (!group.values.length) {
-            group.values = Array(2).fill(group.defaults);
+            group.values = Array(arrayLength).fill(group.defaults);
             break;
           }
           group.values.splice(rowIndex + 1, 0, group.defaults);
@@ -544,6 +558,10 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     return templates;
   }
 
+  sanitizeHtml(rawHtml: string): SafeHtml {
+    return this.sanitize.bypassSecurityTrustHtml(rawHtml);
+  }
+
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {
@@ -581,16 +599,18 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
           onlySelf: true
         });
       }
+
+      this.rebuildEditorInstances();
     })
   }
 
   private showErrorToast(err: Error | any) {
-    if(err.error) {
+    if (err.error) {
       this.notifSvc.error(err?.error?.message || err, "Error");
       return;
     }
 
-    if(err.status === HttpStatusCode.Forbidden) {
+    if (err.status === HttpStatusCode.Forbidden) {
       this.notifSvc.error("Account doesn't have admin access.");
     }
   }
@@ -599,9 +619,58 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     this.notifSvc.success(content);
   }
 
+  private rebuildEditorInstances() {
+    this.editorInstances = {};
+
+    const templateList = this.templateList.getValue();
+
+    templateList.forEach((template, tIndex) => {
+      template.group.forEach((gItem, gItemIndex) => {
+        if (gItem.type === FieldType.RICHTEXT) {
+          this.createNewEditorInstance(`tpl-${tIndex}-${gItemIndex}`);
+        }
+      });
+    });
+  }
+
+  private createNewEditorInstance(instanceName: string) {
+    const currentEditorInstance = this.editorInstances;
+    currentEditorInstance[instanceName] = this.editorSource();
+
+    this.editorInstances = currentEditorInstance;
+  }
+
+  private editorSource(): {
+    editor: Editor;
+    toolbar: Toolbar;
+  } {
+    const editor: Editor = new Editor({
+      content: '',
+      plugins: [],
+      nodeViews: {},
+      history: true,
+      keyboardShortcuts: true,
+      inputRules: true,
+    });
+
+    const toolbar: Toolbar = [
+      ['bold', 'italic'],
+      ['underline', 'strike'],
+      ['code', 'blockquote'],
+      ['ordered_list', 'bullet_list'],
+      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      ['link', 'image'],
+      ['text_color', 'background_color'],
+      ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ];
+
+    return { editor, toolbar }
+  }
+
   constructor(private route: ActivatedRoute, private modalService: NgbModal,
     private calendar: NgbCalendar, private api: ApiService,
     private notifSvc: ToastrService, private ngZone: NgZone, private router: Router,
-    private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService
+    private cdRef: ChangeDetectorRef, private breadcrumbSvc: BreadcrumbService,
+    private sanitize: DomSanitizer
   ) { }
 }

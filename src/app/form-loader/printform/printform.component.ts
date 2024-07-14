@@ -40,7 +40,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       this.reportField = JSON.parse(this.formData?.data);
       setTimeout(() => {
         this.previewAsPDF();
-      }, 500);
+      }, 200);
     }
   }
 
@@ -48,7 +48,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     if (this.printNow) {
       setTimeout(() => {
         this.previewAsPDF();
-      }, 500);
+      }, 200);
     }
   }
 
@@ -182,6 +182,13 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
   sanitizeHtml(rawHtml: string): SafeHtml {
     return this.sanitize.bypassSecurityTrustHtml(rawHtml);
+  }
+
+  isEmptyHTML(rawHtml: string) {
+    const docElem = document.createElement('div');
+    docElem.innerHTML = rawHtml;
+
+    return docElem.innerText.trim().length === 0;
   }
 
 }

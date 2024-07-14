@@ -119,8 +119,17 @@ table {
         }
     }
 
-    .comment-field .ProseMirror {
-        min-height: 200px !important;
+    .comment-field,
+    .richtext-field {
+        .ProseMirror {
+            min-height: 200px !important;
+        }
+    }
+
+    .form-mode {
+        .date-input {
+            @apply min-w-60;
+        }
     }
 }
 
@@ -132,6 +141,6 @@ table {
 }
 
 .template-container {
-    height: 250px; 
+    height: 250px;
     overflow-y: scroll;
 }

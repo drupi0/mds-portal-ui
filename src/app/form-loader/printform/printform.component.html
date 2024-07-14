@@ -3,28 +3,35 @@
         <div #printArea class="p-5 border-0">
             <ng-container [ngTemplateOutlet]="reportHeader"></ng-container>
             <div class="main-row rounded px-3 mt-2 !border-0" *ngFor="let field of reportField">
-                <div class="row">
-                    <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
-                </div>
-                <div class="row mt-3">
-                    <table class="table w-100">
-                        <thead>
-                            <tr>
-                                <th *ngFor="let col of field.group" class="fw-bold min-size text-wrap align-text-top">{{
-                                    col.name }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let row of field.group[0].values; let rowIndex = index">
-                                <td *ngFor="let group of field.group; let colIndex = index">
-                                    {{ group.values[rowIndex] }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <ng-container *ngIf="!field.isFormMode; else formModeContainer">
+                    <div class="row">
+                        <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
+                    </div>
+                    <div class="row mt-3">
+                        <table class="table w-100">
+                            <thead>
+                                <tr>
+                                    <th *ngFor="let col of field.group"
+                                        class="fw-bold min-size text-wrap align-text-top">{{
+                                        col.name }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of field.group[0].values; let rowIndex = index">
+                                    <td *ngFor="let group of field.group; let colIndex = index">
+                                        {{ group.values[rowIndex] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+                <ng-template #formModeContainer>
+                    <ng-container [ngTemplateOutlet]="formMode"
+                        [ngTemplateOutletContext]="{template: field}"></ng-container>
+                </ng-template>
             </div>
-            <div class="main-row mt-2 pb-4 !border-0" *ngIf="formData?.comments">
+            <div class="main-row mt-2 pb-4 !border-0" *ngIf="!isEmptyHTML(formData?.comments || '')">
                 <div class="row">
                     <div class="col-2 fw-bold">COMMENT/S:</div>
                 </div>
@@ -47,25 +54,26 @@
 <div class="modal-footer d-flex position-sticky">
     <div class="flex-fill">
         <div class="flex">
-            <button type="button" (click)="zoomReport(0.5)" class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
+            <button type="button" (click)="zoomReport(0.5)"
+                class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
                 <mds-icons icon="plus" [width]="15" [height]="15"></mds-icons>
             </button>
             <input type="text" class="form-control text-sm w-12 mx-2" [(ngModel)]="reportZoom" />
-            <button type="button" (click)="zoomReport(-0.5)" class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
+            <button type="button" (click)="zoomReport(-0.5)"
+                class="content-center p-2 rounded-full !border border-blue-100 hover:bg-blue-200 bg-blue-50 text-blue-800">
                 <mds-icons icon="minus" [width]="15" [height]="15"></mds-icons>
             </button>
         </div>
     </div>
     <div>
-        <button type="button" class="content-center btn-primary-tw"
-            (click)="dismiss()">
+        <button type="button" class="content-center btn-primary-tw" (click)="dismiss()">
             <div class="d-flex">
                 <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
                 <span class="ms-2 font-bold">Close</span>
             </div>
         </button>
-        <button type="button" class="content-center btn-primary-tw ms-2"
-            (click)="previewAsPDF()" [disabled]="isPrinting">
+        <button type="button" class="content-center btn-primary-tw ms-2" (click)="previewAsPDF()"
+            [disabled]="isPrinting">
             <div class="d-flex" *ngIf="!isPrinting">
                 <mds-icons icon="print" [width]="20" [height]="20"></mds-icons>
                 <span class="ms-2 font-bold">Print</span>
@@ -86,7 +94,8 @@
         <div class="col d-flex flex-column align-items-center justify-content-center">
             <span class="fw-bold text-lg text-blue-800">MDS DIAGNOSTIC CENTER</span>
             <span class="text-small">Diagnostic Laboratory | Imaging | Medical CLinic | Pharmacy</span>
-            <span class="text-small">B5 2/Floor St. Matthew's Bldg. Magsaysay Street, Almendras Cogon, Sorsogon, Philippines</span>
+            <span class="text-small">B5 2/Floor St. Matthew's Bldg. Magsaysay Street, Almendras Cogon, Sorsogon,
+                Philippines</span>
             <div class="d-flex">
                 <span class="me-3 text-small">(056) 255-1277</span>
                 <span class="me-3 text-small">www.mdsolutionsph.com</span>
@@ -148,9 +157,33 @@
             <div class="col fw-bold" *ngIf="formData?.pathologist">Pathologist:</div>
         </div>
         <div class="row mt-4">
-            <div class="col" *ngIf="formData?.performedBy">{{ formData?.performedBy?.name }}<br>Lic No. {{ formData?.performedBy?.licNo }}</div>
-            <div class="col" *ngIf="formData?.verifiedBy">{{ formData?.verifiedBy?.name }}<br>Lic No. {{ formData?.verifiedBy?.licNo }}</div>
-            <div class="col" *ngIf="formData?.pathologist">{{ formData?.pathologist?.name }}<br>Lic No. {{ formData?.pathologist?.licNo }}</div>
+            <div class="col" *ngIf="formData?.performedBy">{{ formData?.performedBy?.name }}<br>Lic No. {{
+                formData?.performedBy?.licNo }}</div>
+            <div class="col" *ngIf="formData?.verifiedBy">{{ formData?.verifiedBy?.name }}<br>Lic No. {{
+                formData?.verifiedBy?.licNo }}</div>
+            <div class="col" *ngIf="formData?.pathologist">{{ formData?.pathologist?.name }}<br>Lic No. {{
+                formData?.pathologist?.licNo }}</div>
         </div>
+    </div>
+</ng-template>
+
+<ng-template let-template="template" #formMode>
+    <div class="row">
+        <div class="col text-underlined"><u class="fw-bold h5">{{ template.name }}</u></div>
+    </div>
+    <div class="flex flex-column p-2">
+        <ng-container *ngFor="let field of template.group; let colIndex = index; ">
+            <ng-container [ngSwitch]="template.group[colIndex].type">
+                <span *ngSwitchCase="'LABEL'" class="my-2 italic text-sm">{{ template.group[colIndex].defaults }}</span>
+                <div *ngSwitchCase="'RICHTEXT'" class="richtext-field my-2 flex flex-column min-h-40 p-2 rounded !border border-3 border-dark">
+                    <label class="fw-bold mb-3">{{ template.group[colIndex].name }}</label>
+                    <div [innerHTML]="sanitizeHtml(template.group[colIndex].values[0])"></div>
+                </div>
+                <div *ngSwitchDefault class="my-2 flex">
+                    <label class="fw-bold mr-2">{{ template.group[colIndex].name }}: </label>
+                    <span>{{ template.group[colIndex].values[0] }}</span>
+                </div>
+            </ng-container>
+        </ng-container>
     </div>
 </ng-template>

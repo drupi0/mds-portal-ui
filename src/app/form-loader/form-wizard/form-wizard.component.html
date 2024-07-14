@@ -1,4 +1,4 @@
-<div class="wizard-body pt-4 px-5">
+<div class="wizard-body pt-4 px-5 w-100 overflow-auto">
     <div class="field-container">
         <div class="row mt-3" [formGroup]="defaultForm">
             <div class="mb-3 col-6 d-flex flex-column">
@@ -159,7 +159,8 @@
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
                         (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
-                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.performedBy.reset()">
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin"
+                        (click)="defaultForm.controls.performedBy.reset()">
                         <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
                     </button>
                 </div>
@@ -169,7 +170,8 @@
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
                         (click)="showStaffModal(defaultForm.controls.verifiedBy)" readonly>
-                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.verifiedBy.reset()">
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin"
+                        (click)="defaultForm.controls.verifiedBy.reset()">
                         <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
                     </button>
                 </div>
@@ -179,7 +181,8 @@
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
                         (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>
-                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin" (click)="defaultForm.controls.pathologist.reset()">
+                    <button class="btn-sm-danger-tw ml-1" *ngIf="isAdmin || isSuperAdmin"
+                        (click)="defaultForm.controls.pathologist.reset()">
                         <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
                     </button>
                 </div>
@@ -206,8 +209,12 @@
     <button class="mr-2 flex content-center btn-primary-tw !px-3" [routerLink]="['','form']">
         <span class="font-bold">Exit</span>
     </button>
-    <button class="flex content-center btn-primary-tw !px-3" (click)="saveForm(false)" [disabled]="saveDisabled">
-        <span class="font-bold">{{ defaultForm.get("id")?.getRawValue() ? "Update" : "Save"}}</span>
+    <button class="flex content-center btn-primary-tw !px-3" (click)="saveForm(false)" [disabled]="isSaving || saveDisabled">
+        <span class="font-bold" *ngIf="!isSaving">{{ defaultForm.get("id")?.getRawValue() ? "Update" : "Save"}}</span>
+        <div class="flex items-center text" *ngIf="isSaving">
+            <mds-icons icon="loading" class="animated" [width]="20" [height]="20"></mds-icons>
+            <span class="ms-2 font-bold">{{ defaultForm.get("id")?.getRawValue() ? "Updating" : "Saving"}}</span>
+        </div>
     </button>
     <div class="h-8 w-1 border-l border-blue-50 mx-2"></div>
     <button class="flex content-center btn-primary-tw !px-3 me-2" (click)="printForm()" [disabled]="saveDisabled">
@@ -409,8 +416,128 @@
     <!-- template containers -->
     <div class="card pb-3" *ngIf="(templateList | async) as tempList" #formData>
         <ng-container *ngIf="tempList.length !== 0 else emptyState;">
-            <ng-container [ngTemplateOutlet]="fieldInput" *ngFor="let template of tempList; let templateIndex = index;"
-                [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+            <ng-container *ngFor="let template of tempList; let templateIndex = index;">
+                <ng-container *ngIf="!template.isFormMode" [ngTemplateOutlet]="fieldInput"
+                    [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+                <ng-container *ngIf="template.isFormMode" [ngTemplateOutlet]="formMode"
+                    [ngTemplateOutletContext]="{ template, templateIndex }"></ng-container>
+            </ng-container>
         </ng-container>
+    </div>
+</ng-template>
+
+<ng-template #formMode let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
+    <div class="mb-3 overflow-auto border rounded-lg !border-blue-50">
+        <div class="py-2 px-3 d-flex bg-gray-50">
+            <div class="flex-fill d-flex align-items-center">
+                <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
+            </div>
+            <button
+                class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+                ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave" *ngIf="isSuperAdmin"
+                (click)="editTemplate(reportTemplate)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+            </button>
+            <button
+                class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+                ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
+                triggers="mouseenter:mouseleave" (click)="null" *ngIf="isSuperAdmin">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16"
+                    class="w-4 h-4">
+                    <path d="M11 2H9v3h2V2Z" />
+                    <path
+                        d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0ZM1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5Zm3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4v4.5ZM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5V15Z" />
+                </svg>
+            </button>
+            <button
+                class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+                ngbPopover="Removes this template from the current form" [openDelay]="500"
+                triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="border-top mb-2 overflow-x-auto">
+            <div class="flex flex-column p-2 form-mode">
+                <ng-container *ngFor="let field of reportTemplate.group; let colIndex = index; trackBy: trackByFn;">
+                    <ng-container [ngSwitch]="reportTemplate.group[colIndex].type">
+                        <span *ngSwitchCase="'LABEL'" class="my-2">{{ reportTemplate.group[colIndex].defaults }}</span>
+                        <div *ngSwitchCase="'RICHTEXT'" class="richtext-field my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <div class="NgxEditor__Wrapper">
+                                <ngx-editor-menu [editor]="editorInstances['tpl-' + reportTemplateIndex + '-' + colIndex].editor"
+                                    [toolbar]="editorInstances['tpl-' + reportTemplateIndex + '-' + colIndex].toolbar">
+                                </ngx-editor-menu>
+                                <ngx-editor [editor]="editorInstances['tpl-' + reportTemplateIndex + '-' + colIndex].editor"
+                                    [(ngModel)]="reportTemplate.group[colIndex].values[0]"></ngx-editor>
+                            </div>
+                            
+                        </div>
+                        <div *ngSwitchCase="'NUMBER'" class="my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <input type="number" class="form-control"
+                                [id]="reportTemplate.group[colIndex].id + ':' + 0" placeholder="Input a Number"
+                                [(ngModel)]="reportTemplate.group[colIndex].values[0]" [ngClass]="{
+                                            error_input: !reportTemplate.group[colIndex].values[0]
+                                        }">
+                        </div>
+                        <div *ngSwitchCase="'TEXT'" class="my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <input type="text" class="form-control"
+                                [id]="reportTemplate.group[colIndex].id + ':' + 0" placeholder="Input a Value"
+                                [(ngModel)]="reportTemplate.group[colIndex].values[0]" [ngClass]="{
+                                            error_input: !reportTemplate.group[colIndex].values[0]
+                                        }">
+                        </div>
+                        <div *ngSwitchCase="'DATETIME'" class="w-100 my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <mds-datetimepicker [id]="reportTemplate.group[colIndex].id + '_' + 0"
+                                (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, 0, $event)"
+                                [date]="reportTemplate.group[colIndex].values[0]" [ngClass]="{
+                                        error_dt: !reportTemplate.group[colIndex].values[0]
+                                    }" #dp></mds-datetimepicker>
+                        </div>
+                        <div *ngSwitchCase="'DATE'" class="my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <mds-datetimepicker [showTime]="false" [id]="reportTemplate.group[colIndex].id + '_' + 0"
+                                (onChange)="onDtChange(reportTemplate, reportTemplate.group[colIndex].id, 0, $event)"
+                                [date]="reportTemplate.group[colIndex].values[0]" [ngClass]="{
+                                            error_dt: !reportTemplate.group[colIndex].values[0]
+                                        }"></mds-datetimepicker>
+                        </div>
+                        <div *ngSwitchCase="'DROPDOWN'" class="my-2 flex flex-column">
+                            <label class="fw-bold">{{ reportTemplate.group[colIndex].name }}</label>
+                            <div ngbDropdown class="d-inline-block" container="body">
+                                <input type="text" [id]="reportTemplate.group[colIndex].id + ':' + 0"
+                                    [value]="reportTemplate.group[colIndex].values[0]" hidden>
+                                <button type="button" class="min-w-60 btn btn-block btn-outline-primary dp-toggle text-truncate"
+                                    ngbDropdownToggle [ngClass]="{
+                                                    error_input: !reportTemplate.group[colIndex].values[0],
+                                                    'text-muted': !reportTemplate.group[colIndex].values[0]
+                                                }">
+                                    {{ reportTemplate.group[colIndex].values[0] || 'Select Value' }}
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <button ngbDropdownItem
+                                        (click)="dropdownClick(reportTemplateIndex, colIndex, 0, '')">Select
+                                        Value</button>
+                                    <button ngbDropdownItem
+                                        (click)="dropdownClick(reportTemplateIndex, colIndex, 0, dropdownItems.trim())"
+                                        *ngFor="let dropdownItems of reportTemplate.group[colIndex].defaults.split(',');">{{
+                                        dropdownItems.trim() }}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
     </div>
 </ng-template>

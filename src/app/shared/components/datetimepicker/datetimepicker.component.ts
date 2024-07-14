@@ -39,18 +39,18 @@ export class DatetimepickerComponent implements OnChanges {
   }
 
   onDateSet(dateObj: string) {
-    if(!dateObj) {
-      this.onChange.emit("");  
+    if (!dateObj) {
+      this.onChange.emit("");
       return;
     }
 
-    if(!dateObj.length) {
-      this.onChange.emit("");  
+    if (!dateObj.length) {
+      this.onChange.emit("");
       return;
     }
 
     const dateSplit = dateObj.split("/");
-    if(dateSplit.length < 3 || dateSplit[2].startsWith("0")) {
+    if (dateSplit.length < 3 || dateSplit[2].startsWith("0")) {
       this.onChange.emit("");
       return;
     }
@@ -67,7 +67,7 @@ export class DatetimepickerComponent implements OnChanges {
       return;
     }
 
-    if(this.showTime && !this.timeModel.hour && !this.timeModel.minute) {
+    if (this.showTime && !this.timeModel.hour && !this.timeModel.minute) {
       return;
     }
 
@@ -84,29 +84,39 @@ export class DatetimepickerComponent implements OnChanges {
       return;
     }
 
-    const timeSplit = dtSplit[1].split(":"); 
+    const timeSplit = dtSplit[1].split(":");
 
-    if(timeSplit.length <= 1) {
+    if (timeSplit.length <= 1) {
       this.onChange.emit("");
       return;
     }
 
-    if(timeSplit[0].length !== 2 || timeSplit[1].length !== 2) {
+    if (timeSplit[0].length !== 2 || timeSplit[1].length !== 2) {
       this.onChange.emit("");
       return;
     }
 
     this.setDate(dtSplit[0]);
     this.setTime(dtSplit[1]);
-   
+
+    this.updateValue(false);
+  }
+
+  setCurrent() {
+    const currentDate = new Date();
+    const formattedDate = `${String(currentDate.getMonth() + 1).padStart(2, '0')}/${String(currentDate.getDate()).padStart(2, '0')}/${currentDate.getFullYear()} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}`;
+    const dtSplit = formattedDate.split(" ");
+    this.setTime(dtSplit[1]);
+    this.setDate(dtSplit[0]);
+
     this.updateValue(false);
   }
 
   private setDate(dateStr: string) {
-    if(isNaN(Date.parse(dateStr))) {
+    if (isNaN(Date.parse(dateStr))) {
       return;
     }
-    
+
     const dateObj = new Date(dateStr);
     this.dateModel = `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${String(dateObj.getFullYear()).padStart(4, "0")}`;
 

@@ -1,9 +1,8 @@
-import { CdkDragDrop, CDK_DRAG_CONFIG, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CDK_DRAG_CONFIG, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Editor, Toolbar } from 'ngx-editor';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, first, interval } from 'rxjs';
 import { YesNoModalComponent } from 'src/app/shared/components/yes-no-modal/yes-no-modal.component';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import { TemplateGroup, TemplateModel } from 'src/app/shared/interfaces/template';
@@ -28,7 +27,7 @@ export class TemplateModalComponent implements OnInit {
   hiddenFieldTypes: FieldType[] = [FieldType.RICHTEXT, FieldType.LABEL];
   groups: any = ["hello test", "hello", "world", "hello test1", "hello test2", "hello test3"];
 
-  editorInstances: Record<number, { editor: Editor, toolbar: Toolbar, value: string }> = {};
+  editorInstances: Record<number, { editor: Editor, toolbar: Toolbar }> = {};
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal, private notifSvc: ToastrService) { }
 
@@ -83,7 +82,9 @@ export class TemplateModalComponent implements OnInit {
   }
 
   save() {
-    this.template.group.forEach((g, index) => g.priority = index);
+    this.template.group.forEach((g, index) => {
+      g.priority = index
+    });
 
     this.activeModal.close({
       data: this.template,
@@ -151,11 +152,11 @@ export class TemplateModalComponent implements OnInit {
       }
     }
 
-    this.template.group.forEach((groupItem, index) => {
-      if (groupItem.type === FieldType.RICHTEXT) {
-        this.createNewEditorInstance(index);
-      }
-    });
+    if(this.template.isFormMode) {
+      this.hiddenFieldTypes = [];
+    }
+
+    this.rebuildEditorInstances();
   }
 
   sort(event: CdkDragDrop<TemplateGroup[]>) {
@@ -173,7 +174,7 @@ export class TemplateModalComponent implements OnInit {
 
   enableFormMode(isFormMode: boolean) {
 
-    if(isFormMode) {
+    if (isFormMode) {
       this.hiddenFieldTypes = [];
       this.template.isFormMode = isFormMode;
       return;
@@ -202,11 +203,15 @@ export class TemplateModalComponent implements OnInit {
     });
   }
 
+  trackByFn(index: number) {
+    return index;
+  }
+
   private rebuildEditorInstances() {
     this.editorInstances = {};
 
     this.template.group.forEach((gItem, index) => {
-      if(gItem.type === FieldType.RICHTEXT) {
+      if (gItem.type === FieldType.RICHTEXT) {
         this.createNewEditorInstance(index);
       }
     })
@@ -215,7 +220,6 @@ export class TemplateModalComponent implements OnInit {
   private createNewEditorInstance(index: number) {
     const currentEditorInstance = this.editorInstances;
     currentEditorInstance[index] = this.editorSource();
-    currentEditorInstance[index].value = this.template.group[index].defaults;
 
     this.editorInstances = currentEditorInstance;
   }
@@ -223,7 +227,6 @@ export class TemplateModalComponent implements OnInit {
   private editorSource(): {
     editor: Editor;
     toolbar: Toolbar;
-    value: string;
   } {
     const editor: Editor = new Editor({
       content: '',
@@ -245,6 +248,6 @@ export class TemplateModalComponent implements OnInit {
       ['align_left', 'align_center', 'align_right', 'align_justify'],
     ];
 
-    return { editor, toolbar, value: '' }
+    return { editor, toolbar }
   }
 }
