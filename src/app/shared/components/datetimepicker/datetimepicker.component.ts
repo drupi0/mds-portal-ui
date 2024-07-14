@@ -103,7 +103,6 @@ export class DatetimepickerComponent implements OnChanges {
   }
 
   private setDate(dateStr: string) {
-    console.log(dateStr)
     if(isNaN(Date.parse(dateStr))) {
       return;
     }

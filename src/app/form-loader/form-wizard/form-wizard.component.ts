@@ -4,7 +4,7 @@ import {
 import { ApiService } from 'src/app/services/api.service';
 import { FieldType } from 'src/app/shared/interfaces/form';
 import {
-  PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateMode, TemplateModel
+  PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
 import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
@@ -64,8 +64,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   isSuperAdmin = false;
   isDuplicate = false;
   hasChanges = false;
-  recordMode: TemplateMode = TemplateMode.TEMPLATE_MODE;
-  templateModes = TemplateMode;
 
   editor: Editor = new Editor({
     content: '',
@@ -108,7 +106,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
           if(value !== null) {
             this.showSuccessToast(`Form ${this.patientFormId} successfully saved`);
           }
-          
+
           return of(value !== null);
         }));
       }
@@ -287,8 +285,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       collectionDateTime: formValue.collectionDateTime,
       receivedDateTime: formValue.receivedDateTime,
       data: JSON.stringify(this.templateList.getValue()),
-      comments: !!formValue.comment ? toHTML(formValue.comment) : "",
-      mode: this.recordMode
+      comments: !!formValue.comment ? toHTML(formValue.comment) : ""
     } as PatientRecordModel;
 
     const patientFormJson: {} = {
@@ -578,7 +575,6 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       }
 
       this.defaultForm.setValue(formValues);
-      this.recordMode = record.mode || TemplateMode.TEMPLATE_MODE;
 
       if (this.patientFormId.length !== 0 && !(this.isAdmin || this.isSuperAdmin)) {
         this.defaultForm.controls.name.disable({
@@ -600,7 +596,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   }
 
   private showSuccessToast(content: string) {
-    this.notifSvc.success(content, "Success");
+    this.notifSvc.success(content);
   }
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal,

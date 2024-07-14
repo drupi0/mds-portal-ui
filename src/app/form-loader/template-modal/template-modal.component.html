@@ -7,62 +7,96 @@
 <div class="modal-body shadow-none">
     <div class="mb-3 col">
         <label class="form-label">Template Name</label>
-        <input type="text" class="form-control" [(ngModel)]="template.name">
+        <input type="text" class="form-control" [(ngModel)]="template.name"
+            [ngClass]="{ 'is-invalid': !template.name.trim().length}">
+    </div>
+    <div class="w-100 flex items-center justify-end">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                [(ngModel)]="template.isFormMode" (ngModelChange)="enableFormMode($event)">
+            <label class="form-check-label text-sm" for="flexSwitchCheckChecked">Form Mode</label>
+        </div>
     </div>
     <div cdkDropList (cdkDropListDropped)="sort($event)">
-        <div class="d-flex align-items-center mb-2 bg-white py-2 px-3"
-            *ngFor="let col of template.group; let index = index" cdkDrag>
-            <div class="w-100 py-4 px-3 bg-light" *cdkDragPlaceholder></div>
-            <div class="text-muted me-3" cdkDragHandle>
-                <mds-icons icon="menu" [height]="15" [width]="15"></mds-icons>
-            </div>
-            <div class="d-flex me-2">
-                <button class="btn btn-outline-danger circular-btn" (click)="removeColumn(index)">
-                    <mds-icons icon="minus"></mds-icons>
-                </button>
-                <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="addNewColumn(index)">
-                    <mds-icons icon="plus"></mds-icons>
-                </button>
-                <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="duplicateColumn(index)">
-                    <mds-icons icon="copy"></mds-icons>
-                </button>
-            </div>
-            <input type="text" class="form-control me-2" placeholder="Name" [(ngModel)]="template.group[index].name">
-            <div ngbDropdown class="d-inline-block me-2">
-                <input [(ngModel)]="template.group[index].type" hidden>
-                <button type="button" class="btn-primary-tw w-40" ngbDropdownToggle>
-                    {{template.group[index].type || 'Select Type' }}
-                </button>
-                <div ngbDropdownMenu>
-                    <ng-container *ngFor="let item of selectionList | keyvalue">
-                        <button ngbDropdownItem (click)="changeType(item.key, index)" *ngIf="item.key !== 'DEFAULT'">
-                            {{ item.value | titlecase }}
+        <ng-container *ngFor="let col of template.group; let index = index">
+            <div class="mb-2 bg-white py-2 px-3" cdkDrag (cdkDragStarted)="isDragging = true"
+                (cdkDragEnded)="isDragging = false">
+                <div class="d-flex align-items-center">
+                    <div class="w-100 py-4 px-3 bg-light !border border-gray-300 rounded" *cdkDragPlaceholder></div>
+                    <div class="min-w-48 rounded py-4 px-3 glass text-center" *cdkDragPreview>
+                        {{ template.group[index].name }}
+                    </div>
+
+                    <div class="text-muted me-3" cdkDragHandle>
+                        <mds-icons icon="menu" [height]="15" [width]="15"></mds-icons>
+                    </div>
+                    <div class="d-flex me-2">
+                        <button class="btn btn-outline-danger circular-btn" (click)="removeColumn(index)">
+                            <mds-icons icon="minus"></mds-icons>
                         </button>
+                        <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="addNewColumn(index)">
+                            <mds-icons icon="plus"></mds-icons>
+                        </button>
+                        <button class="circular-btn text-blue-800 hover:bg-blue-200" (click)="duplicateColumn(index)">
+                            <mds-icons icon="copy"></mds-icons>
+                        </button>
+                    </div>
+                    <input type="text" class="form-control me-2" placeholder="Name"
+                        [(ngModel)]="template.group[index].name">
+                    <div ngbDropdown class="d-inline-block me-2">
+                        <input [(ngModel)]="template.group[index].type" hidden>
+                        <button type="button" class="btn-primary-tw w-40"
+                            [ngClass]="{ '!text-red-400': template.group[index].type === 'SELECT TYPE'}"
+                            ngbDropdownToggle>
+                            {{template.group[index].type || 'Select Type' }}
+                        </button>
+                        <div ngbDropdownMenu>
+                            <ng-container *ngFor="let item of selectionList | keyvalue">
+                                <ng-container *ngIf="!hiddenFieldTypes.includes(item.value)">
+                                    <button ngbDropdownItem (click)="changeType(item.key, index)"
+                                        *ngIf="item.key !== 'DEFAULT'">
+                                        {{ item.value | titlecase }}
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <ng-container [ngSwitch]="template.group[index].type">
+                            <input type="number" *ngSwitchCase="'NUMBER'" class="form-control"
+                                placeholder="Default Value" [(ngModel)]="template.group[index].defaults">
+                            <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
+                                [(ngModel)]="template.group[index].defaults">
+                            <div *ngSwitchCase="'DATETIME'" class="d-flex">
+                                <mds-datetimepicker [date]="template.group[index].defaults"
+                                    (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                            </div>
+                            <div *ngSwitchCase="'DATE'" class="d-flex">
+                                <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false"
+                                    (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
+                            </div>
+                            <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control"
+                                placeholder="Default, Option 1, Option 2"
+                                ngbPopover="Split dropdown items using a comma(','). First item would be set as default."
+                                [openDelay]="500" triggers="mouseenter:mouseleave"
+                                [ngClass]="{ 'is-invalid': !template.group[index].defaults.length }"
+                                [(ngModel)]="template.group[index].defaults">
+                            <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
+                            <input type="text" *ngSwitchCase="'LABEL'" class="form-control" placeholder="Label Description"
+                                [(ngModel)]="template.group[index].defaults">
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="w-100 template-field pt-3" *ngIf="template.group[index].type === 'RICHTEXT'">
+                    <ng-container *ngIf="editorInstances as providers">
+                        <div class="NgxEditor__Wrapper" *ngIf="providers[index] as provider">
+                            <ngx-editor-menu [editor]="provider.editor" [toolbar]="provider.toolbar"> </ngx-editor-menu>
+                            <ngx-editor [editor]="provider.editor" [(ngModel)]="template.group[index].defaults"></ngx-editor>
+                        </div>
                     </ng-container>
                 </div>
             </div>
-            <div class="w-100">
-                <ng-container [ngSwitch]="template.group[index].type">
-                    <input type="number" *ngSwitchCase="'NUMBER'" class="form-control" placeholder="Default Value"
-                        [(ngModel)]="template.group[index].defaults">
-                    <input type="text" *ngSwitchCase="'TEXT'" class="form-control" placeholder="Default Value"
-                        [(ngModel)]="template.group[index].defaults">
-                    <div *ngSwitchCase="'DATETIME'" class="d-flex">
-                        <mds-datetimepicker [date]="template.group[index].defaults"
-                            (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
-                    </div>
-                    <div *ngSwitchCase="'DATE'" class="d-flex">
-                        <mds-datetimepicker [date]="template.group[index].defaults" [showTime]="false"
-                            (onChange)="onDateSelect(index, $event)"></mds-datetimepicker>
-                    </div>
-                    <input type="text" *ngSwitchCase="'DROPDOWN'" class="form-control"
-                        placeholder="Default, Option 1, Option 2"
-                        ngbPopover="Split dropdown items using a comma(','). First item would be set as default."
-                        [openDelay]="500" triggers="mouseenter:mouseleave" [(ngModel)]="template.group[index].defaults">
-                    <input type="text" *ngSwitchCase="'SELECT TYPE'" class="form-control" disabled>
-                </ng-container>
-            </div>
-        </div>
+        </ng-container>
     </div>
 </div>
 <div class="modal-footer shadow-none d-flex">

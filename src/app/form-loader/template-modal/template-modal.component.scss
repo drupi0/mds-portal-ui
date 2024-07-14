@@ -22,4 +22,13 @@
     .datetime-textbox {
         width: 100% !important;
     }
+
+    .template-field .ProseMirror {
+        min-height: 200px !important;
+        max-height: 200px !important;
+    }
+
+    .form-check-input:checked {
+        @apply bg-blue-800 border-blue-800 ;
+    }
 }
