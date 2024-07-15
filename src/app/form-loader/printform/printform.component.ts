@@ -188,7 +188,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     const docElem = document.createElement('div');
     docElem.innerHTML = rawHtml;
 
-    return docElem.innerText.trim().length === 0;
+    return !docElem.getElementsByTagName("img").length && !docElem.innerText.trim().length;
   }
 
 }

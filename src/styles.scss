@@ -120,11 +120,11 @@ $body-bg: #ffffff;
 }
 
 .glass {
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 30px rgb(0, 0, 0);
     backdrop-filter: blur(11.7px);
     -webkit-backdrop-filter: blur(11.7px);
-    border: 1px solid rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(255, 255, 255, 1);
 }
 
 .spacer {
@@ -132,7 +132,7 @@ $body-bg: #ffffff;
 }
 
 .btn-glass {
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     border: none !important;
 }
 
