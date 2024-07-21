@@ -1,12 +1,12 @@
 <div class="relative overflow-x-auto m-4">
     <div class="flex items-center px-3 py-1 rounded my-2 bg-blue-50">
         <div class="w-20 md:w-1/12 text-blue-800 font-bold cursor-pointer truncate">MR No.</div>
+        <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Collected</div>
+        <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Received</div>
         <div class="ml-2 text-blue-800 font-bold w-4/12 md:w-2/12 truncate">Patient's Name</div>
         <div class="ml-2 text-blue-800 font-bold  w-5/12 md:w-2/12 truncate">Ordered</div>
         <div class="ml-2 text-blue-800 font-bold w-2/12 truncate hidden md:block">Requested By</div>
         <div class="ml-2 text-blue-800 font-bold w-1/12 truncate hidden md:block">Specimen</div>
-        <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Received</div>
-        <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Collected</div>
         <div class="ml-2 text-blue-800 font-bold w-20 truncate hidden md:block">Status</div>
         <div class="flex-grow"></div>
         <div class="flex justify-end content-center text-blue-800 font-bold w-24">
@@ -49,17 +49,14 @@
                             </div>
                         </div>
                         <div class="flex mt-2 border-t pt-2">
-                            <div class="m-1 btn-sm-danger-tw"
-                                (click)="updateSortKeys('clear')">
+                            <div class="m-1 btn-sm-danger-tw" (click)="updateSortKeys('clear')">
                                 Reset
                             </div>
                             <div class="flex-grow-1"> </div>
-                            <div class="m-1 btn-sm-primary-tw"
-                                (click)="cancelSort(); filterDropdown.close()">
+                            <div class="m-1 btn-sm-primary-tw" (click)="cancelSort(); filterDropdown.close()">
                                 Cancel
                             </div>
-                            <div class="m-1 btn-sm-primary-tw"
-                                (click)="saveSort(); filterDropdown.close()">
+                            <div class="m-1 btn-sm-primary-tw" (click)="saveSort(); filterDropdown.close()">
                                 Save
                             </div>
                         </div>
@@ -76,22 +73,23 @@
             (click)="edit(row)">{{
             row.specNo
             }}</div>
+        <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
+            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.collectionDateTime)" [openDelay]="500">{{
+            convertDate(row.collectionDateTime) }}
+        </div>
+        <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
+            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.receivedDateTime)" [openDelay]="500">{{
+            convertDate(row.receivedDateTime) }}</div>
         <div class="ml-2 text-neutral-800 w-4/12 md:w-2/12 truncate" placement="top" triggers="mouseenter:mouseleave"
             [ngbPopover]="row.patient.name" [openDelay]="1000">{{ row.patient.name }}</div>
-        <div class="ml-2 text-neutral-800 w-5/12 md:w-2/12 truncate">{{ row.ordered }}</div>
+        <div class="ml-2 text-neutral-800 w-5/12 md:w-2/12 truncate" triggers="mouseenter:mouseleave"
+        [ngbPopover]="row.ordered" [openDelay]="1000">{{ row.ordered }}</div>
         <div class="ml-2 text-neutral-800 w-2/12 truncate hidden md:block" placement="top"
             triggers="mouseenter:mouseleave" [ngbPopover]="row.orderingDoctor.trim()"
             [disablePopover]="!row.orderingDoctor.trim()" [openDelay]="1000">{{
             row.orderingDoctor.trim() ||
             "-" }}</div>
         <div class="ml-2 text-neutral-800 w-1/12 truncate hidden md:block">{{ row.specimen }}</div>
-        <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
-            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.receivedDateTime)" [openDelay]="500">{{
-            convertDate(row.receivedDateTime) }}</div>
-        <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
-            triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.collectionDateTime)" [openDelay]="500">{{
-            convertDate(row.collectionDateTime) }}
-        </div>
         <div class="ml-2 text-neutral-800 w-20 truncate hidden md:block">
             <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
                 'status': row.status

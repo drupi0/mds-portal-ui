@@ -455,6 +455,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     tempList.splice(templateIndex, 1);
     this.templateList.next(tempList);
 
+    this.rebuildEditorInstances();
     this.hasChanges = true;
   }
 
