@@ -562,6 +562,10 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     return this.sanitize.bypassSecurityTrustHtml(rawHtml);
   }
 
+  get isXRayReport(): boolean {
+    return this.templateList.getValue().some(tModel => tModel.name.toLowerCase().includes("x-ray"));
+  }
+
   private initFormTemplate(formId: string) {
     this.api.findRecord(formId).subscribe((patientRecord: any) => {
       const record: PatientRecordModel = {

@@ -86,7 +86,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
 
     groups.forEach(async (divGroups: HTMLElement[]) => {
       const group = document.createElement("div");
-      group.classList.add("p-4", "border-0", "bg-white");
+      group.classList.add("print-format");
 
       divGroups.forEach(g => {
         this.renderer.appendChild(group, g.cloneNode(true));
@@ -95,6 +95,7 @@ export class PrintformComponent implements OnInit, AfterViewInit {
       this.renderer.appendChild(this.formattedArea?.nativeElement, group);
       canvasElements.push(from(htmlToImage.toCanvas(group, {
         pixelRatio: 3,
+        backgroundColor: '#ffffff'
       })))
     });
 
@@ -141,7 +142,6 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     }
 
     window.open(this.pdfSrc, "_blank");
-    
   }
 
   dismiss() {
@@ -189,6 +189,10 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     docElem.innerHTML = rawHtml;
 
     return !docElem.getElementsByTagName("img").length && !docElem.innerText.trim().length;
+  }
+
+  get isXRayReport(): boolean {
+    return this.reportField.some(tModel => tModel.name.toLowerCase().includes("x-ray"));
   }
 
 }

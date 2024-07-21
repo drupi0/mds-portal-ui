@@ -166,7 +166,7 @@ export class FormsTableComponent implements OnInit {
   }
 
   convertDate(timeMillisStr: string) {
-    return timeMillisStr;
+    return timeMillisStr.length ? timeMillisStr : "-";
     // return new Date(parseFloat(timeMillisStr)).toISOString();
   }
 }

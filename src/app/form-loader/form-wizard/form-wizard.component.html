@@ -75,7 +75,7 @@
             <div class="mb-3 col-5">
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.orderingDr.value
-                }">Ordering Dr.</label>
+                }">Reffering Dr.</label>
                 <input type="text" class="form-control" formControlName="orderingDr" [ngClass]="{
                     error_input: !defaultForm.controls.orderingDr.value
                 }">
@@ -119,21 +119,21 @@
             <div class="mb-3 col-6 flex">
                 <div class="flex flex-col">
                     <label class="form-label" [ngClass]="{
-                        error: !defaultForm.controls.receivedDateTime.value
-                    }">Received Date/Time</label>
+                        error: !defaultForm.controls.receivedDateTime.value && !isXRayReport
+                    }">{{ isXRayReport ? "Date X-Rayed" : "Received Date/Time"}}</label>
                     <mds-datetimepicker [date]="defaultForm.controls.receivedDateTime.value" [id]="'receivedDateTime'"
                         (onChange)="defaultForm.controls.receivedDateTime.setValue($event)" [ngClass]="{
-                            error_dt: !defaultForm.controls.receivedDateTime.value
+                            error_dt: !defaultForm.controls.receivedDateTime.value && !isXRayReport
                         }"></mds-datetimepicker>
                 </div>
                 <div class="flex flex-col ms-10">
                     <label class="form-label" [ngClass]="{
-                        error: !defaultForm.controls.collectionDateTime.value
-                    }">Collection Date/Time</label>
+                        error: !defaultForm.controls.collectionDateTime.value && !isXRayReport
+                    }">{{ isXRayReport ? "Date Reported" : "Collection Date/Time"}}</label>
                     <mds-datetimepicker [date]="defaultForm.controls.collectionDateTime.value"
                         [id]="'collectionDateTime'"
                         (onChange)="defaultForm.controls.collectionDateTime.setValue($event)" [ngClass]="{
-                            error_dt: !defaultForm.controls.collectionDateTime.value
+                            error_dt: !defaultForm.controls.collectionDateTime.value && !isXRayReport
                         }"></mds-datetimepicker>
                 </div>
             </div>
@@ -155,7 +155,9 @@
     <div class="field-container mt-3 mb-5" [formGroup]="defaultForm">
         <div class="row mt-3">
             <div class="mb-3 col">
-                <label class="form-label">Performed by</label>
+                <label class="form-label">
+                    {{ isXRayReport ? "Radiologic Technologist" : "Performed by"}}
+                </label>
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.performedBy.value?.name || ''"
                         (click)="showStaffModal(defaultForm.controls.performedBy)" readonly>
@@ -165,7 +167,7 @@
                     </button>
                 </div>
             </div>
-            <div class="mb-3 col">
+            <div class="mb-3 col" *ngIf="!isXRayReport">
                 <label class="form-label">Verified by</label>
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.verifiedBy.value?.name || ''"
@@ -177,7 +179,8 @@
                 </div>
             </div>
             <div class="mb-3 col">
-                <label class="form-label">Pathologist</label>
+                <label class="form-label">
+                    {{ isXRayReport ? "Radiologist" : "Pathologist"}}</label>
                 <div class="flex">
                     <input type="text" class="form-control" [value]="defaultForm.controls.pathologist.value?.name || ''"
                         (click)="showStaffModal(defaultForm.controls.pathologist)" readonly>

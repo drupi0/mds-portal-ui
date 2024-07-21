@@ -1,11 +1,11 @@
 <ng-template #printPreview>
     <div class="container bg-white mt-3">
-        <div #printArea class="p-5 border-0">
+        <div #printArea class="p-5 !border-0">
             <ng-container [ngTemplateOutlet]="reportHeader"></ng-container>
             <div class="main-row rounded px-3 mt-2 !border-0" *ngFor="let field of reportField">
                 <ng-container *ngIf="!field.isFormMode; else formModeContainer">
                     <div class="row">
-                        <div class="col text-underlined"><u class="fw-bold h5">{{ field.name }}</u></div>
+                        <div class="col text-underlined text-center"><u class="fw-bold h3">{{ field.name }}</u></div>
                     </div>
                     <div class="row mt-3">
                         <table class="table w-100">
@@ -43,7 +43,6 @@
         </div>
         <div [innerHTML]="formattedPage" #formattedArea></div>
     </div>
-    <div class="row mt-5 mb-5"></div>
 </ng-template>
 <div class="modal-body">
     <pdf-viewer [src]="pdfSrc" [zoom]="reportZoom" [zoom-scale]="'page-width'" [show-borders]="false"
@@ -78,25 +77,6 @@
             <mds-icons icon="close" [width]="18" [height]="18"></mds-icons>
         </button>
     </div>
-    <!-- <div>
-        <button type="button" class="content-center btn-primary-tw" (click)="dismiss()">
-            <div class="d-flex">
-                <mds-icons icon="close" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2 font-bold">Close</span>
-            </div>
-        </button>
-        <button type="button" class="content-center btn-primary-tw ms-2" (click)="previewAsPDF()"
-            [disabled]="isPrinting">
-            <div class="d-flex" *ngIf="!isPrinting">
-                <mds-icons icon="print" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2 font-bold">Print</span>
-            </div>
-            <div class="flex items-center text" *ngIf="isPrinting">
-                <mds-icons icon="loading" class="animated" [width]="20" [height]="20"></mds-icons>
-                <span class="ms-2 font-bold">Loading</span>
-            </div>
-        </button>
-    </div> -->
 </div>
 
 <ng-template #reportHeader>
@@ -137,16 +117,16 @@
             <div class="col">{{ formData?.accessionNo }}</div>
         </div>
         <div class="row">
-            <div class="col-2 text-nowrap fw-bold">Ordering Dr:</div>
-            <div class="col">{{ formData?.orderingDoctor }}</div>
-            <div class="col-3 fw-bold">Collection Date/Time:</div>
-            <div class="col-2">{{ formData?.collectionDateTime }}</div>
+            <div class="col-2 text-nowrap fw-bold">Reffering Dr:</div>
+            <div class="col">{{ !formData?.orderingDoctor && formData?.orderingDoctor?.length ? formData?.orderingDoctor : "-" }}</div>
+            <div class="col-3 fw-bold">{{ isXRayReport ? "Date X-Rayed" : "Received Date/Time"}}:</div>
+            <div class="col-2">{{ formData?.receivedDateTime }}</div>
         </div>
         <div class="row">
             <div class="col-2 fw-bold">Status:</div>
             <div class="col">{{ formData?.status | uppercase }}</div>
-            <div class="col-3 fw-bold">Received Date/Time:</div>
-            <div class="col-2">{{ formData?.receivedDateTime }}</div>
+            <div class="col-3 fw-bold">{{ isXRayReport ? "Date Reported" : "Collection Date/Time"}}:</div>
+            <div class="col-2">{{ formData?.collectionDateTime }}</div>
         </div>
         <div class="row">
             <div class="col-2 fw-bold">Specimen:</div>
@@ -160,19 +140,21 @@
 </ng-template>
 
 <ng-template #reportFooter>
-    <div class="main-row">
-        <div class="row mt-2 border border-3 border-dark">
+    <div class="main-row border border-2 border-dark rounded py-1 px-2 mt-4 mb-4">
+        <div class="row">
             <div class="col fw-bold text-center">** END OF REPORT**</div>
         </div>
+    </div>
+    <div class="main-row px-3 pt-2">
         <div class="row mt-4">
-            <div class="col fw-bold" *ngIf="formData?.performedBy">Performed by:</div>
-            <div class="col fw-bold" *ngIf="formData?.verifiedBy">Verified by:</div>
-            <div class="col fw-bold" *ngIf="formData?.pathologist">Pathologist:</div>
+            <div class="col fw-bold" *ngIf="formData?.performedBy">{{ isXRayReport ? "Radiologic Technologist" : "Performed by"}}:</div>
+            <div class="col fw-bold" *ngIf="formData?.verifiedBy && !isXRayReport">Verified by:</div>
+            <div class="col fw-bold" *ngIf="formData?.pathologist">{{ isXRayReport ? "Radiologist" : "Pathologist"}}:</div>
         </div>
         <div class="row mt-4">
             <div class="col" *ngIf="formData?.performedBy">{{ formData?.performedBy?.name }}<br>Lic No. {{
                 formData?.performedBy?.licNo }}</div>
-            <div class="col" *ngIf="formData?.verifiedBy">{{ formData?.verifiedBy?.name }}<br>Lic No. {{
+            <div class="col" *ngIf="formData?.verifiedBy && !isXRayReport">{{ formData?.verifiedBy?.name }}<br>Lic No. {{
                 formData?.verifiedBy?.licNo }}</div>
             <div class="col" *ngIf="formData?.pathologist">{{ formData?.pathologist?.name }}<br>Lic No. {{
                 formData?.pathologist?.licNo }}</div>
@@ -182,9 +164,9 @@
 
 <ng-template let-template="template" #formMode>
     <div class="row">
-        <div class="col text-underlined"><u class="fw-bold h5">{{ template.name }}</u></div>
+        <div class="col text-underlined text-center"><u class="fw-bold h2">{{ template.name }}</u></div>
     </div>
-    <div class="flex flex-column p-2">
+    <div class="flex flex-column">
         <ng-container *ngFor="let field of template.group; let colIndex = index; ">
             <ng-container [ngSwitch]="template.group[colIndex].type">
                 <span *ngSwitchCase="'LABEL'" class="my-2 italic text-sm">{{ template.group[colIndex].defaults }}</span>
