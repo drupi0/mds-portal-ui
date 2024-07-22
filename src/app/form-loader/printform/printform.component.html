@@ -118,7 +118,7 @@
         </div>
         <div class="row">
             <div class="col-2 text-nowrap fw-bold">Reffering Dr:</div>
-            <div class="col">{{ !formData?.orderingDoctor && formData?.orderingDoctor?.length ? formData?.orderingDoctor : "-" }}</div>
+            <div class="col">{{ formData?.orderingDoctor?.length ? formData?.orderingDoctor : "-" }}</div>
             <div class="col-3 fw-bold">{{ isXRayReport ? "Date X-Rayed" : "Collection Date/Time"}}:</div>
             <div class="col-2">{{ formData?.collectionDateTime }}</div>
         </div>
