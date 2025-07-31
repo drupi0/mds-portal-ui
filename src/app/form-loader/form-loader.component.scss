@@ -26,3 +26,9 @@ a {
         align-items: center;
     }
 }
+
+.create-btn {
+    &::after {
+        content: none !important;
+    }
+}
