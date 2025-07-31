@@ -1,11 +1,12 @@
-import { BehaviorSubject, filter, from, map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, Subject, tap } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, ActivationStart, Router } from '@angular/router';
 
-import { KeycloakService } from 'keycloak-angular';
 import { BreadcrumbItem, DefaultRoutes } from 'src/app/shared/interfaces/state';
 import { AuthModel } from '../shared/interfaces/template';
+
+import Keycloak from 'keycloak-js';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,22 @@ export class BreadcrumbService {
   activeTab$: Subject<string> = new Subject();
   breadCrumbs$: BehaviorSubject<BreadcrumbItem[]> = new BehaviorSubject([] as BreadcrumbItem[]);
 
-  constructor(private router: Router, private authSvc: KeycloakService) { }
+  private readonly keycloak = inject(Keycloak);
+
+  constructor(private router: Router) { }
 
   getUser() {
-    return this.authSvc.getUsername();
+    return this.getToken().pipe(tap(i => {
+      console.log(i);
+    }), map((auth: AuthModel) => auth.email));
   }
 
   getRoles() {
-    return this.authSvc.getUserRoles();
+    return this.getToken().pipe(map((auth: AuthModel) => auth.realm_access.roles ))
   }
 
   getToken(): Observable<AuthModel> {
-    return from(this.authSvc.getToken()).pipe(map(tokenStr => {
+    return of(this.keycloak.token).pipe(map(tokenStr => {
       if(tokenStr) {
         const data: AuthModel = JSON.parse(window.atob(tokenStr.split('.')[1]));
         return data;
@@ -49,7 +54,7 @@ export class BreadcrumbService {
   }
 
   logout() {
-    this.authSvc.logout();
+    this.keycloak.logout();
   }
 
   openFormWizard(formId?: string) {

@@ -1,36 +1,31 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
-import { BreadcrumbService } from './services/breadcrumb.service';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
+import Keycloak from 'keycloak-js';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard extends KeycloakAuthGuard {
-  
-  constructor(
-    protected override readonly router: Router,
-    protected readonly keycloak: KeycloakService, private breadCrumbSvc: BreadcrumbService
-  ) {
-    super(router, keycloak);
-  }
-  
-  async isAccessAllowed(
+export const AuthGuard = createAuthGuard(
+  async (
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-    
-    if (!this.authenticated) {
-      await this.keycloak.login({
+    state: RouterStateSnapshot,
+    authData: AuthGuardData
+  ) => {
+    const keycloak = inject(Keycloak);
+    const { authenticated, grantedRoles } = authData;
+    const isAdmin = grantedRoles.realmRoles.includes('admin');
+    const isSuperAdmin = grantedRoles.realmRoles.includes('superadmin');
+
+    if (!authenticated) {
+      keycloak.login({
         redirectUri: window.location.origin + state.url,
       });
     }
 
     route.data = {
       ...route.data,
-      isAdmin: this.breadCrumbSvc.isAdmin(),
-      isSuperAdmin: this.breadCrumbSvc.isSuperAdmin()
-    }
+      isAdmin,
+      isSuperAdmin,
+    };
 
-    return this.authenticated;
+    return true;
   }
-}
+);

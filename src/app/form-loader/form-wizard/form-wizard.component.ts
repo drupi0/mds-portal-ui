@@ -170,8 +170,9 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     this.route.data.subscribe(data => {
       const { isAdmin, isSuperAdmin } = data;
-      (isAdmin as Observable<boolean>).subscribe(access => this.isAdmin = access);
-      (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
+
+      this.isAdmin = isAdmin;
+      this.isSuperAdmin = isSuperAdmin;
     });
 
     this.initFormBuilder();

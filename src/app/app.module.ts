@@ -1,9 +1,9 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { createInterceptorCondition, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, IncludeBearerTokenCondition, includeBearerTokenInterceptor, provideKeycloak } from 'keycloak-angular';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, Injectable, NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
@@ -23,7 +23,6 @@ import { FormWizardComponent } from './form-loader/form-wizard/form-wizard.compo
 import { PrintformComponent } from './form-loader/printform/printform.component';
 import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.component';
 import { TemplateModalComponent } from './form-loader/template-modal/template-modal.component';
-import { initializeKeycloak } from './keycloak-init.factory';
 import {
   DatetimepickerComponent
 } from './shared/components/datetimepicker/datetimepicker.component';
@@ -37,6 +36,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { NgxEditorModule } from 'ngx-editor';
 import { ToastrModule, provideToastr } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 const standaloneComponents = [FormsTableComponent]
 
@@ -78,6 +78,11 @@ const appRoutes: Routes = [
     pathMatch: "full"
   }]
 
+
+const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
+  urlPattern: new RegExp(`^(${environment.API_URL.replace(/\//g, '\/')})(\/.*)?$`, 'i'),
+  bearerPrefix: 'Bearer'
+});
 
 
 
@@ -156,7 +161,6 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     NgbAlertModule,
     NgbPopoverModule,
     NgbPaginationModule,
-    KeycloakAngularModule,
     PdfViewerModule,
     NgScrollbarModule,
     NgbNavModule,
@@ -180,18 +184,28 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
         (req, next) => {
           return next(req);
         },
+        includeBearerTokenInterceptor
       ])
     ),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakService],
-    },
     { provide: NgbDateAdapter, useClass: CustomAdapter },
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter },
     provideAnimations(), // required animations providers
     provideToastr(), // Toastr providers
+    provideKeycloak({
+      config: {
+        url: environment.AUTH_URL,
+        realm: environment.AUTH_REALM,
+        clientId: environment.AUTH_CLIENT
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
+      },
+    }),
+    {
+      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+      useValue: [urlCondition]
+    }
   ],
   bootstrap: [AppComponent]
 })
