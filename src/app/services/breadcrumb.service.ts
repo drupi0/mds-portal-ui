@@ -54,7 +54,13 @@ export class BreadcrumbService {
   }
 
   logout() {
-    this.keycloak.logout();
+    this.keycloak.logout({
+      redirectUri: window.location.origin + "/login",
+    });
+  }
+
+  logIn() {
+    this.keycloak.login();
   }
 
   openFormWizard(formId?: string) {

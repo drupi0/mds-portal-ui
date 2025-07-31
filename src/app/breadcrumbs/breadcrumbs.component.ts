@@ -28,6 +28,10 @@ export class BreadcrumbsComponent implements OnInit {
     })
   }
 
+  logIn() {
+    this.breadcrumbSvc.logIn();
+  }
+
   logout() {
     this.breadcrumbSvc.logout();
   }

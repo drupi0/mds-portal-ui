@@ -14,7 +14,8 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { AuthGuard } from './auth.guard';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard, DeAuthGuard } from './auth.guard';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { FormsTableComponent } from './components/forms-table/forms-table.component';
 import { DeactivateGuard } from './deactivate.guard';
@@ -41,6 +42,11 @@ import { environment } from 'src/environments/environment';
 const standaloneComponents = [FormsTableComponent]
 
 const appRoutes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [DeAuthGuard]
+  },
   {
     path: "form",
     canActivate: [AuthGuard],
@@ -76,7 +82,8 @@ const appRoutes: Routes = [
     path: "",
     redirectTo: "form",
     pathMatch: "full"
-  }]
+  }
+]
 
 
 const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
@@ -147,6 +154,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     YesNoModalComponent,
     PrintformComponent,
     DatetimepickerComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -198,6 +206,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
         clientId: environment.AUTH_CLIENT
       },
       initOptions: {
+        flow: 'implicit',
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
       },
