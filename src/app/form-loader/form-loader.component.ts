@@ -10,6 +10,7 @@ import { Pagination, PatientRecordModel } from '../shared/interfaces/template';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
+  standalone: false,
   selector: 'mds-form-loader',
   templateUrl: './form-loader.component.html',
   styleUrls: ['./form-loader.component.scss']

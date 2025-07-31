@@ -12,6 +12,7 @@ const DragConfig = {
 };
 
 @Component({
+  standalone: false,
   selector: 'mds-template-modal',
   templateUrl: './template-modal.component.html',
   styleUrls: ['./template-modal.component.scss'],

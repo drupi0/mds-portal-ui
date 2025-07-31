@@ -9,6 +9,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
+  standalone: false,
   selector: 'mds-staff-modal',
   templateUrl: './staff-modal.component.html',
   styleUrls: ['./staff-modal.component.scss']

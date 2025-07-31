@@ -6,6 +6,7 @@ import { AuthModel } from 'src/app/shared/interfaces/template';
 import { environment } from 'src/environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'mds-breadcrumbs',
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']

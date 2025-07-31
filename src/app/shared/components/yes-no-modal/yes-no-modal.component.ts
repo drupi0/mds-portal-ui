@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
+  standalone: false,
   selector: 'mds-yes-no-modal',
   templateUrl: './yes-no-modal.component.html',
   styleUrls: ['./yes-no-modal.component.scss']

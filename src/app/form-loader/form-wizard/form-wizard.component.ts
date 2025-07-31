@@ -27,6 +27,7 @@ import { StaffModalComponent } from '../staff-modal/staff-modal.component';
 import { TemplateModalComponent } from '../template-modal/template-modal.component';
 
 @Component({
+  standalone: false,
   selector: 'mds-form-wizard',
   templateUrl: './form-wizard.component.html',
   styleUrls: ['./form-wizard.component.scss']

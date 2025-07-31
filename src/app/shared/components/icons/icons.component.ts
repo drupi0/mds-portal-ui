@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewRef } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'mds-icons',
   templateUrl: './icons.component.html',
   styleUrls: ['./icons.component.scss']
