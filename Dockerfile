@@ -1,11 +1,12 @@
-FROM node:alpine AS BUILD
-COPY . /app
+FROM node:20-alpine AS build
 WORKDIR /app
 
-# COPY package*.json /app/
-RUN npm ci
-RUN npm run build --prod
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
 
 FROM nginx:alpine
-COPY --from=BUILD /app/dist/mds-portal-ui /usr/share/nginx/html 
+COPY --from=build /app/dist/mds-portal-ui /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
