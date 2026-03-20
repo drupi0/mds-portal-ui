@@ -51,6 +51,23 @@ $white: #ffffff;
 }
 
 :root[data-theme='light'] {
+    --mds-bg-top: #f7fbfc;
+    --mds-bg-bottom: #e8f4f7;
+    --mds-shell-start: #2f5cc8;
+    --mds-shell-mid: #3769d0;
+    --mds-shell-end: #10bad7;
+    --mds-surface: rgba(255, 255, 255, 0.92);
+    --mds-surface-strong: #ffffff;
+    --mds-surface-soft: #edf3fb;
+    --mds-border: rgba(40, 75, 123, 0.12);
+    --mds-shadow: 0 18px 50px rgba(23, 49, 78, 0.14);
+    --mds-text: #17314e;
+    --mds-text-muted: #5e738c;
+    --mds-heading: #2f5cc8;
+    --mds-interactive-soft: rgba(47, 92, 200, 0.09);
+    --mds-interactive-strong: #6d93ee;
+    --mds-control-bg: #e5edf8;
+    --mds-control-border: rgba(53, 84, 209, 0.12);
     color-scheme: light;
 }
 

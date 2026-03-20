@@ -26,3 +26,10 @@ a {
         align-items: center;
     }
 }
+
+:host ::ng-deep {
+    .mds-surface-card,
+    .mds-soft-panel {
+        box-shadow: none !important;
+    }
+}
