@@ -2,12 +2,12 @@
   <div class="flex items-center w-full">
     <div class="relative w-full">
       <input placeholder="Search Patient Record" #searchForm type="text"
-        class="w-full !py-2 mr-1 form-control !border-0" name="searchBox" (change)="onSearch(searchForm.value)">
+        class="w-full !py-2 mr-1 form-control rounded-xl border-white/80 bg-white/90 shadow-sm" name="searchBox" (change)="onSearch(searchForm.value)">
       <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1">
-        <span class="text-sm text-gray-400">Press Enter</span>
+        <span class="mds-muted text-sm">Press Enter</span>
       </div>
     </div>
-    <button class="!py-2 !bg-blue-800 hover:!bg-blue-900 text-white btn ml-2 !rounded-md" [routerLink]="['new']">
+    <button class="btn-primary-tw ml-2 !rounded-xl !px-4 !py-2.5" [routerLink]="['new']">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
           <path fill-rule="evenodd"
@@ -37,9 +37,9 @@
     </ng-container>
   } @else {
     @if (!isLoading) {
-      <div class="bg-white px-3 py-4 mt-4 mx-4 rounded h-96 flex flex-col items-center justify-center">
+      <div class="mds-surface-card px-3 py-4 mt-4 mx-4 rounded-2xl h-96 flex flex-col items-center justify-center">
         <img src="assets/empty-box.png" width="100">
-        <span class="mt-2 text-gray-600 pointer-events-none">No Records Found</span>
+        <span class="mds-muted mt-2 pointer-events-none">No Records Found</span>
       </div>
     }
   }

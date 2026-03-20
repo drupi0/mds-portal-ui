@@ -204,7 +204,7 @@
   </div>
 </div>
 <div class="spacer"></div>
-<div class="flex px-4 py-3 items-center w-full footer bg-white border-t border-blue-100">
+<div class="flex px-4 py-3 items-center w-full footer">
   <div class="flex-grow">
     <button class="flex content-center btn-danger-tw" (click)="clearForm()">
       <span class="font-bold">Reset</span>
@@ -235,21 +235,21 @@
       </div>
     }
   </button>
-  <div class="h-8 w-1 border-l border-blue-50 mx-2"></div>
+  <div class="h-8 w-1 border-l mx-2" [style.borderColor]="'var(--mds-border)'"></div>
   <button class="flex content-center btn-primary-tw !px-3 me-2" (click)="printForm()" [disabled]="saveDisabled">
     <span class="font-bold">Preview</span>
   </button>
 </div>
 
 <ng-template #fieldInput let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
-  <div class="mb-3 overflow-auto border rounded-lg !border-blue-50">
-    <div class="py-2 px-3 d-flex bg-gray-50">
+  <div class="mds-surface-card mb-3 overflow-auto border rounded-lg">
+    <div class="mds-soft-panel py-2 px-3 d-flex">
       <div class="flex-fill d-flex align-items-center">
-        <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
+        <span class="fw-bold mds-heading">{{ reportTemplate.name }}</span>
       </div>
       @if (isSuperAdmin) {
         <button
-          class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+          class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
           ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave"
           (click)="editTemplate(reportTemplate)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -261,7 +261,7 @@
       }
       @if (isSuperAdmin) {
         <button
-          class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+          class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
           ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
           triggers="mouseenter:mouseleave" (click)="saveTemplate(reportTemplate, tableData)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16"
@@ -273,7 +273,7 @@
         </button>
       }
       <button
-        class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+        class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
         ngbPopover="Removes this template from the current form" [openDelay]="500"
         triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -300,10 +300,10 @@
           <tbody #tableData>
             @for (row of reportTemplate.group[0].values; track trackByFn(rowIndex); let rowIndex = $index) {
               <tr
-                [id]="row" class="hover:bg-gray-100">
+                [id]="row" [style.backgroundColor]="'transparent'">
                 <td class="menu align-middle">
                   <div class="flex items-center">
-                    <button class="circular-btn text-blue-800 hover:bg-blue-200"
+                    <button class="mds-icon-button circular-btn"
                       (click)="addRow(reportTemplate, rowIndex)"
                       ngbPopover="First row must have a value before adding new row"
                       [openDelay]="1000" triggers="mouseenter:mouseleave"
@@ -412,7 +412,7 @@
               Load Template
             </button>
             <div ngbDropdownMenu class="p-0 template-dropdown-menu">
-              <div class="bg-blue-50 px-1 py-3">
+              <div class="mds-soft-panel px-1 py-3">
                 <input type="search" placeholder="Search Template" class="form-control"
                   [(ngModel)]="templateSearch">
               </div>
@@ -422,7 +422,7 @@
                     class="flex items-center">
                     @if (isSuperAdmin) {
                       <button ngbPopover="Duplicate this template" [openDelay]="500"
-                        triggers="mouseenter:mouseleave" class="text-blue-800 hover:bg-blue-200 circular-btn"
+                        triggers="mouseenter:mouseleave" class="mds-icon-button circular-btn"
                         (click)="duplicateTemplate(templateItem)">
                         <mds-icons icon="copy"></mds-icons>
                       </button>
@@ -460,7 +460,7 @@
           }
         }
       } @else {
-        <div class="card emptyState">
+        <div class="mds-surface-card card emptyState">
           <div class="d-flex flex-column justify-content-center align-items-center empty-state">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -479,14 +479,14 @@
 </ng-template>
 
 <ng-template #formMode let-reportTemplate='template' let-reportTemplateIndex="templateIndex">
-  <div class="mb-3 overflow-auto border rounded-lg !border-blue-50">
-    <div class="py-2 px-3 d-flex bg-gray-50">
+  <div class="mds-surface-card mb-3 overflow-auto border rounded-lg">
+    <div class="mds-soft-panel py-2 px-3 d-flex">
       <div class="flex-fill d-flex align-items-center">
-        <span class="fw-bold text-primary">{{ reportTemplate.name }}</span>
+        <span class="fw-bold mds-heading">{{ reportTemplate.name }}</span>
       </div>
       @if (isSuperAdmin) {
         <button
-          class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+          class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
           ngbPopover="Edit this template" [openDelay]="500" triggers="mouseenter:mouseleave"
           (click)="editTemplate(reportTemplate)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -498,7 +498,7 @@
       }
       @if (isSuperAdmin) {
         <button
-          class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+          class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
           ngbPopover="Saves the values as defaults for this template" [openDelay]="500"
           triggers="mouseenter:mouseleave" (click)="null">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16"
@@ -510,7 +510,7 @@
         </button>
       }
       <button
-        class="mr-2 flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-200 bg-blue-50 text-blue-800"
+        class="mds-icon-button mr-2 flex items-center justify-center w-10 h-10 rounded-full"
         ngbPopover="Removes this template from the current form" [openDelay]="500"
         triggers="mouseenter:mouseleave" (click)="removeFromTemplateField(reportTemplateIndex)">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

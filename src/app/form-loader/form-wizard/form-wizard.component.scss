@@ -5,7 +5,10 @@ table {
 }
 
 .field-container {
-    @apply bg-white rounded-lg px-5 py-3;
+    @apply rounded-lg px-5 py-3;
+    background: var(--mds-surface);
+    border: 1px solid var(--mds-border);
+    box-shadow: var(--mds-shadow);
     min-width: 1190px;
 }
 
@@ -38,9 +41,9 @@ table {
 }
 
 .dp-input {
-    color: #212529;
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
+    color: var(--mds-text);
+    background-color: var(--mds-control-bg);
+    border: 1px solid var(--mds-control-border);
     text-align: left;
     padding: 0.375rem 0.75rem;
 
@@ -49,6 +52,10 @@ table {
     }
 
     min-width: 20ch;
+}
+
+.wizard-body {
+    color: var(--mds-text);
 }
 
 .dropdown-item {
@@ -84,6 +91,9 @@ table {
     .template-dropdown-menu {
         width: 300px;
         overflow: hidden;
+        background: var(--mds-surface-strong);
+        border: 1px solid var(--mds-border);
+        box-shadow: var(--mds-shadow);
     }
 
     mds-datetimepicker {
@@ -97,6 +107,8 @@ table {
     }
 
     tbody {
+        color: var(--mds-text);
+
         td:not(.menu) {
             text-align: center;
 
@@ -105,9 +117,9 @@ table {
             }
 
             .dp-toggle {
-                color: #212529;
-                background-color: #ffffff;
-                border: 1px solid #ced4da;
+                color: var(--mds-text);
+                background-color: var(--mds-control-bg);
+                border: 1px solid var(--mds-control-border);
                 text-align: left;
                 padding: 0.375rem 0.75rem;
                 width: 200px;
@@ -121,8 +133,56 @@ table {
 
     .comment-field,
     .richtext-field {
+        .NgxEditor__Wrapper {
+            background: var(--mds-surface-strong);
+            border: 1px solid var(--mds-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+
+        .NgxEditor__MenuBar {
+            background: color-mix(in srgb, var(--mds-surface-soft) 88%, transparent);
+            border-bottom: 1px solid var(--mds-border);
+        }
+
+        .NgxEditor__MenuItem {
+            color: var(--mds-text-muted);
+
+            &:hover {
+                background: var(--mds-interactive-soft);
+                color: var(--mds-heading);
+            }
+        }
+
+        .NgxEditor__MenuItem--Active,
+        .NgxEditor__Dropdown .NgxEditor__Dropdown--Selected {
+            color: var(--mds-heading);
+        }
+
+        .NgxEditor__Dropdown,
+        .NgxEditor__Seperator {
+            border-color: var(--mds-border);
+            color: var(--mds-text-muted);
+        }
+
         .ProseMirror {
             min-height: 200px !important;
+            background: var(--mds-surface-strong);
+            color: var(--mds-text);
+            padding: 14px;
+        }
+
+        .ProseMirror p.is-editor-empty:first-child::before {
+            color: var(--mds-text-muted);
+        }
+
+        .ProseMirror-focused {
+            outline: none;
+        }
+
+        .NgxEditor {
+            border: none;
         }
     }
 
@@ -138,9 +198,43 @@ table {
     position: fixed;
     bottom: 0px;
     left: 0px;
+    background: color-mix(in srgb, var(--mds-surface) 94%, transparent);
+    border-top: 1px solid var(--mds-border);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .template-container {
     height: 250px;
     overflow-y: scroll;
+}
+
+:host ::ng-deep {
+    .table {
+        color: var(--mds-text);
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--mds-text);
+        --bs-table-striped-bg: transparent;
+        --bs-table-hover-bg: color-mix(in srgb, var(--mds-interactive-soft) 80%, transparent);
+    }
+
+    .table > :not(caption) > * > * {
+        background: transparent;
+        border-bottom-color: var(--mds-border);
+    }
+
+    .text-primary,
+    .form-label,
+    .fw-bold,
+    .card {
+        color: var(--mds-text);
+    }
+
+    .text-muted {
+        color: var(--mds-text-muted) !important;
+    }
+
+    .template-dropdown-menu .form-control {
+        background: var(--mds-control-bg) !important;
+        color: var(--mds-text) !important;
+    }
 }

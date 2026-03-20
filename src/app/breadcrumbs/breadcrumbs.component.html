@@ -1,10 +1,10 @@
 @if ((breadcrumbSvc.breadcrumbs | async); as breadcrumbs;) {
-  <div class="flex items-center p-2 bg-gradient-to-r from-blue-600 to-blue-900 shadow-sm w-full">
-    <img src="assets/logo_no_text.png" [routerLink]="['']" width="60" class="cursor-pointer mr-3 p-1 bg-white rounded-sm">
+  <div class="mds-topbar flex items-center p-3 w-full">
+    <img src="assets/logo_no_text.png" [routerLink]="['']" width="60" class="cursor-pointer mr-3 p-1.5 bg-white/95 rounded-md shadow-sm">
     @for (crumb of breadcrumbs; track crumb; let last = $last) {
-      <span class="cursor-default hover:text-blue-800 px-2 py-1 rounded text-white transition-all"
+      <span class="cursor-default px-2 py-1 rounded-md text-white/95 transition-all"
             routerLink="{{ crumb.href }}" [ngClass]="{
-                'hover:bg-blue-700 !cursor-pointer': !last
+                'hover:bg-white/10 !cursor-pointer': !last
             }">{{ crumb.title }}</span>
       @if (!last) {
         <span class="mx-1 text-white">
@@ -16,7 +16,7 @@
     }
     <div class="flex-grow-1"></div>
     <div ngbDropdown class="d-inline-block">
-      <button type="button" class="flex text-white p-2 rounded hover:!text-blue-100" ngbDropdownToggle>
+      <button type="button" class="flex text-white p-2 rounded-md hover:bg-white/10" ngbDropdownToggle>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
           <path fill-rule="evenodd"
             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z"
@@ -24,7 +24,7 @@
         </svg>
         <span class="ml-1 text-sm">{{ userName }}</span>
       </button>
-      <div ngbDropdownMenu class="border-0 shadow-md rounded overflow-hidden">
+      <div ngbDropdownMenu class="border-0 shadow-md rounded-xl overflow-hidden">
         <button ngbDropdownItem (click)="accountSettings()">
           <div class="flex flex-row content-center py-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">

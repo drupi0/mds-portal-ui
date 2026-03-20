@@ -18,6 +18,27 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+.template-modal {
+    color: var(--mds-text);
+}
+
+.template-label {
+    color: var(--mds-text-muted);
+}
+
+.template-row {
+    background: var(--mds-surface);
+}
+
+.template-placeholder {
+    background: var(--mds-surface-soft);
+    border: 1px solid var(--mds-border);
+}
+
+.template-muted {
+    color: var(--mds-text-muted);
+}
+
 :host ::ng-deep {
     .datetime-textbox {
         width: 100% !important;
@@ -30,5 +51,33 @@
 
     .form-check-input:checked {
         @apply bg-blue-800 border-blue-800 ;
+    }
+
+    .form-check-input {
+        background-color: var(--mds-control-bg);
+        border-color: var(--mds-control-border);
+    }
+
+    .template-field .NgxEditor__Wrapper {
+        background: var(--mds-surface-strong);
+        border: 1px solid var(--mds-border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .template-field .NgxEditor__MenuBar {
+        background: var(--mds-surface-soft);
+        border-bottom: 1px solid var(--mds-border);
+    }
+
+    .template-field .NgxEditor__MenuItem,
+    .template-field .NgxEditor__Dropdown {
+        color: var(--mds-text-muted);
+    }
+
+    .template-field .ProseMirror {
+        background: var(--mds-surface-strong);
+        color: var(--mds-text);
+        padding: 14px;
     }
 }

@@ -1,18 +1,18 @@
 <div class="relative overflow-x-auto m-4">
-  <div class="flex items-center px-3 py-1 rounded my-2 bg-blue-50">
-    <div class="w-20 md:w-1/12 text-blue-800 font-bold cursor-pointer truncate">MR No.</div>
-    <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Collected</div>
-    <div class="ml-2 text-blue-800 font-bold w-40 truncate hidden md:block">Received</div>
-    <div class="ml-2 text-blue-800 font-bold w-4/12 md:w-2/12 truncate">Patient's Name</div>
-    <div class="ml-2 text-blue-800 font-bold  w-5/12 md:w-2/12 truncate">Ordered</div>
-    <div class="ml-2 text-blue-800 font-bold w-2/12 truncate hidden md:block">Requested By</div>
-    <div class="ml-2 text-blue-800 font-bold w-1/12 truncate hidden md:block">Specimen</div>
-    <div class="ml-2 text-blue-800 font-bold w-20 truncate hidden md:block">Status</div>
+  <div class="mds-soft-panel flex items-center px-4 py-2 rounded-2xl my-2">
+    <div class="mds-heading w-20 md:w-1/12 font-bold cursor-pointer truncate">MR No.</div>
+    <div class="mds-heading ml-2 font-bold w-40 truncate hidden md:block">Collected</div>
+    <div class="mds-heading ml-2 font-bold w-40 truncate hidden md:block">Received</div>
+    <div class="mds-heading ml-2 font-bold w-4/12 md:w-2/12 truncate">Patient's Name</div>
+    <div class="mds-heading ml-2 font-bold  w-5/12 md:w-2/12 truncate">Ordered</div>
+    <div class="mds-heading ml-2 font-bold w-2/12 truncate hidden md:block">Requested By</div>
+    <div class="mds-heading ml-2 font-bold w-1/12 truncate hidden md:block">Specimen</div>
+    <div class="mds-heading ml-2 font-bold w-20 truncate hidden md:block">Status</div>
     <div class="flex-grow"></div>
-    <div class="flex justify-end content-center text-blue-800 font-bold w-24">
+    <div class="mds-heading flex justify-end content-center font-bold w-24">
       <div ngbDropdown [autoClose]="false" #filterDropdown="ngbDropdown" [container]="'body'">
         <button type="button"
-          class="flex text-blue-800 p-2 rounded hover:text-blue-900 hover:bg-blue-100 items-center"
+          class="mds-icon-button flex p-2 rounded-xl items-center"
           ngbDropdownToggle>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
@@ -21,15 +21,15 @@
           </svg>
           <span class="ml-2 text-sm">Filters</span>
         </button>
-        <div ngbDropdownMenu class="shadow-md rounded border !border-blue-50 overflow-hidden px-2 py-3">
+        <div ngbDropdownMenu class="shadow-md rounded-2xl overflow-hidden px-2 py-3">
           <div class="w-80 mx-2 flex flex-col">
             <span class="mr-2 whitespace-nowrap font-bold text-sm">Filter By:</span>
             <div class="flex flex-wrap mt-2">
               @for (col of sortOptions; track col) {
 <div class="text-sm rounded-lg p-1 m-1
-                            bg-white border !border-blue-100 text-blue-400 cursor-pointer"
+                            mds-surface-card text-mds-slate cursor-pointer shadow-none"
                                 (click)="updateSortKeys(col.key)" [ngClass]="{
-                                '!bg-blue-100':  checkKey(col.key)
+                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey(col.key)
                             }">
                   {{ col.value }} {{ checkKey(col.key) ? '(' + keyPriority(col.key) + ')' : ''}}
                 </div>
@@ -37,15 +37,15 @@
             </div>
             <span class="mt-2 mr-2 whitespace-nowrap font-bold text-sm">Order By:</span>
             <div class="flex mt-2">
-              <div class="text-sm rounded-lg p-1 m-1 bg-white border !border-blue-100 text-blue-400 cursor-pointer"
+              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 text-mds-slate cursor-pointer shadow-none"
                                 (click)="updateSortKeys('asc')" [ngClass]="{
-                                '!bg-blue-100':  checkKey('asc')
+                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey('asc')
                             }">
                 ASC
               </div>
-              <div class="text-sm rounded-lg p-1 m-1 bg-white border !border-blue-100 text-blue-400 cursor-pointer"
+              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 text-mds-slate cursor-pointer shadow-none"
                                 (click)="updateSortKeys('desc')" [ngClass]="{
-                                '!bg-blue-100':  checkKey('desc')
+                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey('desc')
                             }">
                 DESC
               </div>
@@ -68,38 +68,38 @@
     </div>
   </div>
   @for (row of patientRecordData(); track row; let last = $last) {
-    <div class="flex items-center p-3 rounded bg-white transition ease-in-out"
+    <div class="mds-surface-card flex items-center p-3 rounded-2xl transition ease-in-out"
         [ngClass]="{
             'mb-2': !last
         }">
-      <div class="font-bold w-20 md:w-1/12 text-blue-800 hover:text-blue-900 cursor-pointer truncate"
+      <div class="mds-heading font-bold w-20 md:w-1/12 hover:text-cyan-500 cursor-pointer truncate"
         (click)="edit(row)">{{
         row.specNo
       }}</div>
-      <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
+      <div class="mds-text ml-2 w-40 truncate hidden md:block" placement="top"
         triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.collectionDateTime)" [openDelay]="500">{{
         convertDate(row.collectionDateTime) }}
       </div>
-      <div class="ml-2 text-neutral-800 w-40 truncate hidden md:block" placement="top"
+      <div class="mds-text ml-2 w-40 truncate hidden md:block" placement="top"
         triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.receivedDateTime)" [openDelay]="500">{{
       convertDate(row.receivedDateTime) }}</div>
-      <div class="ml-2 text-neutral-800 w-4/12 md:w-2/12 truncate" placement="top" triggers="mouseenter:mouseleave"
+      <div class="mds-text ml-2 w-4/12 md:w-2/12 truncate" placement="top" triggers="mouseenter:mouseleave"
       [ngbPopover]="row.patient.name" [openDelay]="1000">{{ row.patient.name }}</div>
-      <div class="ml-2 text-neutral-800 w-5/12 md:w-2/12 truncate" triggers="mouseenter:mouseleave"
+      <div class="mds-text ml-2 w-5/12 md:w-2/12 truncate" triggers="mouseenter:mouseleave"
       [ngbPopover]="row.ordered" [openDelay]="1000">{{ row.ordered }}</div>
-      <div class="ml-2 text-neutral-800 w-2/12 truncate hidden md:block" placement="top"
+      <div class="mds-text ml-2 w-2/12 truncate hidden md:block" placement="top"
         triggers="mouseenter:mouseleave" [ngbPopover]="displayOrderingDoctor(row.orderingDoctor)"
         [disablePopover]="displayOrderingDoctor(row.orderingDoctor) === '-'" [openDelay]="1000">{{
       displayOrderingDoctor(row.orderingDoctor) }}</div>
-      <div class="ml-2 text-neutral-800 w-1/12 truncate hidden md:block">{{ row.specimen }}</div>
-      <div class="ml-2 text-neutral-800 w-20 truncate hidden md:block">
+      <div class="mds-text ml-2 w-1/12 truncate hidden md:block">{{ row.specimen }}</div>
+      <div class="mds-text ml-2 w-20 truncate hidden md:block">
             <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
                 'status': row.status
             }"></ng-container>
       </div>
       <div class="flex-grow"></div>
       <div class="flex w-24 justify-end content-center">
-        <button class="p-2 rounded-full text-blue-800 hover:!bg-blue-50" (click)="edit(row)" placement="top"
+        <button class="mds-icon-button p-2 rounded-full" (click)="edit(row)" placement="top"
           triggers="mouseenter:mouseleave" [ngbPopover]="'Open Form'" [openDelay]="1000">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
@@ -109,7 +109,7 @@
           </svg>
         </button>
         <div ngbDropdown class="d-inline-block">
-          <button type="button" class="p-2 rounded-full text-blue-800 hover:!bg-blue-50" ngbDropdownToggle>
+          <button type="button" class="mds-icon-button p-2 rounded-full" ngbDropdownToggle>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round"
