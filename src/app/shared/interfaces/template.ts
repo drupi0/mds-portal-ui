@@ -24,6 +24,11 @@ export interface PatientModel {
     sex: string,
 }
 
+export interface SpecNoRecordDetails {
+    specNo: string;
+    records: PatientRecordModel[];
+}
+
 export interface StaffModel {
     id?: string,
     name: string,
@@ -47,6 +52,12 @@ export interface PatientRecordModel {
     receivedDateTime: number | null,
     comments: string
     data: string
+}
+
+export interface PatientRecordViewGroup {
+    id: 'records' | 'mrNo' | 'patient';
+    label: string;
+    description: string;
 }
 
 export interface Pagination<T> {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Pagination, PatientModel, PatientRecordModel, StaffModel, TemplateModel } from '../shared/interfaces/template';
+import { Pagination, PatientModel, PatientRecordModel, SpecNoRecordDetails, StaffModel, TemplateModel } from '../shared/interfaces/template';
 import { environment as env } from 'src/environments/environment';
 
 @Injectable({
@@ -73,6 +73,22 @@ export class ApiService {
     });
   }
 
+  getRecordsBySpecNo() {
+    return this.httpClient.get<SpecNoRecordDetails[]>(`${this.API_URL}/record/spec-no`, this.HTTP_OPTIONS);
+  }
+
+  getRecordsByPatient(patientId: string | number, pageNumber = 0, pageSize = 100, sortKeys?: string[], sortBy?: string) {
+    return this.httpClient.get<Pagination<PatientRecordModel>>(`${this.API_URL}/record/patient/${patientId}`, {
+      params: {
+        pageNumber,
+        pageSize,
+        sortKeys: (sortKeys || []).join(","),
+        sortBy: sortBy || "desc"
+      },
+      ...this.HTTP_OPTIONS
+    });
+  }
+
   deleteRecord(formId: string) {
     return this.httpClient.delete<PatientRecordModel>(`${this.API_URL}/record`, {
       ...this.HTTP_OPTIONS,
@@ -102,6 +118,10 @@ export class ApiService {
       params: { query },
       ...this.HTTP_OPTIONS
     });
+  }
+
+  getPatients() {
+    return this.httpClient.get<PatientModel[]>(`${this.API_URL}/patients`, this.HTTP_OPTIONS);
   }
 
   constructor(public httpClient: HttpClient) { }

@@ -2,6 +2,57 @@ a {
     text-decoration: none;
 }
 
+.view-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    min-width: 13rem;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--mds-border);
+    background: var(--mds-surface);
+    color: var(--mds-text);
+    box-shadow: none;
+    transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+
+    &:hover {
+        background: var(--mds-interactive-soft);
+        color: var(--mds-heading);
+    }
+}
+
+.view-dropdown-menu {
+    min-width: 16rem;
+    padding: 0.4rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1rem;
+    background: var(--mds-surface-strong);
+    box-shadow: none;
+}
+
+.view-dropdown-menu__item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    border-radius: 0.8rem;
+    color: var(--mds-text);
+    padding: 0.75rem 0.9rem;
+
+    &:hover,
+    &:active {
+        background: var(--mds-interactive-soft);
+        color: var(--mds-heading);
+    }
+}
+
+.view-dropdown-menu__hint {
+    color: var(--mds-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
 .hover {
     &:hover {
         background-color: var(--mds-interactive-soft);
@@ -27,9 +78,28 @@ a {
     }
 }
 
+.patient-group-toggle {
+    background: transparent;
+    border: none;
+    color: inherit;
+}
+
+.group-card-header {
+    background: var(--mds-surface-soft);
+    border-bottom: none;
+}
+
 :host ::ng-deep {
     .mds-surface-card,
     .mds-soft-panel {
         box-shadow: none !important;
+    }
+
+    .view-dropdown.dropdown-toggle::after {
+        display: none;
+    }
+
+    .mds-soft-panel {
+        background-image: none !important;
     }
 }

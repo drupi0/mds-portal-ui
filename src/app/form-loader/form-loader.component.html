@@ -1,7 +1,23 @@
 <div class="d-flex mb-1 mt-4 px-4">
   <div class="flex items-center w-full">
+    <div ngbDropdown class="d-inline-block mr-2">
+      <button type="button" class="view-dropdown" ngbDropdownToggle>
+        <span class="font-semibold truncate">{{ currentViewOption.label }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div ngbDropdownMenu class="view-dropdown-menu">
+        @for (view of patientRecordViews; track view.id) {
+          <button ngbDropdownItem class="view-dropdown-menu__item" (click)="setView(view.id)">
+            <span class="font-semibold">{{ view.label }}</span>
+            <span class="view-dropdown-menu__hint">{{ view.description }}</span>
+          </button>
+        }
+      </div>
+    </div>
     <div class="relative w-full">
-      <input placeholder="Search Patient Record" #searchForm type="text"
+      <input [placeholder]="searchPlaceholder" #searchForm type="text"
         class="w-full !py-2 mr-1 form-control rounded-xl shadow-none" name="searchBox" (change)="onSearch(searchForm.value)">
       <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1">
         <span class="mds-muted text-sm">Press Enter</span>
@@ -20,23 +36,131 @@
   </div>
 </div>
 <div>
-  @if (isLoading) {
+  @if (isLoading || isGroupedViewLoading) {
     <div class="my-4">
       <ng-container [ngTemplateOutlet]="skeletonLoader"></ng-container>
     </div>
   }
-  @if ((((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords).length) {
-    <ng-container
-      ]>
-      @if (!isLoading) {
-        <mds-forms-table
-          [patientRecords]="((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords"
-          (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)" [sortColumns]="sortColumns"
-        (onSort)="saveSort($event)" [accessLevel]="accessLevel"></mds-forms-table>
+  @if (currentView === 'records' && (((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords).length) {
+    @if (!isLoading && !isGroupedViewLoading) {
+      <mds-forms-table
+        [patientRecords]="((searchString | async) || '').trim().length ? patientRecordFromSearch : patientRecords"
+        (onEdit)="editRecord($event)" (onDelete)="deleteRecord($event)" [sortColumns]="sortColumns"
+      (onSort)="saveSort($event)" [accessLevel]="accessLevel"></mds-forms-table>
+    }
+  } @else if (currentView === 'mrNo' && filteredSpecNoGroups().length) {
+    <div class="mx-4 mt-4 space-y-4">
+      @for (group of paginatedSpecNoGroups(); track group.specNo) {
+        <div class="mds-surface-card rounded-2xl overflow-hidden">
+          <div class="group-card-header px-4 py-3 flex items-center">
+            <div>
+              <div class="mds-heading font-bold text-lg">{{ group.specNo }}</div>
+              <div class="mds-muted text-sm">{{ group.records.length }} record{{ group.records.length === 1 ? '' : 's' }}</div>
+            </div>
+          </div>
+          <div class="divide-y divide-[var(--mds-border)]">
+            @for (record of group.records; track record.id) {
+              <div class="px-4 py-3 flex items-center gap-3">
+                <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                <div class="w-52 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                <div class="flex-1 mds-text truncate">{{ record.ordered || '-' }}</div>
+                <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
+                <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                <div class="w-24">
+                  <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
+                </div>
+                <div class="flex items-center gap-2 ml-auto">
+                  <button class="mds-icon-button p-2 rounded-full" (click)="editRecord(record)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </button>
+                  @if (accessLevel === 'admin' || accessLevel === 'superAdmin') {
+                    <button class="mds-icon-button p-2 rounded-full" (click)="deleteRecord(record)">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
       }
-    </ng-container>
+    </div>
+  } @else if (currentView === 'patient' && filteredPatients().length) {
+    <div class="mx-4 mt-4 space-y-4">
+      @for (patient of paginatedPatients(); track patient.id) {
+        <div class="mds-surface-card rounded-2xl overflow-hidden">
+          <button type="button" class="patient-group-toggle group-card-header w-full px-4 py-3 text-left"
+            (click)="togglePatientGroup(patient)">
+            <div class="flex items-center gap-3">
+              <div class="flex-1">
+                <div class="mds-heading font-bold text-lg">{{ patient.name }}</div>
+                <div class="mds-muted text-sm">
+                  Patient ID {{ patient.id }} · {{ patient.sex || 'Unknown' }} · {{ patient.dateOfBirth || '-' }}
+                </div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5 mds-muted transition-transform"
+                [class.rotate-180]="isPatientExpanded(patient)">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
+          </button>
+          @if (isPatientExpanded(patient)) {
+            <div class="border-t" [style.borderColor]="'var(--mds-border)'">
+              @if (isPatientLoading(patient)) {
+                <div class="px-4 py-4 mds-muted text-sm">Loading records...</div>
+              } @else if (patientRecordsFor(patient).length) {
+                <div class="divide-y divide-[var(--mds-border)]">
+                  @for (record of patientRecordsFor(patient); track record.id) {
+                    <div class="px-4 py-3 flex items-center gap-3">
+                      <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                      <div class="w-52 mds-text truncate hidden md:block">{{ record.ordered || '-' }}</div>
+                      <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
+                      <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                      <div class="w-24">
+                        <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
+                      </div>
+                      <div class="flex items-center gap-2 ml-auto">
+                        <button class="mds-icon-button p-2 rounded-full" (click)="editRecord(record)">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                        </button>
+                        @if (accessLevel === 'admin' || accessLevel === 'superAdmin') {
+                          <button class="mds-icon-button p-2 rounded-full" (click)="deleteRecord(record)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                              stroke="currentColor" class="w-5 h-5">
+                              <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="px-4 py-4 mds-muted text-sm">No records found for this patient.</div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
   } @else {
-    @if (!isLoading) {
+    @if (!isLoading && !isGroupedViewLoading) {
       <div class="mds-surface-card px-3 py-4 mt-4 mx-4 rounded-2xl h-96 flex flex-col items-center justify-center">
         <img src="assets/empty-box.png" width="100">
         <span class="mds-muted mt-2 pointer-events-none">No Records Found</span>
@@ -46,17 +170,29 @@
 
 </div>
 
-@if (!((searchString | async) || '').trim().length && !isLoading) {
-  <div class="px-4 flex justify-end mb-4">
+@if (currentView === 'records' && !((searchString | async) || '').trim().length && !isLoading) {
+  <div class="px-4 mt-4 flex justify-end mb-4">
     <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
     [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
   </div>
 }
-@if (((searchString | async) || '').trim().length && !isLoading) {
-  <div class="px-4 flex justify-end mb-4">
+@if (currentView === 'records' && ((searchString | async) || '').trim().length && !isLoading) {
+  <div class="px-4 mt-4 flex justify-end mb-4">
     <ngb-pagination [(page)]="searchPagination.currentPage" (pageChange)="loadSearchRecords()"
       [pageSize]="searchPagination.size" [collectionSize]="searchPagination.totalElements"
     [maxSize]="10"></ngb-pagination>
+  </div>
+}
+@if (currentView === 'mrNo' && !isGroupedViewLoading && filteredSpecNoGroups().length) {
+  <div class="px-4 mt-4 flex justify-end mb-4">
+    <ngb-pagination [(page)]="mrNoPagination.currentPage" [pageSize]="mrNoPagination.size"
+      [collectionSize]="filteredSpecNoGroups().length" [maxSize]="10"></ngb-pagination>
+  </div>
+}
+@if (currentView === 'patient' && !isGroupedViewLoading && filteredPatients().length) {
+  <div class="px-4 mt-4 flex justify-end mb-4">
+    <ngb-pagination [(page)]="patientPagination.currentPage" [pageSize]="patientPagination.size"
+      [collectionSize]="filteredPatients().length" [maxSize]="10"></ngb-pagination>
   </div>
 }
 
@@ -93,6 +229,36 @@
       <div class="mds-text font-bold w-20 animate-pulse ml-2">
         <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
+    </div>
+  }
+</ng-template>
+
+<ng-template let-status="status" #statusBadge>
+  @if (status === 'routine') {
+    <div
+      class="pointer-events-none text-center border rounded text-sm p-1"
+      [style.borderColor]="'rgba(131,167,246,0.28)'"
+      [style.color]="'var(--mds-heading)'"
+      [style.background]="'var(--mds-interactive-soft)'">
+      Routine
+    </div>
+  }
+  @if (status === 'stat') {
+    <div
+      class="pointer-events-none text-center border p-1 rounded text-sm"
+      [style.borderColor]="'rgba(250,204,21,0.3)'"
+      [style.color]="'#facc15'"
+      [style.background]="'rgba(250,204,21,0.08)'">
+      Stat
+    </div>
+  }
+  @if (status === 'urgent') {
+    <div
+      class="pointer-events-none text-center border p-1 rounded text-sm"
+      [style.borderColor]="'rgba(248,113,113,0.3)'"
+      [style.color]="'#f87171'"
+      [style.background]="'rgba(248,113,113,0.08)'">
+      Urgent
     </div>
   }
 </ng-template>
