@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, delay } from 'rxjs';
 import { FormWizardComponent } from './form-loader/form-wizard/form-wizard.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeactivateGuard implements CanDeactivate<FormWizardComponent> {
+export class DeactivateGuard  {
   canDeactivate(
     component: FormWizardComponent,
     currentRoute: ActivatedRouteSnapshot,

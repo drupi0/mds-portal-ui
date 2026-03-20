@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-form-loader',
+  standalone: false,
   templateUrl: './form-loader.component.html',
   styleUrls: ['./form-loader.component.scss']
 })

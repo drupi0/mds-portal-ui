@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'mds-breadcrumbs',
+  standalone: false,
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']
 })

@@ -28,6 +28,7 @@ import { TemplateModalComponent } from '../template-modal/template-modal.compone
 
 @Component({
   selector: 'mds-form-wizard',
+  standalone: false,
   templateUrl: './form-wizard.component.html',
   styleUrls: ['./form-wizard.component.scss']
 })
@@ -371,7 +372,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   @HostListener('window:keydown.control.p', ['$event'])
   @HostListener('window:keydown.Meta.p', ['$event'])
-  printNowHandler(event: KeyboardEvent) {
+  printNowHandler(event: Event) {
     event.preventDefault();
     this.printForm(true);
   }

@@ -11,6 +11,7 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 const PAPER_HEIGHT = 1700;
 @Component({
   selector: 'mds-printform',
+  standalone: false,
   templateUrl: './printform.component.html',
   styleUrls: ['./printform.component.scss']
 })

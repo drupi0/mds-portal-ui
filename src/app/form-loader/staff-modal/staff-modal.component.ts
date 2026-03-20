@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'mds-staff-modal',
+  standalone: false,
   templateUrl: './staff-modal.component.html',
   styleUrls: ['./staff-modal.component.scss']
 })
