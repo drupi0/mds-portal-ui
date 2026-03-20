@@ -447,7 +447,7 @@
   </div>
   <!-- template containers -->
   @if ((templateList | async); as tempList) {
-    <div class="card pb-3" #formData>
+    <div class="pb-3" #formData>
       @if (tempList.length !== 0) {
         @for (template of tempList; track template; let templateIndex = $index) {
           @if (!template.isFormMode) {

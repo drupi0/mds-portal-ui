@@ -95,14 +95,22 @@ $body-bg: #e8f4f7;
 @import 'typography';
 
 .btn-sm-danger-tw {
-    @apply text-sm rounded-lg p-2 bg-white font-bold text-red-600 hover:bg-red-100 bg-red-50 cursor-pointer border-red-100;
+    @apply text-sm rounded-lg p-2 font-bold cursor-pointer;
     border-width: 1px;
+    background: color-mix(in srgb, var(--mds-surface-strong) 92%, #7f1d1d 8%);
+    color: #ef6b63;
+    border-color: rgba(239, 107, 99, 0.22);
+
+    &:hover {
+        background: rgba(239, 107, 99, 0.12);
+    }
 }
 
 .btn-sm-primary-tw {
-    @apply text-sm rounded-lg p-2 bg-white font-bold cursor-pointer;
+    @apply text-sm rounded-lg p-2 font-bold cursor-pointer;
     border-width: 1px;
     color: var(--mds-heading);
+    background: color-mix(in srgb, var(--mds-surface-strong) 92%, var(--mds-heading) 8%);
     border-color: var(--mds-control-border);
 
     &:hover {
@@ -120,8 +128,15 @@ $body-bg: #e8f4f7;
 }
 
 .btn-danger-tw {
-    @apply p-2 rounded hover:bg-red-100 bg-red-50 text-red-800 border-red-100;
+    @apply p-2 rounded;
     border-width: 1px;
+    background: color-mix(in srgb, var(--mds-surface-strong) 92%, #7f1d1d 8%);
+    color: #ef6b63;
+    border-color: rgba(239, 107, 99, 0.22);
+
+    &:hover {
+        background: rgba(239, 107, 99, 0.12);
+    }
 }
 
 .btn-primary-tw {
@@ -247,6 +262,15 @@ $body-bg: #e8f4f7;
         border-color: rgba(16, 186, 215, 0.75) !important;
         box-shadow: 0 0 0 4px rgba(16, 186, 215, 0.12) !important;
     }
+
+    &::placeholder {
+        color: var(--mds-text-muted) !important;
+        opacity: 0.75;
+    }
+}
+
+.modal-title {
+    color: var(--mds-text) !important;
 }
 
 .modal-header {
@@ -293,6 +317,29 @@ $body-bg: #e8f4f7;
         background: var(--mds-interactive-soft) !important;
         color: var(--mds-heading) !important;
     }
+}
+
+.page-link {
+    background: var(--mds-surface-strong) !important;
+    color: var(--mds-text) !important;
+    border-color: var(--mds-border) !important;
+    box-shadow: none !important;
+}
+
+.page-link:hover {
+    background: var(--mds-interactive-soft) !important;
+    color: var(--mds-heading) !important;
+}
+
+.page-item.active .page-link {
+    background: var(--mds-interactive-strong) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+}
+
+.page-item.disabled .page-link {
+    background: color-mix(in srgb, var(--mds-surface-strong) 84%, transparent) !important;
+    color: var(--mds-text-muted) !important;
 }
 
 .mds-topbar {

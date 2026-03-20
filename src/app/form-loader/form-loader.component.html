@@ -2,7 +2,7 @@
   <div class="flex items-center w-full">
     <div class="relative w-full">
       <input placeholder="Search Patient Record" #searchForm type="text"
-        class="w-full !py-2 mr-1 form-control rounded-xl border-white/80 bg-white/90 shadow-sm" name="searchBox" (change)="onSearch(searchForm.value)">
+        class="w-full !py-2 mr-1 form-control rounded-xl shadow-sm" name="searchBox" (change)="onSearch(searchForm.value)">
       <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1">
         <span class="mds-muted text-sm">Press Enter</span>
       </div>
@@ -64,34 +64,34 @@
 
 <ng-template #skeletonLoader>
   @for (dummy of [1,2,3,4,5,6,7,8,9,10]; track dummy) {
-    <div class="flex items-center px-3 py-4 rounded my-2 mx-4 bg-white">
-      <div class="w-3/12 md:w-1/12 text-neutral-800 font-bold cursor-pointer animate-pulse">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+    <div class="mds-surface-card flex items-center px-3 py-4 rounded my-2 mx-4">
+      <div class="w-3/12 md:w-1/12 mds-text font-bold cursor-pointer animate-pulse">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-4/12 md:w-2/12 animate-pulse">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-4/12 md:w-2/12 animate-pulse">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold  w-5/12 md:w-2/12 animate-pulse">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold  w-5/12 md:w-2/12 animate-pulse">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-2/12 animate-pulse hidden md:block">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-2/12 animate-pulse hidden md:block">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-1/12 animate-pulse hidden md:block">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-1/12 animate-pulse hidden md:block">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-1/12 animate-pulse hidden md:block">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-1/12 animate-pulse hidden md:block">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-1/12 animate-pulse hidden md:block">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-1/12 animate-pulse hidden md:block">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
-      <div class="ml-2 text-neutral-800 font-bold w-20 animate-pulse hidden md:block">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="ml-2 mds-text font-bold w-20 animate-pulse hidden md:block">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
       <div class="flex-grow"></div>
-      <div class="text-neutral-800 font-bold w-20 animate-pulse ml-2">
-        <div class="w-full h-7 bg-slate-200 rounded"></div>
+      <div class="mds-text font-bold w-20 animate-pulse ml-2">
+        <div class="w-full h-7 rounded" [style.background]="'var(--mds-surface-soft)'"></div>
       </div>
     </div>
   }

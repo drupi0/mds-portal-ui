@@ -23,29 +23,29 @@
         </button>
         <div ngbDropdownMenu class="shadow-md rounded-2xl overflow-hidden px-2 py-3">
           <div class="w-80 mx-2 flex flex-col">
-            <span class="mr-2 whitespace-nowrap font-bold text-sm">Filter By:</span>
+            <span class="mds-heading mr-2 whitespace-nowrap font-bold text-sm">Filter By:</span>
             <div class="flex flex-wrap mt-2">
               @for (col of sortOptions; track col) {
 <div class="text-sm rounded-lg p-1 m-1
-                            mds-surface-card text-mds-slate cursor-pointer shadow-none"
+                            mds-surface-card mds-heading cursor-pointer shadow-none"
                                 (click)="updateSortKeys(col.key)" [ngClass]="{
-                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey(col.key)
+                                '!bg-[var(--mds-interactive-soft)] !border-[var(--mds-heading)] !text-[var(--mds-heading)]':  checkKey(col.key)
                             }">
                   {{ col.value }} {{ checkKey(col.key) ? '(' + keyPriority(col.key) + ')' : ''}}
                 </div>
               }
             </div>
-            <span class="mt-2 mr-2 whitespace-nowrap font-bold text-sm">Order By:</span>
+            <span class="mds-heading mt-2 mr-2 whitespace-nowrap font-bold text-sm">Order By:</span>
             <div class="flex mt-2">
-              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 text-mds-slate cursor-pointer shadow-none"
+              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 mds-heading cursor-pointer shadow-none"
                                 (click)="updateSortKeys('asc')" [ngClass]="{
-                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey('asc')
+                                '!bg-[var(--mds-interactive-soft)] !border-[var(--mds-heading)] !text-[var(--mds-heading)]':  checkKey('asc')
                             }">
                 ASC
               </div>
-              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 text-mds-slate cursor-pointer shadow-none"
+              <div class="mds-surface-card text-sm rounded-lg p-1 m-1 mds-heading cursor-pointer shadow-none"
                                 (click)="updateSortKeys('desc')" [ngClass]="{
-                                '!bg-[var(--mds-interactive-soft)] !text-[var(--mds-heading)]':  checkKey('desc')
+                                '!bg-[var(--mds-interactive-soft)] !border-[var(--mds-heading)] !text-[var(--mds-heading)]':  checkKey('desc')
                             }">
                 DESC
               </div>
@@ -151,19 +151,28 @@
 <ng-template let-status="status" #status>
   @if (status === 'routine') {
     <div
-      class="pointer-events-none text-center border !border-blue-400 text-blue-400 bg-blue-50 rounded text-sm p-1">
+      class="pointer-events-none text-center border rounded text-sm p-1"
+      [style.borderColor]="'rgba(131,167,246,0.28)'"
+      [style.color]="'var(--mds-heading)'"
+      [style.background]="'var(--mds-interactive-soft)'">
       Routine
     </div>
   }
   @if (status === 'stat') {
     <div
-      class="pointer-events-none text-center border !border-yellow-400 text-yellow-400 bg-yellow-50 p-1 rounded text-sm">
+      class="pointer-events-none text-center border p-1 rounded text-sm"
+      [style.borderColor]="'rgba(250,204,21,0.3)'"
+      [style.color]="'#facc15'"
+      [style.background]="'rgba(250,204,21,0.08)'">
       Stat
     </div>
   }
   @if (status === 'urgent') {
     <div
-      class="pointer-events-none text-center border !border-red-400 text-red-400 bg-red-50 p-1 rounded text-sm">
+      class="pointer-events-none text-center border p-1 rounded text-sm"
+      [style.borderColor]="'rgba(248,113,113,0.3)'"
+      [style.color]="'#f87171'"
+      [style.background]="'rgba(248,113,113,0.08)'">
       Urgent
     </div>
   }

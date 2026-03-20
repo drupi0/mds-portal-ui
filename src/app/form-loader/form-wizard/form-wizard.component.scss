@@ -14,6 +14,8 @@ table {
 
 .card {
     border: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .overflow-x-auto {
@@ -209,12 +211,18 @@ table {
 }
 
 :host ::ng-deep {
+    .border-top {
+        border-top-color: var(--mds-border) !important;
+        background: transparent;
+    }
+
     .table {
         color: var(--mds-text);
         --bs-table-bg: transparent;
         --bs-table-color: var(--mds-text);
         --bs-table-striped-bg: transparent;
         --bs-table-hover-bg: color-mix(in srgb, var(--mds-interactive-soft) 80%, transparent);
+        margin-bottom: 0;
     }
 
     .table > :not(caption) > * > * {
