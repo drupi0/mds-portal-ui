@@ -289,8 +289,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       status: formValue.status,
       specimen: formValue.specimen,
       ordered: formValue.ordered,
-      collectionDateTime: formValue.collectionDateTime,
-      receivedDateTime: formValue.receivedDateTime,
+      collectionDateTime: this.parseDateTimeToMillis(formValue.collectionDateTime),
+      receivedDateTime: this.parseDateTimeToMillis(formValue.receivedDateTime),
       data: JSON.stringify(this.templateList.getValue()),
       comments: !!formValue.comment ? toHTML(formValue.comment) : ""
     } as PatientRecordModel;
@@ -589,8 +589,8 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         status: record.status,
         specimen: record.specimen,
         ordered: record.ordered,
-        collectionDateTime: record.collectionDateTime,
-        receivedDateTime: record.receivedDateTime,
+        collectionDateTime: this.formatDateTimeFromMillis(record.collectionDateTime),
+        receivedDateTime: this.formatDateTimeFromMillis(record.receivedDateTime),
         comment: toDoc(record.comments),
         performedBy: record.performedBy,
         verifiedBy: record.verifiedBy,
@@ -622,6 +622,39 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   private showSuccessToast(content: string) {
     this.notifSvc.success(content);
+  }
+
+  private parseDateTimeToMillis(dateTime: string | null | undefined): number | null {
+    if (!dateTime?.trim()) {
+      return null;
+    }
+
+    const [datePart, timePart] = dateTime.trim().split(" ");
+    if (!datePart || !timePart) {
+      return null;
+    }
+
+    const [month, day, year] = datePart.split("/").map(value => parseInt(value, 10));
+    const [hours, minutes] = timePart.split(":").map(value => parseInt(value, 10));
+
+    if ([month, day, year, hours, minutes].some(value => Number.isNaN(value))) {
+      return null;
+    }
+
+    return new Date(year, month - 1, day, hours, minutes).getTime();
+  }
+
+  private formatDateTimeFromMillis(dateTime: number | null | undefined): string {
+    if (dateTime === null || dateTime === undefined) {
+      return "";
+    }
+
+    const dateObj = new Date(dateTime);
+    if (Number.isNaN(dateObj.getTime())) {
+      return "";
+    }
+
+    return `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}`;
   }
 
   private rebuildEditorInstances() {

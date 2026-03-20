@@ -167,6 +167,23 @@ export class PrintformComponent implements OnInit, AfterViewInit {
     return `${age}`;
   }
 
+  formatDateTime(value: number | string | null | undefined) {
+    if (value === null || value === undefined || value === "") {
+      return "-";
+    }
+
+    if (typeof value === "number") {
+      const dateObj = new Date(value);
+      if (Number.isNaN(dateObj.getTime())) {
+        return "-";
+      }
+
+      return `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}`;
+    }
+
+    return value;
+  }
+
   reportLoaded(pdf: PDFDocumentProxy) {
     this.isPrinting = false;
     this.isDocumentLoaded = true;

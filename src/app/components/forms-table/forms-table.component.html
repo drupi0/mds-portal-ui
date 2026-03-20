@@ -85,10 +85,9 @@
         <div class="ml-2 text-neutral-800 w-5/12 md:w-2/12 truncate" triggers="mouseenter:mouseleave"
         [ngbPopover]="row.ordered" [openDelay]="1000">{{ row.ordered }}</div>
         <div class="ml-2 text-neutral-800 w-2/12 truncate hidden md:block" placement="top"
-            triggers="mouseenter:mouseleave" [ngbPopover]="row.orderingDoctor.trim()"
-            [disablePopover]="!row.orderingDoctor.trim()" [openDelay]="1000">{{
-            row.orderingDoctor.trim() ||
-            "-" }}</div>
+            triggers="mouseenter:mouseleave" [ngbPopover]="displayOrderingDoctor(row.orderingDoctor)"
+            [disablePopover]="displayOrderingDoctor(row.orderingDoctor) === '-'" [openDelay]="1000">{{
+            displayOrderingDoctor(row.orderingDoctor) }}</div>
         <div class="ml-2 text-neutral-800 w-1/12 truncate hidden md:block">{{ row.specimen }}</div>
         <div class="ml-2 text-neutral-800 w-20 truncate hidden md:block">
             <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
