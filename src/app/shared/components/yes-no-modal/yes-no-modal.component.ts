@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'mds-yes-no-modal',
+  standalone: false,
   templateUrl: './yes-no-modal.component.html',
   styleUrls: ['./yes-no-modal.component.scss']
 })

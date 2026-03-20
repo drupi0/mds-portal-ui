@@ -8,6 +8,11 @@
 }
 
 :host ::ng-deep {
+    .mds-soft-panel,
+    .mds-surface-card {
+        box-shadow: none !important;
+    }
+
     .dropdown-toggle::after {
         display:none;
     }

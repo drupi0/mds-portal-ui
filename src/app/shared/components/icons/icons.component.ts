@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewRef 
 
 @Component({
   selector: 'mds-icons',
+  standalone: false,
   templateUrl: './icons.component.html',
   styleUrls: ['./icons.component.scss']
 })

@@ -18,10 +18,15 @@ export interface TemplateGroup {
     values: string[];
 }
 export interface PatientModel {
-    id?: string
+    id?: string | number
     name: string,
     dateOfBirth: string,
     sex: string,
+}
+
+export interface SpecNoRecordDetails {
+    specNo: string;
+    records: PatientRecordModel[];
 }
 
 export interface StaffModel {
@@ -34,19 +39,25 @@ export interface PatientRecordModel {
     id?: string,
     date: string,
     patient: PatientModel,
-    pathologist: StaffModel,
-    performedBy: StaffModel,
-    verifiedBy: StaffModel,
+    pathologist: StaffModel | null,
+    performedBy: StaffModel | null,
+    verifiedBy: StaffModel | null,
     specNo: string,
     accessionNo: string,
     orderingDoctor: string,
     status: string,
     specimen: string,
     ordered: string,
-    collectionDateTime: string,
-    receivedDateTime: string,
+    collectionDateTime: number | null,
+    receivedDateTime: number | null,
     comments: string
     data: string
+}
+
+export interface PatientRecordViewGroup {
+    id: 'records' | 'mrNo' | 'patient';
+    label: string;
+    description: string;
 }
 
 export interface Pagination<T> {

@@ -165,8 +165,24 @@ export class FormsTableComponent implements OnInit {
     return this.accessLevel === "admin" || this.accessLevel === "superAdmin";
   }
 
-  convertDate(timeMillisStr: string) {
-    return timeMillisStr.length ? timeMillisStr : "-";
-    // return new Date(parseFloat(timeMillisStr)).toISOString();
+  convertDate(value: string | number | null | undefined) {
+    if (value === null || value === undefined || value === "") {
+      return "-";
+    }
+
+    if (typeof value === "number") {
+      const dateObj = new Date(value);
+      if (Number.isNaN(dateObj.getTime())) {
+        return "-";
+      }
+
+      return `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}`;
+    }
+
+    return value.length ? value : "-";
+  }
+
+  displayOrderingDoctor(value: string | null | undefined) {
+    return value?.trim()?.length ? value.trim() : "-";
   }
 }

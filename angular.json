@@ -44,8 +44,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "4kb",
+                  "maximumError": "6kb"
                 }
               ],
               "outputHashing": "all"
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "mds-portal-ui:build:production"
+              "buildTarget": "mds-portal-ui:build:production"
             },
             "development": {
-              "browserTarget": "mds-portal-ui:build:development"
+              "buildTarget": "mds-portal-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "mds-portal-ui:build"
+            "buildTarget": "mds-portal-ui:build"
           }
         },
         "test": {

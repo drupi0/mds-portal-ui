@@ -3,3 +3,42 @@
         display:none;
     }
 }
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+    overflow: hidden;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+    }
+}
+
+.theme-toggle__dark-side {
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(0deg) scale(1);
+    transform-origin: center;
+    transition: transform 500ms ease, color 180ms ease;
+}
+
+.theme-toggle--toggled {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.theme-toggle--toggled .theme-toggle__dark-side {
+    transform: rotate(180deg) scale(1.08);
+}

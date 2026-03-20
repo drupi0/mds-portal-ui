@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@a
 import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'mds-datetimepicker',
+  standalone: false,
   templateUrl: './datetimepicker.component.html',
   styleUrls: ['./datetimepicker.component.scss'],
 })
 export class DatetimepickerComponent implements OnChanges {
   @Input() id: string | undefined;
 
-  @Input() date: string | undefined;
+  @Input() date: string | number | null | undefined;
 
   @Input() showTime: boolean = true;
   @Input() minDate: NgbDateStruct = {} as NgbDateStruct;
@@ -23,10 +24,19 @@ export class DatetimepickerComponent implements OnChanges {
 
   ngOnChanges() {
     if (!this.date) {
+      this.dateModel = "";
+      this.dateTimeModel = "";
       return;
     }
 
-    const dateStr = this.date?.split(" ");
+    const normalizedDate = typeof this.date === "number" ? this.formatTimestamp(this.date) : this.date;
+    if (!normalizedDate) {
+      this.dateModel = "";
+      this.dateTimeModel = "";
+      return;
+    }
+
+    const dateStr = normalizedDate.split(" ");
     if (dateStr?.length <= 1) {
       this.setDate(dateStr[0]);
       return;
@@ -147,6 +157,16 @@ export class DatetimepickerComponent implements OnChanges {
         second: currentTime.getSeconds()
       }
     }
+  }
+
+  private formatTimestamp(timestamp: number): string {
+    const dateObj = new Date(timestamp);
+
+    if (Number.isNaN(dateObj.getTime())) {
+      return "";
+    }
+
+    return `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}`;
   }
 
   constructor() { }

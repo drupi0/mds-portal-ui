@@ -1,3 +1,4 @@
+import { provideZoneChangeDetection } from "@angular/core";
 /// <reference types="@angular/localize" />
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -12,7 +13,7 @@ loader.then((env) => {
   environment.AUTH_REALM = env.AUTH_REALM;
   environment.AUTH_URL = env.AUTH_URL;
 
-  platformBrowserDynamic().bootstrapModule(AppModule)
+  platformBrowserDynamic().bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], })
   .catch(err => console.error(err));
 
 });

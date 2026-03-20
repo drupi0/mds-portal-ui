@@ -2,6 +2,52 @@
     .dropdown-toggle::after {
         display: none;
     }
+
+    .datetime-menu {
+        background: var(--mds-surface-strong);
+        border: 1px solid var(--mds-border);
+        box-shadow: var(--mds-shadow);
+    }
+
+    .datetime-panel {
+        background: var(--mds-surface-soft);
+    }
+
+    ngb-datepicker,
+    ngb-timepicker {
+        color: var(--mds-text);
+    }
+
+    .ngb-dp-month,
+    .ngb-dp-content,
+    .ngb-tp,
+    .ngb-tp-input-container,
+    .ngb-dp-header,
+    .ngb-dp-weekdays,
+    .ngb-dp-weekday,
+    .ngb-dp-day,
+    .ngb-dp-arrow-btn,
+    .btn-light,
+    .btn-outline-secondary {
+        background: transparent !important;
+        color: var(--mds-text) !important;
+        border-color: var(--mds-border) !important;
+    }
+
+    .ngb-dp-day .btn-light:hover,
+    .ngb-dp-day .btn-light:focus,
+    .ngb-dp-arrow-btn:hover,
+    .btn-outline-secondary:hover {
+        background: var(--mds-interactive-soft) !important;
+        color: var(--mds-heading) !important;
+    }
+
+    .bg-primary,
+    .btn-primary {
+        background: var(--mds-interactive-strong) !important;
+        border-color: transparent !important;
+        color: #fff !important;
+    }
 }
 
 .dropdown-menu {

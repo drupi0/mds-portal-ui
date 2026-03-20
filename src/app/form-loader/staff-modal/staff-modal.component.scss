@@ -1,9 +1,31 @@
-.hover:hover {
-    background-color: #ececec;
-}
-
 .scrollbars {
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.staff-modal {
+    color: var(--mds-text);
+}
+
+.staff-label {
+    color: var(--mds-text-muted);
+}
+
+.staff-row {
+    color: var(--mds-text);
+    border-radius: 12px;
+    transition: background-color 150ms ease, box-shadow 150ms ease;
+
+    &:hover {
+        background: var(--mds-interactive-soft);
+    }
+}
+
+.staff-name {
+    color: var(--mds-text);
+}
+
+.staff-license {
+    color: var(--mds-text-muted);
 }
