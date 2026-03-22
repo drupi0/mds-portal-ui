@@ -58,20 +58,36 @@
               <div class="mds-muted text-sm">{{ group.records.length }} record{{ group.records.length === 1 ? '' : 's' }}</div>
             </div>
           </div>
+          <div class="group-record-header px-4 py-2">
+            <div class="group-record-header__main">
+              <div class="w-28 truncate">MR No.</div>
+              <div class="w-40 truncate hidden lg:block">Collected</div>
+              <div class="w-40 truncate hidden lg:block">Received</div>
+              <div class="w-56 truncate hidden md:block">Patient's Name</div>
+              <div class="flex-1 min-w-32 truncate">Ordered</div>
+              <div class="w-32 truncate hidden md:block">Specimen</div>
+            </div>
+            <div class="group-record-header__status w-24">Status</div>
+            <div class="group-record-header__actions"></div>
+          </div>
           <div class="divide-y divide-[var(--mds-border)]">
             @for (record of group.records; track record.id) {
               <div class="group-record-row px-4 py-3">
                 <div class="group-record-row__main">
-                  <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                  <div class="w-52 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
-                  <div class="flex-1 mds-text truncate">{{ record.ordered || '-' }}</div>
-                  <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                  <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-28 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                  <div class="w-40 mds-text truncate hidden lg:block">{{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-40 mds-text truncate hidden lg:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-56 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                  <div class="flex-1 min-w-32 mds-text truncate">{{ record.ordered || '-' }}</div>
+                  <div class="w-32 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
                 </div>
                 <div class="group-record-row__meta md:hidden">
                   <div class="mds-text truncate">{{ record.patient.name }}</div>
+                  <div class="mds-muted text-sm">MR No: {{ record.specNo || '-' }}</div>
+                  <div class="mds-muted text-sm">Collected: {{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
                   <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
                   <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="mds-muted text-sm">Ordered: {{ record.ordered || '-' }}</div>
                 </div>
                 <div class="group-record-row__status w-24">
                   <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
@@ -126,19 +142,36 @@
               @if (isPatientLoading(patient)) {
                 <div class="px-4 py-4 mds-muted text-sm">Loading records...</div>
               } @else if (patientRecordsFor(patient).length) {
+                <div class="group-record-header px-4 py-2">
+                  <div class="group-record-header__main">
+                    <div class="w-28 truncate">MR No.</div>
+                    <div class="w-40 truncate hidden lg:block">Collected</div>
+                    <div class="w-40 truncate hidden lg:block">Received</div>
+                    <div class="w-56 truncate hidden md:block">Patient's Name</div>
+                    <div class="flex-1 min-w-32 truncate">Ordered</div>
+                    <div class="w-32 truncate hidden md:block">Specimen</div>
+                  </div>
+                  <div class="group-record-header__status w-24">Status</div>
+                  <div class="group-record-header__actions"></div>
+                </div>
                 <div class="divide-y divide-[var(--mds-border)]">
                   @for (record of patientRecordsFor(patient); track record.id) {
                     <div class="group-record-row px-4 py-3">
                       <div class="group-record-row__main">
-                        <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                        <div class="w-52 mds-text truncate hidden md:block">{{ record.ordered || '-' }}</div>
-                        <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                        <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-28 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                        <div class="w-40 mds-text truncate hidden lg:block">{{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-40 mds-text truncate hidden lg:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-56 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                        <div class="flex-1 min-w-32 mds-text truncate">{{ record.ordered || '-' }}</div>
+                        <div class="w-32 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
                       </div>
                       <div class="group-record-row__meta md:hidden">
-                        <div class="mds-text truncate">{{ record.ordered || '-' }}</div>
+                        <div class="mds-text truncate">{{ record.patient.name }}</div>
+                        <div class="mds-muted text-sm">MR No: {{ record.specNo || '-' }}</div>
+                        <div class="mds-muted text-sm">Collected: {{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
                         <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
                         <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="mds-muted text-sm">Ordered: {{ record.ordered || '-' }}</div>
                       </div>
                       <div class="group-record-row__status w-24">
                         <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
