@@ -1,6 +1,6 @@
-<div class="d-flex mb-1 mt-4 px-4">
-  <div class="flex items-center w-full">
-    <div ngbDropdown class="d-inline-block mr-2">
+<div class="form-toolbar px-4 mt-4 mb-1">
+  <div class="form-toolbar__inner">
+    <div ngbDropdown class="form-toolbar__dropdown">
       <button type="button" class="view-dropdown" ngbDropdownToggle>
         <span class="font-semibold truncate">{{ currentViewOption.label }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -16,14 +16,14 @@
         }
       </div>
     </div>
-    <div class="relative w-full">
+    <div class="relative form-toolbar__search">
       <input [placeholder]="searchPlaceholder" #searchForm type="text"
         class="w-full !py-2 mr-1 form-control rounded-xl shadow-none" name="searchBox" (change)="onSearch(searchForm.value)">
-      <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1">
+      <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1 search-hint">
         <span class="mds-muted text-sm">Press Enter</span>
       </div>
     </div>
-    <button class="btn-primary-tw ml-2 !rounded-xl !px-4 !py-2.5" [routerLink]="['new']">
+    <button class="btn-primary-tw form-toolbar__action !rounded-xl !px-4 !py-2.5" [routerLink]="['new']">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
           <path fill-rule="evenodd"
@@ -60,16 +60,23 @@
           </div>
           <div class="divide-y divide-[var(--mds-border)]">
             @for (record of group.records; track record.id) {
-              <div class="px-4 py-3 flex items-center gap-3">
-                <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                <div class="w-52 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
-                <div class="flex-1 mds-text truncate">{{ record.ordered || '-' }}</div>
-                <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
-                <div class="w-24">
+              <div class="group-record-row px-4 py-3">
+                <div class="group-record-row__main">
+                  <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                  <div class="w-52 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                  <div class="flex-1 mds-text truncate">{{ record.ordered || '-' }}</div>
+                  <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
+                  <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                </div>
+                <div class="group-record-row__meta md:hidden">
+                  <div class="mds-text truncate">{{ record.patient.name }}</div>
+                  <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
+                  <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                </div>
+                <div class="group-record-row__status w-24">
                   <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
                 </div>
-                <div class="flex items-center gap-2 ml-auto">
+                <div class="group-record-row__actions flex items-center gap-2 ml-auto">
                   <button class="mds-icon-button p-2 rounded-full" (click)="editRecord(record)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="w-5 h-5">
@@ -121,15 +128,22 @@
               } @else if (patientRecordsFor(patient).length) {
                 <div class="divide-y divide-[var(--mds-border)]">
                   @for (record of patientRecordsFor(patient); track record.id) {
-                    <div class="px-4 py-3 flex items-center gap-3">
-                      <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                      <div class="w-52 mds-text truncate hidden md:block">{{ record.ordered || '-' }}</div>
-                      <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                      <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
-                      <div class="w-24">
+                    <div class="group-record-row px-4 py-3">
+                      <div class="group-record-row__main">
+                        <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                        <div class="w-52 mds-text truncate hidden md:block">{{ record.ordered || '-' }}</div>
+                        <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
+                        <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                      </div>
+                      <div class="group-record-row__meta md:hidden">
+                        <div class="mds-text truncate">{{ record.ordered || '-' }}</div>
+                        <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
+                        <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                      </div>
+                      <div class="group-record-row__status w-24">
                         <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
                       </div>
-                      <div class="flex items-center gap-2 ml-auto">
+                      <div class="group-record-row__actions flex items-center gap-2 ml-auto">
                         <button class="mds-icon-button p-2 rounded-full" (click)="editRecord(record)">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">

@@ -1,0 +1,96 @@
+.form-actions-modal__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.form-actions-modal__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--mds-heading);
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+
+.form-actions-modal__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.form-actions-modal__danger-zone {
+    margin-top: 0.125rem;
+    padding-top: 0.25rem;
+}
+
+.form-actions-modal__button,
+.form-actions-modal__cancel {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+    border-radius: 999px !important;
+    font-size: 1rem;
+    font-weight: 700;
+    gap: 0.625rem;
+    border-width: 1px;
+    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.form-actions-modal__button {
+    color: var(--mds-heading);
+    background: color-mix(in srgb, var(--mds-surface-strong) 92%, transparent);
+    border-color: var(--mds-control-border);
+    justify-content: flex-start;
+    text-align: left;
+    padding-left: 1.75rem !important;
+}
+
+.form-actions-modal__button:hover {
+    background: var(--mds-interactive-soft);
+    color: var(--mds-heading);
+}
+
+.form-actions-modal__button--danger {
+    color: #ef6b63;
+    border-color: rgba(239, 107, 99, 0.22);
+}
+
+.form-actions-modal__button--danger:hover {
+    background: rgba(239, 107, 99, 0.12);
+    color: #ef6b63;
+}
+
+.form-actions-modal__cancel {
+    justify-content: center;
+    min-height: 0;
+    padding: 0.125rem 0 !important;
+    border: none;
+    background: transparent;
+    color: var(--mds-text-muted);
+    font-size: 0.975rem;
+}
+
+.form-actions-modal__cancel:hover {
+    color: var(--mds-text);
+}
+
+@media (max-width: 575.98px) {
+    .form-actions-modal__body {
+        gap: 0.75rem;
+        padding: 1.5rem 1rem 1rem;
+    }
+
+    .form-actions-modal__button,
+    .form-actions-modal__cancel {
+        min-height: 3rem;
+    }
+
+    .form-actions-modal__cancel {
+        min-height: 0;
+    }
+}

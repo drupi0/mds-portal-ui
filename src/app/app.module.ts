@@ -27,6 +27,7 @@ import { initializeKeycloak } from './keycloak-init.factory';
 import {
   DatetimepickerComponent
 } from './shared/components/datetimepicker/datetimepicker.component';
+import { FormActionsModalComponent } from './shared/components/form-actions-modal/form-actions-modal.component';
 import { IconsComponent } from './shared/components/icons/icons.component';
 import { YesNoModalComponent } from './shared/components/yes-no-modal/yes-no-modal.component';
 import { TemplateCreatorComponent } from './template-creator/template-creator.component';
@@ -140,6 +141,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     IconsComponent,
     StaffModalComponent,
     YesNoModalComponent,
+    FormActionsModalComponent,
     PrintformComponent,
     DatetimepickerComponent,
   ],
@@ -196,5 +198,4 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
 
