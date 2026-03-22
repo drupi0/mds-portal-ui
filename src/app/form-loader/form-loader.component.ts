@@ -32,21 +32,21 @@ export class FormLoaderComponent implements OnInit {
   patientRecordViews: PatientRecordViewGroup[] = [
     {
       id: 'records',
-      label: 'Patient Records',
+      label: 'Patient Record',
       description: 'Browse all submitted records'
     },
     {
       id: 'mrNo',
-      label: 'By MR No',
+      label: 'Medical Record No.',
       description: 'Grouped by medical record number'
     },
     {
       id: 'patient',
-      label: 'By Patient',
+      label: 'Patient Name',
       description: 'Grouped by patient'
     }
   ];
-  currentView: PatientRecordViewGroup['id'] = 'records';
+  currentView: PatientRecordViewGroup['id'] = 'mrNo';
   specNoGroups: SpecNoRecordDetails[] = [];
   patients: PatientModel[] = [];
   patientRecordsByPatientId: Record<string, PatientRecordModel[]> = {};
@@ -367,7 +367,9 @@ export class FormLoaderComponent implements OnInit {
   }
 
   get currentViewOption() {
-    return this.patientRecordViews.find(view => view.id === this.currentView) || this.patientRecordViews[0];
+    return this.patientRecordViews.find(view => view.id === this.currentView)
+      || this.patientRecordViews.find(view => view.id === 'mrNo')
+      || this.patientRecordViews[0];
   }
 
   deleteRecord(form: PatientRecordModel) {

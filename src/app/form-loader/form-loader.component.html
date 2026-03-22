@@ -18,20 +18,14 @@
     </div>
     <div class="relative form-toolbar__search">
       <input [placeholder]="searchPlaceholder" #searchForm type="text"
-        class="w-full !py-2 mr-1 form-control rounded-xl shadow-none" name="searchBox" (change)="onSearch(searchForm.value)">
+        class="w-full !py-2 mr-1 form-control rounded-xl shadow-none form-toolbar__search-input" name="searchBox" (change)="onSearch(searchForm.value)">
       <div class="pointer-events-none flex items-center absolute right-3 inset-y-1 p-1 search-hint">
         <span class="mds-muted text-sm">Press Enter</span>
       </div>
     </div>
-    <button class="btn-primary-tw form-toolbar__action !rounded-xl !px-4 !py-2.5" [routerLink]="['new']">
-      <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
-          <path fill-rule="evenodd"
-            d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zM10 8a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5A.75.75 0 0110 8z"
-            clip-rule="evenodd" />
-        </svg>
-        <label class="ml-1">New</label>
-      </div>
+    <button class="form-toolbar__action form-toolbar__action--new" [routerLink]="['new']">
+      <mds-icons icon="plus" [width]="18" [height]="18"></mds-icons>
+      <span>New</span>
     </button>
   </div>
 </div>
@@ -58,20 +52,36 @@
               <div class="mds-muted text-sm">{{ group.records.length }} record{{ group.records.length === 1 ? '' : 's' }}</div>
             </div>
           </div>
+          <div class="group-record-header px-4 py-2">
+            <div class="group-record-header__main">
+              <div class="w-28 truncate">MR No.</div>
+              <div class="w-40 truncate hidden lg:block">Collected</div>
+              <div class="w-40 truncate hidden lg:block">Received</div>
+              <div class="w-56 truncate hidden md:block">Patient's Name</div>
+              <div class="flex-1 min-w-32 truncate">Ordered</div>
+              <div class="w-32 truncate hidden md:block">Specimen</div>
+            </div>
+            <div class="group-record-header__status w-24">Status</div>
+            <div class="group-record-header__actions"></div>
+          </div>
           <div class="divide-y divide-[var(--mds-border)]">
             @for (record of group.records; track record.id) {
               <div class="group-record-row px-4 py-3">
                 <div class="group-record-row__main">
-                  <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                  <div class="w-52 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
-                  <div class="flex-1 mds-text truncate">{{ record.ordered || '-' }}</div>
-                  <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                  <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-28 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                  <div class="w-40 mds-text truncate hidden lg:block">{{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-40 mds-text truncate hidden lg:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="w-56 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                  <div class="flex-1 min-w-32 mds-text truncate">{{ record.ordered || '-' }}</div>
+                  <div class="w-32 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
                 </div>
                 <div class="group-record-row__meta md:hidden">
                   <div class="mds-text truncate">{{ record.patient.name }}</div>
+                  <div class="mds-muted text-sm">MR No: {{ record.specNo || '-' }}</div>
+                  <div class="mds-muted text-sm">Collected: {{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
                   <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
                   <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                  <div class="mds-muted text-sm">Ordered: {{ record.ordered || '-' }}</div>
                 </div>
                 <div class="group-record-row__status w-24">
                   <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
@@ -126,19 +136,36 @@
               @if (isPatientLoading(patient)) {
                 <div class="px-4 py-4 mds-muted text-sm">Loading records...</div>
               } @else if (patientRecordsFor(patient).length) {
+                <div class="group-record-header px-4 py-2">
+                  <div class="group-record-header__main">
+                    <div class="w-28 truncate">MR No.</div>
+                    <div class="w-40 truncate hidden lg:block">Collected</div>
+                    <div class="w-40 truncate hidden lg:block">Received</div>
+                    <div class="w-56 truncate hidden md:block">Patient's Name</div>
+                    <div class="flex-1 min-w-32 truncate">Ordered</div>
+                    <div class="w-32 truncate hidden md:block">Specimen</div>
+                  </div>
+                  <div class="group-record-header__status w-24">Status</div>
+                  <div class="group-record-header__actions"></div>
+                </div>
                 <div class="divide-y divide-[var(--mds-border)]">
                   @for (record of patientRecordsFor(patient); track record.id) {
                     <div class="group-record-row px-4 py-3">
                       <div class="group-record-row__main">
-                        <div class="min-w-24 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
-                        <div class="w-52 mds-text truncate hidden md:block">{{ record.ordered || '-' }}</div>
-                        <div class="w-40 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
-                        <div class="w-44 mds-text truncate hidden md:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-28 mds-heading font-semibold cursor-pointer truncate" (click)="editRecord(record)">{{ record.specNo }}</div>
+                        <div class="w-40 mds-text truncate hidden lg:block">{{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-40 mds-text truncate hidden lg:block">{{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="w-56 mds-text truncate hidden md:block">{{ record.patient.name }}</div>
+                        <div class="flex-1 min-w-32 mds-text truncate">{{ record.ordered || '-' }}</div>
+                        <div class="w-32 mds-text truncate hidden md:block">{{ record.specimen || '-' }}</div>
                       </div>
                       <div class="group-record-row__meta md:hidden">
-                        <div class="mds-text truncate">{{ record.ordered || '-' }}</div>
+                        <div class="mds-text truncate">{{ record.patient.name }}</div>
+                        <div class="mds-muted text-sm">MR No: {{ record.specNo || '-' }}</div>
+                        <div class="mds-muted text-sm">Collected: {{ record.collectionDateTime ? (record.collectionDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
                         <div class="mds-muted text-sm">Specimen: {{ record.specimen || '-' }}</div>
                         <div class="mds-muted text-sm">Received: {{ record.receivedDateTime ? (record.receivedDateTime | date:'MM/dd/yyyy HH:mm') : '-' }}</div>
+                        <div class="mds-muted text-sm">Ordered: {{ record.ordered || '-' }}</div>
                       </div>
                       <div class="group-record-row__status w-24">
                         <ng-container [ngTemplateOutlet]="statusBadge" [ngTemplateOutletContext]="{ status: record.status }"></ng-container>
@@ -185,28 +212,28 @@
 </div>
 
 @if (currentView === 'records' && !((searchString | async) || '').trim().length && !isLoading) {
-  <div class="px-4 mt-4 flex justify-end mb-4">
+  <div class="px-4 mt-4 flex justify-center mb-4">
     <ngb-pagination [(page)]="pagination.currentPage" (pageChange)="loadRecords()" [pageSize]="pagination.size"
-    [collectionSize]="pagination.totalElements" [maxSize]="10"></ngb-pagination>
+    [collectionSize]="pagination.totalElements" [maxSize]="3" [ellipses]="true"></ngb-pagination>
   </div>
 }
 @if (currentView === 'records' && ((searchString | async) || '').trim().length && !isLoading) {
-  <div class="px-4 mt-4 flex justify-end mb-4">
+  <div class="px-4 mt-4 flex justify-center mb-4">
     <ngb-pagination [(page)]="searchPagination.currentPage" (pageChange)="loadSearchRecords()"
       [pageSize]="searchPagination.size" [collectionSize]="searchPagination.totalElements"
-    [maxSize]="10"></ngb-pagination>
+    [maxSize]="3" [ellipses]="true"></ngb-pagination>
   </div>
 }
 @if (currentView === 'mrNo' && !isGroupedViewLoading && filteredSpecNoGroups().length) {
-  <div class="px-4 mt-4 flex justify-end mb-4">
+  <div class="px-4 mt-4 flex justify-center mb-4">
     <ngb-pagination [(page)]="mrNoPagination.currentPage" [pageSize]="mrNoPagination.size"
-      [collectionSize]="filteredSpecNoGroups().length" [maxSize]="10"></ngb-pagination>
+      [collectionSize]="filteredSpecNoGroups().length" [maxSize]="3" [ellipses]="true"></ngb-pagination>
   </div>
 }
 @if (currentView === 'patient' && !isGroupedViewLoading && filteredPatients().length) {
-  <div class="px-4 mt-4 flex justify-end mb-4">
+  <div class="px-4 mt-4 flex justify-center mb-4">
     <ngb-pagination [(page)]="patientPagination.currentPage" [pageSize]="patientPagination.size"
-      [collectionSize]="filteredPatients().length" [maxSize]="10"></ngb-pagination>
+      [collectionSize]="filteredPatients().length" [maxSize]="3" [ellipses]="true"></ngb-pagination>
   </div>
 }
 

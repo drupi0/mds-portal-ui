@@ -665,16 +665,36 @@ $body-bg: #e8f4f7;
     }
 }
 
+.pagination {
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.page-item {
+    display: flex;
+}
+
 .page-link {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.7rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--mds-surface-strong) !important;
     color: var(--mds-text) !important;
     border-color: var(--mds-border) !important;
     box-shadow: none !important;
+    border-radius: 999px !important;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .page-link:hover {
     background: var(--mds-interactive-soft) !important;
     color: var(--mds-heading) !important;
+    border-color: var(--mds-control-border) !important;
 }
 
 .page-item.active .page-link {
