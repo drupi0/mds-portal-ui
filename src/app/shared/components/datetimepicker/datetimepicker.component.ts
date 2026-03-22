@@ -1,173 +1,134 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
-import { NgbDateStruct, NgbDropdown, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import flatpickr from 'flatpickr';
+import { Instance as FlatpickrInstance } from 'flatpickr/dist/types/instance';
+import { Options as FlatpickrOptions } from 'flatpickr/dist/types/options';
+
 @Component({
   selector: 'mds-datetimepicker',
   standalone: false,
   templateUrl: './datetimepicker.component.html',
   styleUrls: ['./datetimepicker.component.scss'],
 })
-export class DatetimepickerComponent implements OnChanges {
+export class DatetimepickerComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() id: string | undefined;
 
   @Input() date: string | number | null | undefined;
 
-  @Input() showTime: boolean = true;
+  @Input() showTime = true;
+  @Input() showToggle = true;
   @Input() minDate: NgbDateStruct = {} as NgbDateStruct;
 
-  @ViewChild("dp") dp: NgbDropdown | undefined;
-
-  dateModel: string = "";
-  timeModel: NgbTimeStruct = {} as NgbTimeStruct;
-  dateTimeModel: string = "";
+  @ViewChild('pickerInput') pickerInput?: ElementRef<HTMLInputElement>;
 
   @Output() onChange: EventEmitter<string> = new EventEmitter();
 
-  ngOnChanges() {
-    if (!this.date) {
-      this.dateModel = "";
-      this.dateTimeModel = "";
+  private picker?: FlatpickrInstance;
+  private viewReady = false;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.viewReady && this.pickerInput?.nativeElement) {
+      this.initializePicker();
       return;
     }
 
-    const normalizedDate = typeof this.date === "number" ? this.formatTimestamp(this.date) : this.date;
-    if (!normalizedDate) {
-      this.dateModel = "";
-      this.dateTimeModel = "";
+    if (!this.viewReady || !this.picker) {
       return;
     }
 
-    const dateStr = normalizedDate.split(" ");
-    if (dateStr?.length <= 1) {
-      this.setDate(dateStr[0]);
+    if (changes['showTime'] || changes['minDate']) {
+      this.initializePicker();
       return;
     }
 
-    this.setTime(dateStr[1]);
-    this.setDate(dateStr[0]);
-
-    this.updateValue(false);
-  }
-
-  onDateSet(dateObj: string) {
-    if (!dateObj) {
-      this.onChange.emit("");
-      return;
-    }
-
-    if (!dateObj.length) {
-      this.onChange.emit("");
-      return;
-    }
-
-    const dateSplit = dateObj.split("/");
-    if (dateSplit.length < 3 || dateSplit[2].startsWith("0")) {
-      this.onChange.emit("");
-      return;
-    }
-
-    this.setDate(dateObj);
-  }
-
-  onTimeSet(timeObj: NgbTimeStruct) {
-    this.setTime(`${String(timeObj.hour).padStart(2, "0")}:${String(timeObj.minute).padStart(2, "0")}`);
-  }
-
-  updateValue(isOpen: boolean) {
-    if (isOpen) {
-      return;
-    }
-
-    if (this.showTime && !this.timeModel.hour && !this.timeModel.minute) {
-      return;
-    }
-
-    this.dateTimeModel = `${this.dateModel} ${String(this.timeModel.hour).padStart(2, "0")}:${String(this.timeModel.minute).padStart(2, "0")}`;
-
-    this.onChange.emit(this.dateTimeModel);
-  }
-
-  validateDateTime(dateTimeStr: string) {
-    const dtSplit = dateTimeStr.split(" ");
-
-    if (dtSplit.length <= 1) {
-      this.onChange.emit("");
-      return;
-    }
-
-    const timeSplit = dtSplit[1].split(":");
-
-    if (timeSplit.length <= 1) {
-      this.onChange.emit("");
-      return;
-    }
-
-    if (timeSplit[0].length !== 2 || timeSplit[1].length !== 2) {
-      this.onChange.emit("");
-      return;
-    }
-
-    this.setDate(dtSplit[0]);
-    this.setTime(dtSplit[1]);
-
-    this.updateValue(false);
-  }
-
-  setCurrent() {
-    const currentDate = new Date();
-    const formattedDate = `${String(currentDate.getMonth() + 1).padStart(2, '0')}/${String(currentDate.getDate()).padStart(2, '0')}/${currentDate.getFullYear()} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}`;
-    const dtSplit = formattedDate.split(" ");
-    this.setTime(dtSplit[1]);
-    this.setDate(dtSplit[0]);
-
-    this.updateValue(false);
-  }
-
-  private setDate(dateStr: string) {
-    if (isNaN(Date.parse(dateStr))) {
-      return;
-    }
-
-    const dateObj = new Date(dateStr);
-    this.dateModel = `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${String(dateObj.getFullYear()).padStart(4, "0")}`;
-
-    if (!this.showTime) {
-      this.onChange.emit(this.dateModel);
-      return;
+    if (changes['date']) {
+      this.syncPickerValue();
     }
   }
 
-  private setTime(timeStr: string) {
-    const hhMM = timeStr.split(":");
-
-    try {
-      if (hhMM.length <= 1) {
-        throw new Error("Invalid Time");
-      }
-
-      this.timeModel = {
-        hour: parseInt(hhMM[0], 10),
-        minute: parseInt(hhMM[1], 10),
-        second: 0
-      }
-    } catch (e) {
-      const currentTime = new Date();
-      this.timeModel = {
-        hour: currentTime.getHours(),
-        minute: currentTime.getMinutes(),
-        second: currentTime.getSeconds()
-      }
-    }
+  ngAfterViewInit() {
+    this.initializePicker();
   }
 
-  private formatTimestamp(timestamp: number): string {
-    const dateObj = new Date(timestamp);
-
-    if (Number.isNaN(dateObj.getTime())) {
-      return "";
-    }
-
-    return `${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}`;
+  ngOnDestroy() {
+    this.picker?.destroy();
   }
 
-  constructor() { }
+  togglePicker() {
+    this.picker?.toggle();
+  }
+
+  syncManualValue() {
+    const value = this.pickerInput?.nativeElement.value?.trim() || '';
+
+    if (!value.length) {
+      this.onChange.emit('');
+      return;
+    }
+
+    this.picker?.setDate(value, true, this.formatPattern);
+  }
+
+  private initializePicker() {
+    const input = this.pickerInput?.nativeElement;
+    if (!input) {
+      return;
+    }
+
+    this.picker?.destroy();
+
+    const config: FlatpickrOptions = {
+      allowInput: true,
+      clickOpens: true,
+      enableTime: this.showTime,
+      time_24hr: this.showTime,
+      dateFormat: this.formatPattern,
+      defaultDate: this.normalizedDate,
+      minDate: this.normalizedMinDate,
+      onChange: (_, dateStr) => this.onChange.emit(dateStr || ''),
+      onClose: (_, dateStr) => this.onChange.emit(dateStr || '')
+    };
+
+    this.picker = flatpickr(input, config);
+    this.viewReady = true;
+    this.syncPickerValue();
+  }
+
+  private syncPickerValue() {
+    if (!this.picker) {
+      return;
+    }
+
+    if (!this.normalizedDate) {
+      this.picker.clear();
+      return;
+    }
+
+    this.picker.setDate(this.normalizedDate, false, this.formatPattern);
+  }
+
+  private get normalizedDate(): string | Date | undefined {
+    if (this.date === null || this.date === undefined || this.date === '') {
+      return undefined;
+    }
+
+    if (typeof this.date === 'number') {
+      const dateObj = new Date(this.date);
+      return Number.isNaN(dateObj.getTime()) ? undefined : dateObj;
+    }
+
+    return this.date;
+  }
+
+  private get normalizedMinDate(): Date | undefined {
+    if (!this.minDate?.year || !this.minDate?.month || !this.minDate?.day) {
+      return undefined;
+    }
+
+    return new Date(this.minDate.year, this.minDate.month - 1, this.minDate.day);
+  }
+
+  private get formatPattern() {
+    return this.showTime ? 'm/d/Y H:i' : 'm/d/Y';
+  }
 }

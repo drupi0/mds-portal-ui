@@ -1,0 +1,28 @@
+<div class="form-actions-modal">
+  <div class="modal-body form-actions-modal__body">
+    <div class="form-actions-modal__title">What do you want to do with this form?</div>
+
+    <div class="form-actions-modal__group">
+      <button type="button" class="form-actions-modal__button form-actions-modal__button--neutral" (click)="close('open')">
+        <mds-icons icon="file" [width]="18" [height]="18"></mds-icons>
+        <span>Open Form</span>
+      </button>
+
+      <button type="button" class="form-actions-modal__button form-actions-modal__button--neutral" (click)="close('duplicate')">
+        <mds-icons icon="copy" [width]="18" [height]="18"></mds-icons>
+        <span>Duplicate Form</span>
+      </button>
+    </div>
+
+    @if (canDelete) {
+      <div class="form-actions-modal__danger-zone">
+        <button type="button" class="form-actions-modal__button form-actions-modal__button--danger" (click)="close('delete')">
+          <mds-icons icon="trash" [width]="18" [height]="18"></mds-icons>
+          <span>Delete Form</span>
+        </button>
+      </div>
+    }
+
+    <button type="button" class="form-actions-modal__cancel" (click)="close('cancel')">Cancel</button>
+  </div>
+</div>

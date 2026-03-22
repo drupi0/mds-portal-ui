@@ -23,6 +23,7 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.2.3",
     "dom-to-image": "^2.6.0",
+    "flatpickr": "^4.6.13",
     "html-to-image": "^1.11.11",
     "jspdf": "^2.5.1",
     "keycloak-angular": "^21.0.0",

@@ -1,7 +1,8 @@
 import { CommonModule, KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbDropdownModule, NgbPopoverModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { NgbDropdownModule, NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormActionsModalComponent } from 'src/app/shared/components/form-actions-modal/form-actions-modal.component';
 import { PatientModel, PatientRecordModel } from 'src/app/shared/interfaces/template';
 
 @Component({
@@ -119,6 +120,42 @@ export class FormsTableComponent implements OnInit {
     this.onEdit.emit(data);
   }
 
+  openActions(data: PatientRecordModel, event: Event) {
+    event.stopPropagation();
+
+    const modalRef = this.modalService.open(FormActionsModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+      modalDialogClass: 'form-actions-modal-dialog'
+    });
+
+    modalRef.componentInstance.canDelete = this.canDelete;
+
+    modalRef.closed.subscribe((action?: 'open' | 'duplicate' | 'delete' | 'cancel') => {
+      if (!action || action === 'cancel') {
+        return;
+      }
+
+      if (action === 'open') {
+        this.edit(data);
+        return;
+      }
+
+      if (action === 'duplicate') {
+        this.router.navigate([data.id], {
+          relativeTo: this.route,
+          queryParams: { duplicate: true }
+        });
+        return;
+      }
+
+      if (action === 'delete' && this.canDelete) {
+        this.delete(data);
+      }
+    });
+  }
+
   keyPriority(key: string): number {
     return [...this.sortColumns$].filter(xkey => !xkey.startsWith("asc") && !xkey.startsWith("desc")).findIndex(xKey => xKey === key) + 1;
   }
@@ -185,4 +222,10 @@ export class FormsTableComponent implements OnInit {
   displayOrderingDoctor(value: string | null | undefined) {
     return value?.trim()?.length ? value.trim() : "-";
   }
+
+  constructor(
+    private modalService: NgbModal,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 }

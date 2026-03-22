@@ -1,5 +1,5 @@
 <div class="relative overflow-x-auto m-4">
-  <div class="mds-soft-panel flex items-center px-4 py-2 rounded-2xl my-2">
+  <div class="mds-soft-panel form-table-header flex items-center px-4 py-2 rounded-2xl my-2">
     <div class="mds-heading w-20 md:w-1/12 font-bold cursor-pointer truncate">MR No.</div>
     <div class="mds-heading ml-2 font-bold w-40 truncate hidden md:block">Collected</div>
     <div class="mds-heading ml-2 font-bold w-40 truncate hidden md:block">Received</div>
@@ -9,7 +9,7 @@
     <div class="mds-heading ml-2 font-bold w-1/12 truncate hidden md:block">Specimen</div>
     <div class="mds-heading ml-2 font-bold w-20 truncate hidden md:block">Status</div>
     <div class="flex-grow"></div>
-    <div class="mds-heading flex justify-end content-center font-bold w-24">
+    <div class="mds-heading form-table-header__filters flex justify-end content-center font-bold w-24">
       <div ngbDropdown [autoClose]="false" #filterDropdown="ngbDropdown" [container]="'body'">
         <button type="button"
           class="mds-icon-button flex p-2 rounded-xl items-center"
@@ -68,12 +68,34 @@
     </div>
   </div>
   @for (row of patientRecordData(); track row; let last = $last) {
-    <div class="mds-surface-card flex items-center p-3 rounded-2xl transition ease-in-out"
+    <div class="mds-surface-card form-table-row flex items-center p-3 rounded-2xl transition ease-in-out"
+        role="button" tabindex="0"
+        (click)="edit(row)" (keydown.enter)="edit(row)" (keydown.space)="edit(row); $event.preventDefault()"
         [ngClass]="{
             'mb-2': !last
         }">
-      <div class="mds-heading font-bold w-20 md:w-1/12 hover:text-cyan-500 cursor-pointer truncate"
-        (click)="edit(row)">{{
+      <div class="form-table-row__mobile-header md:hidden">
+        <div class="form-table-row__mobile-title">
+          <span class="mds-heading form-table-row__mobile-spec">{{ row.specNo }}</span>
+          <span class="mds-text form-table-row__mobile-divider">-</span>
+          <span class="mds-text form-table-row__mobile-test">{{ row.ordered || '-' }}</span>
+        </div>
+        <div class="form-table-row__mobile-tools">
+          <div class="w-24">
+            <ng-container [ngTemplateOutlet]="status" [ngTemplateOutletContext]="{
+                'status': row.status
+            }"></ng-container>
+          </div>
+          <button type="button" class="mds-icon-button p-2 rounded-full" (click)="openActions(row, $event)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="mds-heading form-table-row__mr font-bold w-20 md:w-1/12 hover:text-cyan-500 cursor-pointer truncate hidden md:block">{{
         row.specNo
       }}</div>
       <div class="mds-text ml-2 w-40 truncate hidden md:block" placement="top"
@@ -83,9 +105,9 @@
       <div class="mds-text ml-2 w-40 truncate hidden md:block" placement="top"
         triggers="mouseenter:mouseleave" [ngbPopover]="convertDate(row.receivedDateTime)" [openDelay]="500">{{
       convertDate(row.receivedDateTime) }}</div>
-      <div class="mds-text ml-2 w-4/12 md:w-2/12 truncate" placement="top" triggers="mouseenter:mouseleave"
+      <div class="mds-text form-table-row__patient ml-2 w-4/12 md:w-2/12 truncate hidden md:block" placement="top" triggers="mouseenter:mouseleave"
       [ngbPopover]="row.patient.name" [openDelay]="1000">{{ row.patient.name }}</div>
-      <div class="mds-text ml-2 w-5/12 md:w-2/12 truncate" triggers="mouseenter:mouseleave"
+      <div class="mds-text form-table-row__ordered ml-2 w-5/12 md:w-2/12 truncate hidden md:block" triggers="mouseenter:mouseleave"
       [ngbPopover]="row.ordered" [openDelay]="1000">{{ row.ordered }}</div>
       <div class="mds-text ml-2 w-2/12 truncate hidden md:block" placement="top"
         triggers="mouseenter:mouseleave" [ngbPopover]="displayOrderingDoctor(row.orderingDoctor)"
@@ -97,52 +119,21 @@
                 'status': row.status
             }"></ng-container>
       </div>
-      <div class="flex-grow"></div>
-      <div class="flex w-24 justify-end content-center">
-        <button class="mds-icon-button p-2 rounded-full" (click)="edit(row)" placement="top"
-          triggers="mouseenter:mouseleave" [ngbPopover]="'Open Form'" [openDelay]="1000">
+      <div class="form-table-row__mobile-meta md:hidden">
+        <div class="mds-text form-table-row__patient">{{ row.patient.name }}</div>
+        <div class="mds-muted text-sm">C: {{ convertDate(row.collectionDateTime) }}</div>
+        <div class="mds-muted text-sm">R: {{ convertDate(row.receivedDateTime) }}</div>
+        <div class="mds-muted text-sm">Spec: {{ row.specimen || '-' }}</div>
+      </div>
+      <div class="flex-grow form-table-row__spacer"></div>
+      <div class="flex w-24 justify-end content-center form-table-row__actions">
+        <button type="button" class="mds-icon-button p-2 rounded-full hidden md:inline-flex" (click)="openActions(row, $event)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"
-              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
           </svg>
         </button>
-        <div ngbDropdown class="d-inline-block">
-          <button type="button" class="mds-icon-button p-2 rounded-full" ngbDropdownToggle>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-            </svg>
-          </button>
-          <div ngbDropdownMenu class="border-0 shadow-md rounded overflow-hidden">
-            <button ngbDropdownItem [routerLink]="[row.id]" [queryParams]="{ duplicate: true }">
-              <div class="flex flex-row content-center py-2">
-                <svg class="w-5 h-5 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                  stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-                </svg>
-                <label class="ml-2">
-                  Duplicate Form
-                </label>
-              </div>
-            </button>
-            <button ngbDropdownItem (click)="delete(row)" [disabled]="!canDelete">
-              <div class="flex flex-row content-center py-2">
-                <svg class="w-5 h-5 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                  stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                </svg>
-                <label class="ml-2">
-                  Delete Form
-                </label>
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   }

@@ -11,7 +11,7 @@ import {
   PatientModel, PatientRecordModel, StaffModel, TemplateGroup, TemplateModel
 } from 'src/app/shared/interfaces/template';
 
-import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, NgZone, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -33,6 +33,17 @@ import { TemplateModalComponent } from '../template-modal/template-modal.compone
   styleUrls: ['./form-wizard.component.scss']
 })
 export class FormWizardComponent implements OnInit, AfterViewChecked {
+  private readonly actionCardPinOffset = 12;
+
+  @ViewChild('actionCard') actionCardRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('actionCardSlot') actionCardSlotRef?: ElementRef<HTMLDivElement>;
+
+  isActionCardFixed = false;
+  actionCardHeight = 0;
+  actionCardLeft = 0;
+  actionCardWidth = 0;
+
+  private actionCardResizeObserver?: ResizeObserver;
 
   defaultStaff: StaffModel = {
     name: "",
@@ -164,6 +175,14 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.cdRef.detectChanges();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupActionCardPinning();
+  }
+
+  ngOnDestroy(): void {
+    this.actionCardResizeObserver?.disconnect();
   }
 
 
@@ -354,6 +373,34 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     });
   }
 
+  deleteForm() {
+    const formId = this.defaultForm.get('id')?.getRawValue();
+    if (!formId) {
+      return;
+    }
+
+    const modalRef = this.modalService.open(YesNoModalComponent, {
+      size: 'lg',
+      backdrop: 'static'
+    });
+
+    modalRef.componentInstance.title = `Delete "${formId}"?`;
+    modalRef.componentInstance.modalBody = `Are you sure you want to PERMANENTLY delete this record?`;
+
+    modalRef.closed.subscribe((response) => {
+      if (!response) {
+        return;
+      }
+
+      this.api.deleteRecord(formId as string).subscribe(() => {
+        this.showSuccessToast(`Successfully deleted ${formId}`);
+        this.ngZone.run(() => {
+          this.router.navigate(['form']);
+        });
+      });
+    });
+  }
+
   clearForm() {
     this.defaultForm.reset();
     this.templateList.next([]);
@@ -375,6 +422,12 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
   printNowHandler(event: Event) {
     event.preventDefault();
     this.printForm(true);
+  }
+
+  @HostListener('window:scroll')
+  @HostListener('window:resize')
+  onViewportChange() {
+    this.updateActionCardPosition();
   }
 
   newTemplate() {
@@ -704,6 +757,41 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
     ];
 
     return { editor, toolbar }
+  }
+
+  private setupActionCardPinning() {
+    const actionCard = this.actionCardRef?.nativeElement;
+    const actionCardSlot = this.actionCardSlotRef?.nativeElement;
+
+    if (!actionCard || !actionCardSlot) {
+      return;
+    }
+
+    this.actionCardResizeObserver = new ResizeObserver(() => {
+      this.ngZone.run(() => {
+        this.updateActionCardPosition();
+      });
+    });
+
+    this.actionCardResizeObserver.observe(actionCard);
+    this.actionCardResizeObserver.observe(actionCardSlot);
+    this.updateActionCardPosition();
+  }
+
+  private updateActionCardPosition() {
+    const actionCard = this.actionCardRef?.nativeElement;
+    const actionCardSlot = this.actionCardSlotRef?.nativeElement;
+
+    if (!actionCard || !actionCardSlot) {
+      return;
+    }
+
+    const slotRect = actionCardSlot.getBoundingClientRect();
+
+    this.actionCardHeight = actionCard.offsetHeight;
+    this.actionCardLeft = 0;
+    this.actionCardWidth = window.innerWidth;
+    this.isActionCardFixed = slotRect.top <= this.actionCardPinOffset;
   }
 
   constructor(private route: ActivatedRoute, private modalService: NgbModal,

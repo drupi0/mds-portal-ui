@@ -17,3 +17,105 @@
         display:none;
     }
 }
+
+@media (max-width: 767.98px) {
+    .form-table-header {
+        padding: 0.75rem 1rem !important;
+        min-height: 0;
+    }
+
+    .form-table-header > :not(.form-table-header__filters) {
+        display: none;
+    }
+
+    .form-table-header__filters {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .form-table-header__filters .mds-icon-button {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .form-table-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+        padding: 1rem !important;
+        cursor: pointer;
+    }
+
+    .form-table-row__mr,
+    .form-table-row__mobile-meta,
+    .form-table-row__actions {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+
+    .form-table-row__patient,
+    .form-table-row__ordered {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .form-table-row__mobile-header {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .form-table-row__mobile-title {
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+    }
+
+    .form-table-row__mobile-spec {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .form-table-row__mobile-test {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--mds-heading);
+    }
+
+    .form-table-row__mobile-divider {
+        color: var(--mds-text-muted);
+    }
+
+    .form-table-row__mobile-tools {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-shrink: 0;
+    }
+
+    .form-table-row__patient {
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .form-table-row__ordered {
+        font-size: 0.95rem;
+    }
+
+    .form-table-row__mobile-meta {
+        display: grid;
+        gap: 0.125rem;
+    }
+
+    .form-table-row__spacer {
+        display: none;
+    }
+
+    .form-table-row__actions {
+        justify-content: flex-end;
+        padding-top: 0;
+    }
+}
