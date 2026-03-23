@@ -1,0 +1,283 @@
+.new-form-shell {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.new-form-panel,
+.new-form-stepper {
+    border: 1px solid var(--mds-border);
+    box-shadow: none !important;
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--mds-interactive-soft) 65%, transparent) 0%, transparent 34%),
+        color-mix(in srgb, var(--mds-surface-strong) 94%, transparent);
+}
+
+.new-form-panel__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mds-text-muted);
+}
+
+.new-form-wizard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.new-form-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    padding: 0 1rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 999px;
+    color: var(--mds-heading);
+    text-decoration: none;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--mds-surface) 88%, transparent);
+}
+
+.new-form-button--primary {
+    border-color: color-mix(in srgb, var(--mds-heading) 20%, var(--mds-border));
+    background: var(--mds-interactive-soft);
+}
+
+.new-form-panel--wizard {
+    min-width: 0;
+}
+
+.new-form-stepper {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.new-form-stepper__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1.1rem;
+    background: color-mix(in srgb, var(--mds-surface) 82%, transparent);
+    text-align: left;
+}
+
+.new-form-stepper__item--active {
+    border-color: color-mix(in srgb, var(--mds-heading) 20%, var(--mds-border));
+    background: color-mix(in srgb, var(--mds-interactive-soft) 72%, var(--mds-surface));
+    color: var(--mds-heading);
+}
+
+.new-form-stepper__index,
+.new-form-step__index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 999px;
+    background: var(--mds-interactive-soft);
+    color: var(--mds-heading);
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.new-form-stepper__label,
+.new-form-step__title,
+.new-form-template-row__name,
+.new-form-board__title,
+.new-form-board__card-title,
+.new-form-modal__template {
+    color: var(--mds-heading);
+    font-weight: 700;
+}
+
+.new-form-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+.new-form-step__title {
+    margin-top: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.new-form-basic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.new-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.new-form-field--wide {
+    grid-column: span 2;
+}
+
+.new-form-field__label {
+    color: var(--mds-text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.new-form-panel .form-control {
+    border: 1px solid var(--mds-border);
+    background: color-mix(in srgb, var(--mds-surface) 88%, transparent);
+    color: var(--mds-text);
+}
+
+.new-form-template-list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.new-form-template-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1.2rem;
+    background: color-mix(in srgb, var(--mds-surface) 84%, transparent);
+    text-align: left;
+}
+
+.new-form-template-row--selected {
+    border-color: color-mix(in srgb, var(--mds-heading) 22%, var(--mds-border));
+    background: color-mix(in srgb, var(--mds-interactive-soft) 72%, var(--mds-surface));
+}
+
+.new-form-template-row__content {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.new-form-template-row__copy,
+.new-form-board__hint,
+.new-form-board__card-meta,
+.new-form-sidebar__note,
+.new-form-workflow-note,
+.new-form-modal__role {
+    color: var(--mds-text-muted);
+    line-height: 1.5;
+}
+
+.new-form-template-empty,
+.new-form-board__empty {
+    border: 1px dashed var(--mds-border);
+    border-radius: 1rem;
+    padding: 1rem;
+    color: var(--mds-text-muted);
+    text-align: center;
+}
+
+.new-form-board {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.new-form-board__column {
+    display: flex;
+    flex-direction: column;
+    min-height: 22rem;
+    padding: 1rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1.4rem;
+}
+
+.new-form-board__stack {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    min-height: 100%;
+}
+
+.new-form-board__card {
+    border: 1px solid color-mix(in srgb, var(--mds-heading) 12%, var(--mds-border));
+    border-radius: 1rem;
+    padding: 0.9rem;
+    background: color-mix(in srgb, var(--mds-surface-strong) 92%, transparent);
+}
+
+.new-form-modal__title {
+    margin: 0.25rem 0 0;
+    color: var(--mds-heading);
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.new-form-modal__list {
+    display: grid;
+    gap: 1rem;
+}
+
+.new-form-modal__card {
+    padding: 1rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1.2rem;
+}
+
+.new-form-modal__staff-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.75rem;
+}
+
+.new-form-modal__staff {
+    color: var(--mds-text);
+}
+
+@media (max-width: 991.98px) {
+    .new-form-board,
+    .new-form-stepper {
+        grid-template-columns: 1fr;
+    }
+
+    .new-form-basic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .new-form-shell {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .new-form-wizard-actions,
+    .new-form-basic-grid {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .new-form-button {
+        width: 100%;
+    }
+
+    .new-form-field--wide {
+        grid-column: auto;
+    }
+
+    .new-form-template-row,
+    .new-form-modal__staff-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .new-form-modal__staff {
+        text-align: left;
+    }
+}

@@ -19,6 +19,7 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { FormsTableComponent } from './components/forms-table/forms-table.component';
 import { DeactivateGuard } from './deactivate.guard';
 import { FormLoaderComponent } from './form-loader/form-loader.component';
+import { NewFormExperienceComponent } from './form-loader/new-form-experience/new-form-experience.component';
 import { FormWizardComponent } from './form-loader/form-wizard/form-wizard.component';
 import { PrintformComponent } from './form-loader/printform/printform.component';
 import { StaffModalComponent } from './form-loader/staff-modal/staff-modal.component';
@@ -63,6 +64,13 @@ const appRoutes: Routes = [
           breadcrumb: "New Record"
         },
         canDeactivate: [DeactivateGuard],
+      },
+      {
+        path: "new-experience",
+        component: NewFormExperienceComponent,
+        data: {
+          breadcrumb: "New Form"
+        }
       },
       {
         path: ":formId",
@@ -135,6 +143,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
     AppComponent,
     TemplateCreatorComponent,
     FormLoaderComponent,
+    NewFormExperienceComponent,
     BreadcrumbsComponent,
     FormWizardComponent,
     TemplateModalComponent,
@@ -198,4 +207,3 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-

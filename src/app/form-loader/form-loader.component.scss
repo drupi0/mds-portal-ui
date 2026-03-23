@@ -122,7 +122,7 @@ a {
 .form-toolbar__action--new {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 0.5rem;
     min-height: 3rem;
     padding: 0 1.1rem;
@@ -137,6 +137,43 @@ a {
         background: var(--mds-interactive-soft);
         color: var(--mds-heading);
     }
+}
+
+.form-toolbar__action-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.create-dropdown-menu {
+    min-width: 15rem;
+    padding: 0.4rem;
+    border: 1px solid var(--mds-border);
+    border-radius: 1rem;
+    background: var(--mds-surface-strong);
+    box-shadow: none;
+}
+
+.create-dropdown-menu__item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    border-radius: 0.8rem;
+    color: var(--mds-text);
+    padding: 0.75rem 0.9rem;
+
+    &:hover,
+    &:active {
+        background: var(--mds-interactive-soft);
+        color: var(--mds-heading);
+    }
+}
+
+.create-dropdown-menu__hint {
+    color: var(--mds-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.2;
 }
 
 .group-record-row {
@@ -211,6 +248,7 @@ a {
 
     .form-toolbar__dropdown,
     .form-toolbar__search,
+    .form-toolbar__create-dropdown,
     .form-toolbar__action {
         width: 100%;
         margin: 0 !important;

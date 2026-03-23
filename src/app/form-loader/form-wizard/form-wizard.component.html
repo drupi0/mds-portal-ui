@@ -116,9 +116,15 @@
                 <label class="form-label" [ngClass]="{
                     error: !defaultForm.controls.specNo.value
                 }">MR No.</label>
-                <input type="text" class="form-control" formControlName="specNo" [ngClass]="{
-                    error_input: !defaultForm.controls.specNo.value
-                }">
+                <input type="text" class="form-control" formControlName="specNo" [readonly]="!isSuperAdmin"
+                  [ngClass]="{
+                    error_input: !defaultForm.controls.specNo.value,
+                    'form-control--readonly': !isSuperAdmin
+                  }"
+                  [ngbPopover]="!isSuperAdmin ? 'Only super admins are allowed to update the MR No.' : null"
+                  [openDelay]="250"
+                  triggers="mouseenter:mouseleave"
+                  placement="top">
       </div>
       <div class="mb-3 summary-grid__item">
                 <label class="form-label" [ngClass]="{

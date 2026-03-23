@@ -1,0 +1,196 @@
+<div class="new-form-shell px-4 py-4">
+  <section class="new-form-panel new-form-panel--wizard mds-surface-card rounded-3xl p-4">
+    <div class="new-form-stepper">
+      @for (step of stepLabels; track step.id) {
+        <button type="button" class="new-form-stepper__item"
+          [class.new-form-stepper__item--active]="currentStep === step.id">
+          <span class="new-form-stepper__index">{{ step.id }}</span>
+          <span class="new-form-stepper__label">{{ step.label }}</span>
+        </button>
+      }
+    </div>
+
+    @if (currentStep === 1) {
+      <div class="mt-4">
+        <div class="new-form-step">
+          <div class="new-form-step__index">1</div>
+          <div>
+            <div class="new-form-panel__label">Basic Information</div>
+            <div class="new-form-step__title">Start with the intake card from the classic experience</div>
+          </div>
+        </div>
+
+        <div class="new-form-basic-grid mt-4">
+          <label class="new-form-field">
+            <span class="new-form-field__label">Patient's Name</span>
+            <input type="text" class="form-control" value="Maria Dela Cruz">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Gender</span>
+            <input type="text" class="form-control" value="Female">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Date of Birth</span>
+            <input type="text" class="form-control" value="08/14/1986">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Age</span>
+            <input type="text" class="form-control" value="39" readonly>
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">MR No.</span>
+            <input type="text" class="form-control" [value]="mockMrNo" readonly>
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Accession No.</span>
+            <input type="text" class="form-control" value="ACC-2026-0312">
+          </label>
+          <label class="new-form-field new-form-field--wide">
+            <span class="new-form-field__label">Referring Dr.</span>
+            <input type="text" class="form-control" value="Dr. C. Ramos">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Status</span>
+            <input type="text" class="form-control" value="Routine">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Specimen</span>
+            <input type="text" class="form-control" value="Breast tissue">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Ordered</span>
+            <input type="text" class="form-control" value="Histopathology panel">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Collection Date/Time</span>
+            <input type="text" class="form-control" value="03/23/2026 09:10">
+          </label>
+          <label class="new-form-field">
+            <span class="new-form-field__label">Received Date/Time</span>
+            <input type="text" class="form-control" value="03/23/2026 09:32">
+          </label>
+        </div>
+      </div>
+    }
+
+    @if (currentStep === 2) {
+      <div class="mt-4">
+        <div class="new-form-step">
+          <div class="new-form-step__index">2</div>
+          <div>
+            <div class="new-form-panel__label">Templates to Use</div>
+            <div class="new-form-step__title">Search all templates, then pick the ones to include</div>
+          </div>
+        </div>
+
+        <div class="new-form-search mt-4">
+          <input type="text" class="form-control" [(ngModel)]="templateSearch"
+            placeholder="Search templates by name or description">
+        </div>
+
+        <div class="new-form-template-list mt-4">
+          @for (template of filteredTemplates; track template.id) {
+            <button type="button" class="new-form-template-row"
+              [class.new-form-template-row--selected]="template.selected"
+              (click)="toggleTemplate(template)">
+              <span class="new-form-template-row__content">
+                <span class="new-form-template-row__name">{{ template.name }}</span>
+                <span class="new-form-template-row__copy">{{ template.description }}</span>
+              </span>
+              <span class="new-form-template-row__checkbox">
+                <input type="checkbox" [checked]="template.selected" tabindex="-1">
+              </span>
+            </button>
+          }
+
+          @if (!filteredTemplates.length) {
+            <div class="new-form-template-empty">No templates matched your search.</div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (currentStep === 3) {
+      <div class="mt-4">
+        <div class="new-form-step">
+          <div class="new-form-step__index">3</div>
+          <div>
+            <div class="new-form-panel__label">Workflow</div>
+            <div class="new-form-step__title">Drag each selected template through the laboratory process</div>
+          </div>
+        </div>
+
+        <div class="new-form-board mt-4">
+          @for (column of workflowColumns; track column.id) {
+            <div class="new-form-board__column"
+              cdkDropList
+              [cdkDropListData]="column.items"
+              [cdkDropListConnectedTo]="['specimen-received', 'processing', 'pathologist-review', 'sign-off']"
+              [id]="column.id"
+              (cdkDropListDropped)="drop($event)">
+              <div class="new-form-board__header">
+                <div class="new-form-board__title">{{ column.name }}</div>
+                <div class="new-form-board__hint">{{ column.hint }}</div>
+              </div>
+
+              <div class="new-form-board__stack">
+                @for (template of column.items; track template.id) {
+                  <div class="new-form-board__card" cdkDrag>
+                    <div class="new-form-board__card-title">{{ template.name }}</div>
+                    <div class="new-form-board__card-meta">{{ template.description }}</div>
+                  </div>
+                }
+
+                @if (!column.items.length) {
+                  <div class="new-form-board__empty">Drop template cards here.</div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="new-form-workflow-note mt-4">
+          Once all template cards are moved to <strong>Sign Off</strong>, a modal will appear with the medical staff involved per laboratory template.
+        </div>
+      </div>
+    }
+
+    <div class="new-form-wizard-actions mt-4">
+      <button type="button" class="new-form-button" (click)="previousStep()" [disabled]="currentStep === 1">
+        Previous
+      </button>
+      <button type="button" class="new-form-button new-form-button--primary"
+        (click)="nextStep()"
+        [disabled]="currentStep === 3 || (currentStep === 2 && !canProceedFromTemplates)">
+        {{ currentStep === 2 ? 'Build Workflow' : 'Next' }}
+      </button>
+    </div>
+  </section>
+</div>
+
+<ng-template #signOffModal>
+  <div class="new-form-modal">
+    <div class="modal-header border-0 pb-0">
+      <div>
+        <div class="new-form-panel__label">Sign Off Staff</div>
+        <h2 class="new-form-modal__title">Medical staff involved per laboratory template</h2>
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body pt-3">
+      <div class="new-form-modal__list">
+        @for (template of workflowColumns[3].items; track template.id) {
+          <div class="new-form-modal__card">
+            <div class="new-form-modal__template">{{ template.name }}</div>
+            @for (staff of template.staff; track staff.role) {
+              <div class="new-form-modal__staff-row">
+                <span class="new-form-modal__role">{{ staff.role }}</span>
+                <span class="new-form-modal__staff">{{ staff.name }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>

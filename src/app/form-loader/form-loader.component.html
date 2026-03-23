@@ -23,10 +23,24 @@
         <span class="mds-muted text-sm">Press Enter</span>
       </div>
     </div>
-    <button class="form-toolbar__action form-toolbar__action--new" [routerLink]="['new']">
-      <mds-icons icon="plus" [width]="18" [height]="18"></mds-icons>
-      <span>New</span>
-    </button>
+    <div ngbDropdown class="form-toolbar__create-dropdown">
+      <button type="button" class="form-toolbar__action form-toolbar__action--new" ngbDropdownToggle>
+        <span class="form-toolbar__action-main">
+          <mds-icons icon="plus" [width]="18" [height]="18"></mds-icons>
+          <span>New</span>
+        </span>
+      </button>
+      <div ngbDropdownMenu class="create-dropdown-menu">
+        <button ngbDropdownItem class="create-dropdown-menu__item" [routerLink]="['new']">
+          <span class="font-semibold">Classic Experience</span>
+          <span class="create-dropdown-menu__hint">Create a single form using the current wizard.</span>
+        </button>
+        <button ngbDropdownItem class="create-dropdown-menu__item" [routerLink]="['new-experience']">
+          <span class="font-semibold">New Experience</span>
+          <span class="create-dropdown-menu__hint">Create a multi-template form in one flow.</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 <div>

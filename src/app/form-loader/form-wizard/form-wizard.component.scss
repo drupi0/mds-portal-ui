@@ -43,6 +43,16 @@ table {
     border: 1px solid #e13868 !important;
 }
 
+.summary-grid__item {
+    position: relative;
+}
+
+.form-control--readonly {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--mds-text-muted) 45%, var(--mds-border));
+    cursor: not-allowed;
+}
+
 .dp-input {
     color: var(--mds-text);
     background-color: var(--mds-control-bg);

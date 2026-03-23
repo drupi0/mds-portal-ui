@@ -193,6 +193,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
       (isSuperAdmin as Observable<boolean>).subscribe(access => this.isSuperAdmin = access);
     });
 
+    this.ensureGeneratedSpecNo();
     this.initFormBuilder();
   }
 
@@ -637,7 +638,7 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
         age: this.calcAge,
         sex: record.patient.sex,
         dateOfBirth: record.patient.dateOfBirth,
-        specNo: record.specNo,
+        specNo: this.isDuplicate ? this.createGeneratedSpecNo() : record.specNo,
         accessionNo: record.accessionNo,
         orderingDr: record.orderingDoctor,
         status: record.status,
@@ -661,6 +662,18 @@ export class FormWizardComponent implements OnInit, AfterViewChecked {
 
       this.rebuildEditorInstances();
     })
+  }
+
+  private ensureGeneratedSpecNo() {
+    if (this.defaultForm.controls.specNo.value?.trim()?.length) {
+      return;
+    }
+
+    this.defaultForm.controls.specNo.setValue(this.createGeneratedSpecNo());
+  }
+
+  private createGeneratedSpecNo() {
+    return `M${String(Date.now()).slice(-7).padStart(7, "0")}`;
   }
 
   private showErrorToast(err: Error | any) {
